@@ -22,9 +22,13 @@ If you create the whole page you should also add your route (path) inside
 src/index.js file under: "const router = createBrowserRouter([...]);"
 
 Here are some usefull website for React development:
+
    https://mui.com/ - MUI, the React component library
+   
    https://react.dev/ - React, documentation for React and ReactDOM
+   
    https://reactrouter.com/ - React Router, documentation for React Router
+   
 
 We are using React@18 and React Router@6
 
