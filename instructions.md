@@ -5,7 +5,7 @@ Ovo je mali tutorial kako krenut radit na projektu. Upute su za Windows, za Linu
 1. **Otvorite Command Prompt (cmd)** :
    Otvorite Command Prompt na svom Windows računalu. Možete to učiniti tako da pritisnete `Windows + R`, upišete `cmd`, i pritisnete Enter.
 1. **Navigirajte do direktorija gdje želite smjestiti repozitorij** :
-   Upotrebite `cd` naredbu da navigirate do direktorija gdje želite pohraniti Git repozitorij. Na primjer:
+   Upotrijebite `cd` naredbu da navigirate do direktorija gdje želite pohraniti Git repozitorij. Na primjer:
 
    ```bash
    cd putanja/do/željenog/direktorija
@@ -17,9 +17,15 @@ Ovo je mali tutorial kako krenut radit na projektu. Upute su za Windows, za Linu
    ```bash
    git clone https://github.com/EmaBadurina1/Proginator.git
    ```
+1. **Checkoutajte na develop branch** :
+   Postoje 3 glavne grane na kojima radimo: `master`, `develop` i `devdoc`. Kako bi krenuli programirati prebacite se na `develop` branch sa sljedećom naredbom:
+
+   ```bash
+   git checkout develop
+   ```
 
 1. **Inicijalizirajte Python virtualno okruženje (venv)** :
-   Python venv je samo folder u kojem se cuvaju svi dodatno instalirani moduli (npr. Flask framework) koji su potrebni za pokretanje backenda. Taj folder zna biti dosta velik pa nije prikladan za spremanje na git/Github (bitno je da ga se stavi u .gitignore), tako da ćete ga trebati sami instalirati i dopuniti sa modulima.
+   Python `venv` je samo folder u kojem se čuvaju svi dodatno instalirani moduli (npr. Flask framework) koji su potrebni za pokretanje backenda. Taj folder zna biti dosta velik pa nije prikladan za spremanje na git/Github (bitno je da ga se stavi u .gitignore), tako da ćete ga trebati sami inicijalizirati i dopuniti sa modulima.
    Unutar direktorija repozitorija, inicijalizirajte Python virtualno okruženje koristeći sljedeću naredbu:
 
    ```bash
@@ -52,7 +58,7 @@ Ovo je mali tutorial kako krenut radit na projektu. Upute su za Windows, za Linu
    ```bash
    cd izvorniKod/frontend
    ```
-   i zatim zvršite sljedeću naredbu:
+   i zatim završite sljedeću naredbu:
 
    ```bash
    npm install
