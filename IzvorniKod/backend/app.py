@@ -1,11 +1,17 @@
 
-from flask import Flask, render_template_string, request, jsonify, send_from_directory
+from flask_sqlalchemy import SQLAlchemy
+from flask import Flask
+from main.controllers import tasks_bp
 
 app = Flask(__name__)
 
-@app.route('/home')
-def home():
-    return render_template_string('<h1>Hello World!</h1>')
+# Register the blueprint
+app.register_blueprint(tasks_bp)
+
+# define db
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tasks.db'
+
+db = SQLAlchemy(app)
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
