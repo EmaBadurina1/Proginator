@@ -1,5 +1,6 @@
 \chapter{Arhitektura i dizajn sustava}
 		
+		
 		\textbf{\textit{dio 1. revizije}}\\
 
 		\textit{ Potrebno je opisati stil arhitekture te identificirati: podsustave, preslikavanje na radnu platformu, spremišta podataka, mrežne protokole, globalni upravljački tok i sklopovsko-programske zahtjeve. Po točkama razraditi i popratiti odgovarajućim skicama:}
@@ -9,22 +10,38 @@
 		\item 	\textit{organizaciju aplikacije (npr. slojevi frontend i backend, MVC arhitektura) }		
 	\end{itemize}
 
-	
-		
-
-		
-
 				
 		\section{Baza podataka}
 			
 			\textbf{\textit{dio 1. revizije}}\\
 			
 		\textit{Potrebno je opisati koju vrstu i implementaciju baze podataka ste odabrali, glavne komponente od kojih se sastoji i slično.}
+\textnormal{Za rješavanje projektnog zadatka odabrana je relacijska baza podataka. Implementirali smo je korištenjem sustava PostgreSQL. To je besplatan sustav za upravljanje bazom podataka otvorenog koda. Objekti relacijske baze podataka su relacije. Neformalno, i u PostgreSQL-u, to su dvodimenzionalne imenovane tablice gdje imenovani stupac predstavlja atribut, a redak zapis relacije. Izbor ovakve baze podataka omogućio nam je lakše strukturiranje podatka i definiranje veza između njih, normalizaciju, skalabilnost te sigurnost kod pohrane i dohvata podataka. 
+Zbog potreba naše aplikacije, baza podataka sadrži entitete:}
+             \begin{itemize}
+		\item 	\textnormal{Korisnik}
+		\item 	\textnormal{Djelatnik}
+		\item 	\textnormal{Uloga}
+                   \item 	\textnormal{Pacijent}
+                   \item 	\textnormal{Terapija}
+                   \item 	\textnormal{VrstaTerapije}	
+                   \item 	\textnormal{Termin}			
+                   \item 	\textnormal{Status}	
+                   \item 	\textnormal{Oprema}
+                   \item 	\textnormal{ZauzetaOprema}	
+                   \item 	\textnormal{Soba}	
+                   \item 	\textnormal{Uredaj}
+                   \item 	\textnormal{VrstaUredaja}
+                   				
+	 \end{itemize}
+
 		
 			\subsection{Opis tablica}
 			
+ \textbf{Korisnik:}
 
-				\textit{Svaku tablicu je potrebno opisati po zadanom predlošku. Lijevo se nalazi točno ime varijable u bazi podataka, u sredini se nalazi tip podataka, a desno se nalazi opis varijable. Svjetlozelenom bojom označite primarni ključ. Svjetlo plavom označite strani ključ}
+ \textnormal{Entitet Korisnik sadrži sve bitne informacije o korisniku aplikacije. Entitet sadrži atribute: idKorisnika, ime, prezime, datumRodenja, adresa, email, lozinka. Korisnik može biti ili djelatnik zdravstvene ustanove ili pacijent koji se želi naručiti na terapiju u zdravstvenoj ustanovi.}
+
 				
 				
 				\begin{longtblr}[
@@ -35,21 +52,254 @@
 						colspec={|X[6,l]|X[6, l]|X[20, l]|}, 
 						rowhead = 1,
 					} %definicija širine tablice, širine stupaca, poravnanje i broja redaka naslova tablice
-					\hline \SetCell[c=3]{c}{\textbf{korisnik - ime tablice}}	 \\ \hline[3pt]
-					\SetCell{LightGreen}IDKorisnik & INT	&  	Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod  	\\ \hline
-					korisnickoIme	& VARCHAR &   	\\ \hline 
-					email & VARCHAR &   \\ \hline 
-					ime & VARCHAR	&  		\\ \hline 
-					\SetCell{LightBlue} primjer	& VARCHAR &   	\\ \hline 
+					\hline \SetCell[c=3]{c}{\textbf{Korisnik}}	 \\ \hline[3pt]
+					\SetCell{LightGreen}idKorisnika & INT & jedinstveni identifikator korisnika 	\\ \hline
+					ime & VARCHAR(50) & ime korisnika	\\ \hline 
+                                               prezime & VARCHAR(50) & prezime korisnika	\\ \hline
+                                               datumRodenja & DATE & datum rođenja korisnika	\\ \hline  
+                                               adresa & VARCHAR(100) & adresa mjesta stanovanja korisnika	\\ \hline 
+					 email & VARCHAR(50) & e-mail adresa korisnika   \\ \hline 
+					 lozinka & VARCHAR(50) & hash lozinke za prijavu u aplikaciju	\\ \hline 
+					 
 				\end{longtblr}
-				
+
+\textbf{Djelatnik:}
+
+\textnormal{Entitet Djelatnik je ekskluzivna specijalizacija entiteta Korisnik. Entitet sadrži atribute: idKorisnika, aktivan, idUloge.}
+
+				\begin{longtblr}[
+					label=none,
+					entry=none
+					]{
+						width = \textwidth,
+						colspec={|X[6,l]|X[6, l]|X[20, l]|}, 
+						rowhead = 1,
+					} %definicija širine tablice, širine stupaca, poravnanje i broja redaka naslova tablice
+					\hline \SetCell[c=3]{c}{\textbf{Djelatnik}}	 \\ \hline[3pt]
+					\SetCell{LightBlue}idKorisnika & INT & jedinstveni identifikator korisnika (korisnik.idKorisnika) 	\\ \hline
+					aktivan & CHAR(2) & označava radni odnos liječnika i zdravstvene ustanove	\\ \hline 
+					\SetCell{LightBlue}idUloge & INT & jedinstveni identifikator uloge (uloga.idUloge)	\\ \hline 
+					 
+				\end{longtblr}
+
+\textbf{Uloga:}
+
+\textnormal{Entitet Uloga služi za razlikovanje djelatnika zdravstvene ustanove. U aplikaciji razlikujemo liječnike od administratora. Entitet sadrži atribute: idUloge, imeUloge.}
+
+				\begin{longtblr}[
+					label=none,
+					entry=none
+					]{
+						width = \textwidth,
+						colspec={|X[6,l]|X[6, l]|X[20, l]|}, 
+						rowhead = 1,
+					} %definicija širine tablice, širine stupaca, poravnanje i broja redaka naslova tablice
+					\hline \SetCell[c=3]{c}{\textbf{Uloga}}	 \\ \hline[3pt]
+					\SetCell{LightGreen}idUloge & INT & jedinstveni identifikator uloge 	\\ \hline
+					imeUloge & VARCHAR(50) & naziv uloge (liječnik ili administrator)	\\ \hline 
+					 
+				\end{longtblr}
+
+\textbf{Pacijent:}
+
+\textnormal{Entitet Pacijent je ekskluzivna specijalizacija entiteta Korisnik. Entitet sadrži atribute: idKorisnika, MBO.}
+
+				\begin{longtblr}[
+					label=none,
+					entry=none
+					]{
+						width = \textwidth,
+						colspec={|X[6,l]|X[6, l]|X[20, l]|}, 
+						rowhead = 1,
+					} %definicija širine tablice, širine stupaca, poravnanje i broja redaka naslova tablice
+					\hline \SetCell[c=3]{c}{\textbf{Pacijent}}	 \\ \hline[3pt]
+					\SetCell{LightBlue}idKorisnika & INT & jedinstveni identifikator korisnika (korisnik.idKorisnika)	\\ \hline
+					MBO & CHAR(9) & matični broj osiguranika (pacijenta)	\\ \hline 
+
+					 
+				\end{longtblr}
+
+\textbf{Terapija:}
+
+\textnormal{Entitet Terapija sadrži sve bitne informacije o terapiji na koju je pacijent naručen. Entitet sadrži atribute: idTerapije, idLijecnika, opisOboljenja, zahtPostLijec, datumPoc, datumZavrs, idPacijenta, idDjelatnika, idVrste.}
+
+				\begin{longtblr}[
+					label=none,
+					entry=none
+					]{
+						width = \textwidth,
+						colspec={|X[6,l]|X[6, l]|X[20, l]|}, 
+						rowhead = 1,
+					} %definicija širine tablice, širine stupaca, poravnanje i broja redaka naslova tablice
+					\hline \SetCell[c=3]{c}{\textbf{Terapija}}	 \\ \hline[3pt]
+					\SetCell{LightGreen}idTerapije & INT & jedinstveni identifikator terapije	\\ \hline
+					idLijecnika & INT & jedinstveni identifikator liječnika	\\ \hline 
+                                               opisOboljenja & VARCHAR(200) & opis oboljenja pacijenta	\\ \hline
+                                               zahtPostLijec & VARCHAR(200) & zahtjev za postupkom liječenja (terapijom)	\\ \hline  
+                                               datumPoc & DATE & datum početka terapije	\\ \hline 
+					 datumZavrs & DATE & datum završetka terapije   \\ \hline 
+					 \SetCell{LightBlue}idPacijenta & INT & jedinstveni identifikator pacijenta (korisnik.idKorisnika)	\\ \hline 
+					 \SetCell{LightBlue}idDjelatnika & INT & jedinstveni identifikator djelatnika (korisnik.idKorisnika)
+					 \SetCell{LightBlue}idVrste & INT & jedinstveni identifikator vrste uređaja (vrstaTerapije.idVrste)
+					 
+				\end{longtblr}
+
+\textbf{VrstaTerapije:}
+
+\textnormal{Entitet VrstaTerapije sadrži sve bitne informacije o vrsti terapije na koju je pacijent naručen. Entitet sadrži atribute: idVrste, imeVrste, opisVrste.}
+
+\begin{longtblr}[
+					label=none,
+					entry=none
+					]{
+						width = \textwidth,
+						colspec={|X[6,l]|X[6, l]|X[20, l]|}, 
+						rowhead = 1,
+					} %definicija širine tablice, širine stupaca, poravnanje i broja redaka naslova tablice
+					\hline \SetCell[c=3]{c}{\textbf{VrstaTerapije}}	 \\ \hline[3pt]
+					\SetCell{LightGreen}idVrste & INT & jedinstveni identifikator vrste terapije	\\ \hline
+					imeVrste & VARCHAR(50) & naziv vrste terapije	\\ \hline 
+                                               opisVrste & VARCHAR(200) & opis vrste terapije	\\ \hline
+					 
+				\end{longtblr}
+
+\textbf{Termin:}
+
+\textnormal{Entitet Termin sadrži sve bitne informacije o terminu terapije na koji je pacijent naručen. Entitet Termin ne postoji bez entiteta vlasnika, entiteta Terapija. (Termin je egzistencijalno slab entitet.)}
+
+\begin{longtblr}[
+					label=none,
+					entry=none
+					]{
+						width = \textwidth,
+						colspec={|X[6,l]|X[6, l]|X[20, l]|}, 
+						rowhead = 1,
+					} %definicija širine tablice, širine stupaca, poravnanje i broja redaka naslova tablice
+					\hline \SetCell[c=3]{c}{\textbf{Termin}}	 \\ \hline[3pt]
+					\SetCell{LightGreen}idTermina & INT & jedinstveni identifikator termina terapije \\ \hline
+					\SetCell{LightBlue}idTerapije & INT & jedinstveni identifikator terapije (terapija.idTerapije)	\\ \hline 
+                                               od & DATETIME & datum i vrijeme početka termina	\\ \hline
+					 do & DATETIME & datum i vrijeme završetka termina      \\ \hline
+                                               komentar & VARCHAR(200) & komentar liječnika o napretku terapije \\ \hline
+                                               \SetCell{LightBlue}brSobe & VARCHAR(10) & jedinstveni identifikator sobe (soba.brSobe)	\\ \hline
+                                               \SetCell{LightBlue}idStatus & INT & jedinstveni identifikator statusa (status.idStatus)	\\ \hline
+                                               \SetCell{Blue}idKorisnika & INT & jedinstveni identifikator korisnika (korisnik.idKorisnika)	\\ \hline
+				\end{longtblr}
+
+\textbf{Soba:}
+
+\textnormal{Entitet Soba sadrži sve bitne informacije o sobi u kojoj se provodi neka terapija. Entitet sadrži atribute: brSobe, kapacitet.}
+
+\begin{longtblr}[
+					label=none,
+					entry=none
+					]{
+						width = \textwidth,
+						colspec={|X[6,l]|X[6, l]|X[20, l]|}, 
+						rowhead = 1,
+					} %definicija širine tablice, širine stupaca, poravnanje i broja redaka naslova tablice
+					\hline \SetCell[c=3]{c}{\textbf{Soba}}	 \\ \hline[3pt]
+					\SetCell{LightGreen}brSobe & VRACHAR(10) & jedinstveni identifikator sobe \\ \hline
+                                               kapacitet & INT & kapacitet sobe, broj pacijenata koji istovremeno mogu biti na terapiji u nekoj sobi	\\ \hline
+				\end{longtblr}
+
+\textbf{Uredaj:}
+
+\textnormal{Entitet Uredaj sadrži sve bitne informacije o uređaju koji se koristi u nekoj terapiji. Entitet sadrži atribute: idUredaja, brSobe, idVrste.}
+
+\begin{longtblr}[
+					label=none,
+					entry=none
+					]{
+						width = \textwidth,
+						colspec={|X[6,l]|X[6, l]|X[20, l]|}, 
+						rowhead = 1,
+					} %definicija širine tablice, širine stupaca, poravnanje i broja redaka naslova tablice
+					\hline \SetCell[c=3]{c}{\textbf{Uredaj}}	 \\ \hline[3pt]
+					\SetCell{LightGreen}idUredaja & INT & jedinstveni identifikator uređaja \\ \hline
+                                               \SetCell{LightBlue}brSobe & VARCHAR(10) & jedinstveni identifikator sobe (soba.brSobe) \\ \hline
+                                               \SetCell{LightBlue}idVrste & INT & jedinstveni identifikator vrste uređaja (vrstaUredaja.idVrste)\\ \hline
+				\end{longtblr}
+
+\textbf{VrstaUredaja:}
+
+\textnormal{Entitet VrstaUredaja sadrži sve bitne informacije o vrsti uređaja koja se primijenjuje u nekoj terapiji. Entitet sadrži atribute: idVrste, imeVrste, opisVrste.}
+
+\begin{longtblr}[
+					label=none,
+					entry=none
+					]{
+						width = \textwidth,
+						colspec={|X[6,l]|X[6, l]|X[20, l]|}, 
+						rowhead = 1,
+					} %definicija širine tablice, širine stupaca, poravnanje i broja redaka naslova tablice
+					\hline \SetCell[c=3]{c}{\textbf{VrstaUredaja}}	 \\ \hline[3pt]
+					\SetCell{LightGreen}idVrste & INT & jedinstveni identifikator vrste uređaja \\ \hline
+                                               imeVrste & VARCHAR(50) & naziv vrste uređaja \\ \hline
+                                               opisVrste & VARCHAR(200) & opis vrste uređaja \\ \hline
+				\end{longtblr}
+
+\textbf{Oprema:}
+
+\textnormal{Entitet Oprema sadrži sve bitne informacije o opremi koja je na raspolaganju u zdravstvenoj ustanovi. Entitet sadrži atribute: idOpreme, imeOpreme, opisOpreme.}
+
+\begin{longtblr}[
+					label=none,
+					entry=none
+					]{
+						width = \textwidth,
+						colspec={|X[6,l]|X[6, l]|X[20, l]|}, 
+						rowhead = 1,
+					} %definicija širine tablice, širine stupaca, poravnanje i broja redaka naslova tablice
+					\hline \SetCell[c=3]{c}{\textbf{Oprema}}	 \\ \hline[3pt]
+					\SetCell{LightGreen}idOpreme & INT & jedinstveni identifikator opreme \\ \hline
+                                               imeOpreme & VARCHAR(50) & naziv opreme (npr. štake)\\ \hline
+                                               opisOpreme & VARCHAR(200) & opis namjene opreme \\ \hline
+				\end{longtblr}
+
+\textbr{ZauzetaOprema:}
+
+\textnormal{Entitet ZauzetaOprema sadrži sve bitne informacije o alokaciji opreme po terminima. Entitet sadrži atribute: idTermina, idTerapije, idOpreme.}
+
+\begin{longtblr}[
+					label=none,
+					entry=none
+					]{
+						width = \textwidth,
+						colspec={|X[6,l]|X[6, l]|X[20, l]|}, 
+						rowhead = 1,
+					} %definicija širine tablice, širine stupaca, poravnanje i broja redaka naslova tablice
+					\hline \SetCell[c=3]{c}{\textbf{ZauzetaOprema}}	 \\ \hline[3pt]
+					\SetCell{LightBlue}idTermina & INT & jedinstveni identifikator termina (termin.idTermina) \\ \hline
+                                               \SetCell{LightBlue}idTerapije & INT & jedinstveni identifikator terapije (terapija.idTerapije) \\ \hline
+                                               \SetCell{LightBlue}idOpreme & INT & jedinstveni identifikator opreme (oprema.idOpreme)  \\ \hline
+				\end{longtblr}
+
+\textbr{Status:}
+
+\textnormal{Entitet Status sadrži sve bitne informacije o statusu termina terapija koji je dodijeljen nekom pacijentu. Entitet sadrži atribute: idStatus, imeStatus.}
+
+\begin{longtblr}[
+					label=none,
+					entry=none
+					]{
+						width = \textwidth,
+						colspec={|X[6,l]|X[6, l]|X[20, l]|}, 
+						rowhead = 1,
+					} %definicija širine tablice, širine stupaca, poravnanje i broja redaka naslova tablice
+					\hline \SetCell[c=3]{c}{\textbf{Status}}	 \\ \hline[3pt]
+					\SetCell{LightGreen}idStatus & INT & jedinstveni identifikator uređaja \\ \hline
+                                               imeStatus & VARCHAR(50) & naziv statusa (npr. u tijeku, završen...) \\ \hline
+     
+				\end{longtblr}	
+			
+				\textit{Svaku tablicu je potrebno opisati po zadanom predlošku. Lijevo se nalazi točno ime varijable u bazi podataka, u sredini se nalazi tip podataka, a desno se nalazi opis varijable. Svjetlozelenom bojom označite primarni ključ. Svjetlo plavom označite strani ključ}
 				
 			
 			\subsection{Dijagram baze podataka}
 				\textit{ U ovom potpoglavlju potrebno je umetnuti dijagram baze podataka. Primarni i strani ključevi moraju biti označeni, a tablice povezane. Bazu podataka je potrebno normalizirati. Podsjetite se kolegija "Baze podataka".}
 			
 			\eject
-			
 			
 		\section{Dijagram razreda}
 		
