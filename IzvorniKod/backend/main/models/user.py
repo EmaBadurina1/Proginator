@@ -1,18 +1,13 @@
 from app import db  # Assuming you've defined 'db' in your main app module
 
-class Task(db.Model):
-    """Task model"""
+class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(128), nullable=False)
-    completed = db.Column(db.Boolean, default=False)
-
-    def __init__(self, title, completed=False):
-        self.title = title
-        self.completed = completed
+    name = db.Column(db.String(80), nullable=False)
+    age = db.Column(db.Integer, nullable=False)
 
     def to_dict(self):
         return {
             'id': self.id,
-            'title': self.title,
-            'completed': self.completed
+            'name': self.name,
+            'age': self.age
         }
