@@ -18,7 +18,7 @@
 		\textit{Potrebno je opisati koju vrstu i implementaciju baze podataka ste odabrali, glavne komponente od kojih se sastoji i slično.}
 \textnormal{Za rješavanje projektnog zadatka odabrana je relacijska baza podataka. Implementirali smo je korištenjem sustava PostgreSQL. To je besplatan sustav za upravljanje bazom podataka otvorenog koda. Objekti relacijske baze podataka su relacije. Neformalno, i u PostgreSQL-u, to su dvodimenzionalne imenovane tablice gdje imenovani stupac predstavlja atribut, a redak zapis relacije. Izbor ovakve baze podataka omogućio nam je lakše strukturiranje podatka i definiranje veza između njih, normalizaciju, skalabilnost te sigurnost kod pohrane i dohvata podataka. 
 Zbog potreba naše aplikacije, baza podataka sadrži entitete:}
-             \begin{itemize}
+             \begin{packed_item}
 		\item 	\textnormal{Korisnik}
 		\item 	\textnormal{Djelatnik}
 		\item 	\textnormal{Uloga}
@@ -33,7 +33,7 @@ Zbog potreba naše aplikacije, baza podataka sadrži entitete:}
                    \item 	\textnormal{Uredaj}
                    \item 	\textnormal{VrstaUredaja}
                    				
-	 \end{itemize}
+	 \end{packed_item}
 
 		
 			\subsection{Opis tablica}
@@ -49,7 +49,7 @@ Zbog potreba naše aplikacije, baza podataka sadrži entitete:}
 					entry=none
 					]{
 						width = \textwidth,
-						colspec={|X[6,l]|X[6, l]|X[20, l]|}, 
+						colspec={|X[6,l]|X[7, l]|X[20, l]|}, 
 						rowhead = 1,
 					} %definicija širine tablice, širine stupaca, poravnanje i broja redaka naslova tablice
 					\hline \SetCell[c=3]{c}{\textbf{Korisnik}}	 \\ \hline[3pt]
@@ -72,7 +72,7 @@ Zbog potreba naše aplikacije, baza podataka sadrži entitete:}
 					entry=none
 					]{
 						width = \textwidth,
-						colspec={|X[6,l]|X[6, l]|X[20, l]|}, 
+						colspec={|X[6,l]|X[7, l]|X[20, l]|}, 
 						rowhead = 1,
 					} %definicija širine tablice, širine stupaca, poravnanje i broja redaka naslova tablice
 					\hline \SetCell[c=3]{c}{\textbf{Djelatnik}}	 \\ \hline[3pt]
@@ -91,7 +91,7 @@ Zbog potreba naše aplikacije, baza podataka sadrži entitete:}
 					entry=none
 					]{
 						width = \textwidth,
-						colspec={|X[6,l]|X[6, l]|X[20, l]|}, 
+						colspec={|X[6,l]|X[7, l]|X[20, l]|}, 
 						rowhead = 1,
 					} %definicija širine tablice, širine stupaca, poravnanje i broja redaka naslova tablice
 					\hline \SetCell[c=3]{c}{\textbf{Uloga}}	 \\ \hline[3pt]
@@ -109,7 +109,7 @@ Zbog potreba naše aplikacije, baza podataka sadrži entitete:}
 					entry=none
 					]{
 						width = \textwidth,
-						colspec={|X[6,l]|X[6, l]|X[20, l]|}, 
+						colspec={|X[6,l]|X[7, l]|X[20, l]|}, 
 						rowhead = 1,
 					} %definicija širine tablice, širine stupaca, poravnanje i broja redaka naslova tablice
 					\hline \SetCell[c=3]{c}{\textbf{Pacijent}}	 \\ \hline[3pt]
@@ -128,32 +128,32 @@ Zbog potreba naše aplikacije, baza podataka sadrži entitete:}
 					entry=none
 					]{
 						width = \textwidth,
-						colspec={|X[6,l]|X[6, l]|X[20, l]|}, 
+						colspec={|X[6,l]|X[7, l]|X[20, l]|}, 
 						rowhead = 1,
 					} %definicija širine tablice, širine stupaca, poravnanje i broja redaka naslova tablice
 					\hline \SetCell[c=3]{c}{\textbf{Terapija}}	 \\ \hline[3pt]
 					\SetCell{LightGreen}idTerapije & INT & jedinstveni identifikator terapije	\\ \hline
 					idLijecnika & INT & jedinstveni identifikator liječnika	\\ \hline 
-                                               opisOboljenja & VARCHAR(200) & opis oboljenja pacijenta	\\ \hline
-                                               zahtPostLijec & VARCHAR(200) & zahtjev za postupkom liječenja (terapijom)	\\ \hline  
-                                               datumPoc & DATE & datum početka terapije	\\ \hline 
+                    opisOboljenja & VARCHAR(200) & opis oboljenja pacijenta	\\ \hline
+                    zahtPostLijec & VARCHAR(200) & zahtjev za postupkom liječenja (terapijom)	\\ \hline  
+                    datumPoc & DATE & datum početka terapije	\\ \hline 
 					 datumZavrs & DATE & datum završetka terapije   \\ \hline 
 					 \SetCell{LightBlue}idPacijenta & INT & jedinstveni identifikator pacijenta (korisnik.idKorisnika)	\\ \hline 
-					 \SetCell{LightBlue}idDjelatnika & INT & jedinstveni identifikator djelatnika (korisnik.idKorisnika)
-					 \SetCell{LightBlue}idVrste & INT & jedinstveni identifikator vrste uređaja (vrstaTerapije.idVrste)
+					 \SetCell{LightBlue}idDjelatnika & INT & jedinstveni identifikator djelatnika (korisnik.idKorisnika) \\ \hline
+					 \SetCell{LightBlue}idVrste & INT & jedinstveni identifikator vrste uređaja (vrstaTerapije.idVrste) \\ \hline
 					 
 				\end{longtblr}
 
 \textbf{VrstaTerapije:}
 
-\textnormal{Entitet VrstaTerapije sadrži sve bitne informacije o vrsti terapije na koju je pacijent naručen. Entitet sadrži atribute: idVrste, imeVrste, opisVrste.}
+Entitet VrstaTerapije sadrži sve bitne informacije o vrsti terapije na koju je pacijent naručen. Entitet sadrži atribute: idVrste, imeVrste, opisVrste.
 
 \begin{longtblr}[
 					label=none,
 					entry=none
 					]{
 						width = \textwidth,
-						colspec={|X[6,l]|X[6, l]|X[20, l]|}, 
+						colspec={|X[6,l]|X[7, l]|X[20, l]|}, 
 						rowhead = 1,
 					} %definicija širine tablice, širine stupaca, poravnanje i broja redaka naslova tablice
 					\hline \SetCell[c=3]{c}{\textbf{VrstaTerapije}}	 \\ \hline[3pt]
@@ -172,7 +172,7 @@ Zbog potreba naše aplikacije, baza podataka sadrži entitete:}
 					entry=none
 					]{
 						width = \textwidth,
-						colspec={|X[6,l]|X[6, l]|X[20, l]|}, 
+						colspec={|X[6,l]|X[7, l]|X[20, l]|}, 
 						rowhead = 1,
 					} %definicija širine tablice, širine stupaca, poravnanje i broja redaka naslova tablice
 					\hline \SetCell[c=3]{c}{\textbf{Termin}}	 \\ \hline[3pt]
@@ -183,7 +183,7 @@ Zbog potreba naše aplikacije, baza podataka sadrži entitete:}
                                                komentar & VARCHAR(200) & komentar liječnika o napretku terapije \\ \hline
                                                \SetCell{LightBlue}brSobe & VARCHAR(10) & jedinstveni identifikator sobe (soba.brSobe)	\\ \hline
                                                \SetCell{LightBlue}idStatus & INT & jedinstveni identifikator statusa (status.idStatus)	\\ \hline
-                                               \SetCell{Blue}idKorisnika & INT & jedinstveni identifikator korisnika (korisnik.idKorisnika)	\\ \hline
+                                               \SetCell{LightBlue}idKorisnika & INT & jedinstveni identifikator korisnika (korisnik.idKorisnika)	\\ \hline
 				\end{longtblr}
 
 \textbf{Soba:}
@@ -195,7 +195,7 @@ Zbog potreba naše aplikacije, baza podataka sadrži entitete:}
 					entry=none
 					]{
 						width = \textwidth,
-						colspec={|X[6,l]|X[6, l]|X[20, l]|}, 
+						colspec={|X[6,l]|X[7, l]|X[20, l]|}, 
 						rowhead = 1,
 					} %definicija širine tablice, širine stupaca, poravnanje i broja redaka naslova tablice
 					\hline \SetCell[c=3]{c}{\textbf{Soba}}	 \\ \hline[3pt]
@@ -212,7 +212,7 @@ Zbog potreba naše aplikacije, baza podataka sadrži entitete:}
 					entry=none
 					]{
 						width = \textwidth,
-						colspec={|X[6,l]|X[6, l]|X[20, l]|}, 
+						colspec={|X[6,l]|X[7, l]|X[20, l]|}, 
 						rowhead = 1,
 					} %definicija širine tablice, širine stupaca, poravnanje i broja redaka naslova tablice
 					\hline \SetCell[c=3]{c}{\textbf{Uredaj}}	 \\ \hline[3pt]
@@ -230,7 +230,7 @@ Zbog potreba naše aplikacije, baza podataka sadrži entitete:}
 					entry=none
 					]{
 						width = \textwidth,
-						colspec={|X[6,l]|X[6, l]|X[20, l]|}, 
+						colspec={|X[6,l]|X[7, l]|X[20, l]|}, 
 						rowhead = 1,
 					} %definicija širine tablice, širine stupaca, poravnanje i broja redaka naslova tablice
 					\hline \SetCell[c=3]{c}{\textbf{VrstaUredaja}}	 \\ \hline[3pt]
@@ -248,7 +248,7 @@ Zbog potreba naše aplikacije, baza podataka sadrži entitete:}
 					entry=none
 					]{
 						width = \textwidth,
-						colspec={|X[6,l]|X[6, l]|X[20, l]|}, 
+						colspec={|X[6,l]|X[7, l]|X[20, l]|}, 
 						rowhead = 1,
 					} %definicija širine tablice, širine stupaca, poravnanje i broja redaka naslova tablice
 					\hline \SetCell[c=3]{c}{\textbf{Oprema}}	 \\ \hline[3pt]
@@ -257,7 +257,7 @@ Zbog potreba naše aplikacije, baza podataka sadrži entitete:}
                                                opisOpreme & VARCHAR(200) & opis namjene opreme \\ \hline
 				\end{longtblr}
 
-\textbr{ZauzetaOprema:}
+\textbf{ZauzetaOprema:}
 
 \textnormal{Entitet ZauzetaOprema sadrži sve bitne informacije o alokaciji opreme po terminima. Entitet sadrži atribute: idTermina, idTerapije, idOpreme.}
 
@@ -266,7 +266,7 @@ Zbog potreba naše aplikacije, baza podataka sadrži entitete:}
 					entry=none
 					]{
 						width = \textwidth,
-						colspec={|X[6,l]|X[6, l]|X[20, l]|}, 
+						colspec={|X[6,l]|X[7, l]|X[20, l]|}, 
 						rowhead = 1,
 					} %definicija širine tablice, širine stupaca, poravnanje i broja redaka naslova tablice
 					\hline \SetCell[c=3]{c}{\textbf{ZauzetaOprema}}	 \\ \hline[3pt]
@@ -275,7 +275,7 @@ Zbog potreba naše aplikacije, baza podataka sadrži entitete:}
                                                \SetCell{LightBlue}idOpreme & INT & jedinstveni identifikator opreme (oprema.idOpreme)  \\ \hline
 				\end{longtblr}
 
-\textbr{Status:}
+\textbf{Status:}
 
 \textnormal{Entitet Status sadrži sve bitne informacije o statusu termina terapija koji je dodijeljen nekom pacijentu. Entitet sadrži atribute: idStatus, imeStatus.}
 
@@ -284,7 +284,7 @@ Zbog potreba naše aplikacije, baza podataka sadrži entitete:}
 					entry=none
 					]{
 						width = \textwidth,
-						colspec={|X[6,l]|X[6, l]|X[20, l]|}, 
+						colspec={|X[6,l]|X[7, l]|X[20, l]|}, 
 						rowhead = 1,
 					} %definicija širine tablice, širine stupaca, poravnanje i broja redaka naslova tablice
 					\hline \SetCell[c=3]{c}{\textbf{Status}}	 \\ \hline[3pt]
