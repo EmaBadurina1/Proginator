@@ -14,38 +14,70 @@
 			\begin{packed_enum}
 				
 				\item Pacijent
-				\item Djelatnik				
-				\item Administrator
-				\item ...?
+				\item Djelatnik	
+				\begin{packed_item}
+					\item Liječnik
+					\item Administrator
+				\end{packed_item}
+				\item Razvojni tim
 				
 			\end{packed_enum}
+			
+			Pacijenti i djelatnici zajedničkim imenom su korisnici.
+			
 			
 			\noindent \textbf{Aktori i njihovi funkcionalni zahtjevi:}
 			
 			
 			\begin{packed_enum}
-				\item  \underbar{Aktor 1 (inicijator) može:}
-				
+				\item  \underbar{Neregistrirani korisnik (inicijator) može:}
 				\begin{packed_enum}
-					
-					\item funkcionalnost 1
-					\item funkcionalnost 2
-					\begin{packed_enum}
-						
-						\item  podfunkcionalnost 1 
-						\item  podfunkcionalnost 2
-				
-					\end{packed_enum}
-					\item  funkcionalnost 3
-					
+					\item registrirati se u sustav, unijeti potrebne podatke(ime, prezime, e-mail adresu, MBO, broj telefona, lozinku)
 				\end{packed_enum}
 			
-				\item  \underbar{Aktor 2 (sudionik) može:}
+				\item  \underbar{Neprijavljeni korisnik (inicijator) može:}
+				\begin{packed_enum}
+					\item prijaviti se u sustav koristeći svoju e-mail adresu i lozinku
+				\end{packed_enum}
 				
+				\item  \underbar{Pacijent-\textit{prijavljeni korisnik} (inicijator) može:}
+				\begin{packed_enum}
+					\item vidjeti svoje zahtjeve za terminom terapije (vrijeme predaje zahtjeva, vrijeme željenog termina, tip rehabilitacije, liječnika koji ga je uputio na rehabilitaciju, referencu na prošlu terapiju i status) 
+					\item vidjeti svoje termine (vrijeme termina, prostoriju, tip rehabilitacije, liječnika, napomene i ishod termina) 
+					\item filtrirati svoje termine
+					\item prikazati nalaz (detalji i komentari) s termina odrađene terapije
+					\item naručiti se na terapiju, unijeti tip rehabilitacije, liječnika koji ga je uputio na terapiju i opcionalno referencu na prošlu terapiju; također može odabrati predložene termine ili unijeti nepredloženi termin i dodati napomenu za liječnika
+					\item ...
+				\end{packed_enum}
+				
+				\item  \underbar{Djelatnik-\textit{prijavljeni korisnik} (inicijator) može:}
 				\begin{packed_enum}
 					
-					\item funkcionalnost 1
-					\item funkcionalnost 2
+					\item vidjeti popis svih pacijenata (ime, prezime, MBO, e-mail adresa, broj telefona)
+					\item prikazati termine pojedinog pacijenta i prikazati evidenciju termina pojedinog pacijenta
+					\item evidentirati dolazak pacijenta na termin, dodati komentar o odrađenom terminu i vidjeti informacije o terapiji
+					\item prihvatiti/odbiti zahtjev za terminom na temelju raspoloživih prostorija i opreme 
+					
+				\end{packed_enum}
+				\item  \underbar{Administrator - \textit{prijavljeni korisnik} (inicijator)  može:}
+				\begin{packed_enum}
+					
+					\item vidjeti popis svih djelatnika (ime, prezime, OIB, e-mail adresa)
+					\item urediti podatke djelatnika
+					\item ukloniti djelatnika
+					\item dodati/registrirati novog djelatnika (ime, prezime, e-mail adresa, OIB, lozinka)
+					\item mijenjati raspoloživost soba i opreme
+					\item dodavati opremu
+					\item ????
+					
+				\end{packed_enum}
+				
+				\item  \underbar{Baza podataka (sudionik) može:}
+				\begin{packed_enum}
+					
+					\item pohranjuje podatke i ovlasti korisnika
+					\item pohranjuje podatke o opremi i prostorijama
+					\item pohranjuje podatke o terapijama i terminima
 					
 				\end{packed_enum}
 			\end{packed_enum}
@@ -62,41 +94,208 @@
 					\textit{Funkcionalne zahtjeve razraditi u obliku obrazaca uporabe. Svaki obrazac je potrebno razraditi prema donjem predlošku. Ukoliko u nekom koraku može doći do odstupanja, potrebno je to odstupanje opisati i po mogućnosti ponuditi rješenje kojim bi se tijek obrasca vratio na osnovni tijek.}\\
 					
 
-					\noindent \underbar{\textbf{UC$<$broj obrasca$>$ -$<$ime obrasca$>$}}
+					\noindent \underbar{\textbf{UC1 - Prijava u sustav}}
 					\begin{packed_item}
 	
-						\item \textbf{Glavni sudionik: }$<$sudionik$>$
-						\item  \textbf{Cilj:} $<$cilj$>$
-						\item  \textbf{Sudionici:} $<$sudionici$>$
-						\item  \textbf{Preduvjet:} $<$preduvjet$>$
-						\item  \textbf{Opis osnovnog tijeka:}
+						\item \textbf{Glavni sudionik: }Korisnik
+						\item  \textbf{Cilj: } Prijaviti se u sustav
+						\item  \textbf{Sudionici: } Baza podataka
+						\item  \textbf{Preduvjet: } Korisnik je registriran u sustav
+						\item  \textbf{Opis osnovnog tijeka: }
 						
 						\item[] \begin{packed_enum}
 	
-							\item $<$opis korak jedan$>$
-							\item $<$opis korak dva$>$
-							\item $<$opis korak tri$>$
-							\item $<$opis korak četiri$>$
-							\item $<$opis korak pet$>$
+							\item Korisnik unosi svoju e-mail adresu i lozinku
+							\item Provjera ispravnosti podataka
+							\item Prikaz početne stranice ovisno o korisniku
 						\end{packed_enum}
 						
 						\item  \textbf{Opis mogućih odstupanja:}
 						
 						\item[] \begin{packed_item}
 	
-							\item[2.a] $<$opis mogućeg scenarija odstupanja u koraku 2$>$
+							\item[2.a] Neispravna e-mail adresa ili lozinka
 							\item[] \begin{packed_enum}
 								
-								\item $<$opis rješenja mogućeg scenarija korak 1$>$
-								\item $<$opis rješenja mogućeg scenarija korak 2$>$
+								\item obavijest o neispravnosti unesenih podataka
 								
 							\end{packed_enum}
-							\item[2.b] $<$opis mogućeg scenarija odstupanja u koraku 2$>$
-							\item[3.a] $<$opis mogućeg scenarija odstupanja  u koraku 3$>$
 							
 						\end{packed_item}
 					\end{packed_item}
 				
+				\noindent \underbar{\textbf{UC2 - Registracija}}
+				\begin{packed_item}
+					
+					\item \textbf{Glavni sudionik: }Neregistrirani korisnik
+					\item  \textbf{Cilj: }Registrirati se u sustav
+					\item  \textbf{Sudionici: }Baza podataka
+					\item  \textbf{Preduvjet: } -  
+					\item  \textbf{Opis osnovnog tijeka: }
+					
+					\item[] \begin{packed_enum}
+						
+						\item Korisnik unosi svoje podatke (ime, prezime, e-mail adresu, MBO, lozinka)
+						\item Provjera ispravnosti podataka verifikacijom iz baze podataka sustava zdravstvene zaštite
+						\item prikaz početne stranice
+					\end{packed_enum}
+					
+					\item  \textbf{Opis mogućih odstupanja:}
+					
+					\item[] \begin{packed_item}
+						
+						\item[2.a] Korisnik ne postoji u sustavu zdravstvene zaštite
+						\item[] \begin{packed_enum}
+							
+							\item Sustav obavještava korisnika o neispravnosti podataka
+							\item Korisnik mijenja podatke ili odustaje od registracije
+							
+						\end{packed_enum}
+						
+					\end{packed_item}
+				\end{packed_item}
+				
+				\noindent \underbar{\textbf{UC3 - pregled osobnih podataka}}
+				\begin{packed_item}
+					
+					\item \textbf{Glavni sudionik: }Korisnik
+					\item  \textbf{Cilj: }Pregledati osobne podatke 
+					\item  \textbf{Sudionici: }Baza podataka
+					\item  \textbf{Preduvjet: }Korisnik mora biti prijavljen u sustav
+					\item  \textbf{Opis osnovnog tijeka: }
+					
+					\item[] \begin{packed_enum}
+						
+						\item Korisnik odabire opciju "Profil"
+						\item Sustav prikazuje korisnikove osobne podatke 
+					\end{packed_enum}
+					
+				\end{packed_item}
+				\noindent \underbar{\textbf{UC4 - Promjena osobnih podataka}}
+				\begin{packed_item}
+					
+					\item \textbf{Glavni sudionik: }Korisnik
+					\item  \textbf{Cilj: }Promijeniti osobne podatke
+					\item  \textbf{Sudionici: }Baza podataka
+					\item  \textbf{Preduvjet: }Korisnik mora biti prijavljen u sustav
+					\item  \textbf{Opis osnovnog tijeka: }
+					
+					\item[] \begin{packed_enum}
+						
+						\item Korisnik odabire opciju "Uredi"  
+						\item Korisnik unosi/mijenja podatke
+						\item Korisnik odabire opciju "Spremi promjene"
+					\end{packed_enum}
+				\end{packed_item}
+				
+				\noindent \underbar{\textbf{UC5 - Promjena lozinke}}
+				\begin{packed_item}
+					
+					\item \textbf{Glavni sudionik: }Korisnik
+					\item  \textbf{Cilj: }Promijeniti lozinku
+					\item  \textbf{Sudionici: }Baza podataka
+					\item  \textbf{Preduvjet: }Korisnik je prijavljen u sustav
+					\item  \textbf{Opis osnovnog tijeka: }
+					
+					\item[] \begin{packed_enum}
+						
+						\item Korisnik odabire opciju "Promijeni lozinku"
+						\item Korisnik potvrđuje staru lozinku
+						\item Korisnik unosi novu lozinku
+						\item Korisnik potvrđuje novu lozinku
+						\item Sustav korisnika prebacuje na prijavu
+						\item Korisnik se prijavljuje s novom lozinkom
+					\end{packed_enum}
+					
+					\item  \textbf{Opis mogućih odstupanja:}
+					
+					\item[] \begin{packed_item}
+						
+						\item[2.a] korisnik unosi neispravnu staru lozinku
+						\item[] \begin{packed_enum}
+							
+							\item Sustav upozorava korisnika o neispravnosti lozinke
+							\item Korisnik ponovno unosi lozinku ili odustaje od promjene
+							
+						\end{packed_enum}
+						\item[3.a] Nova lozinka je jednaka staroj
+						\item[]\begin{packed_enum}
+							
+							\item Sustav upozorava korisnika da su mu lozinke iste
+							\item Korisnik mijenja novu lozinku ili odustaje od promjene
+							
+						\end{packed_enum}
+						
+					\end{packed_item}
+				\end{packed_item}
+				
+				\noindent \underbar{\textbf{UC6 - Kreiranje terapije}}
+				\begin{packed_item}
+					
+					\item \textbf{Glavni sudionik: }Pacjient
+					\item  \textbf{Cilj: }Kreiranje procesa terapije
+					\item  \textbf{Sudionici: }Baza podataka
+					\item  \textbf{Preduvjet: }Pacijent je prijavljen u sustav
+					\item  \textbf{Opis osnovnog tijeka: }
+					
+					\item[] \begin{packed_enum}
+						
+						\item Pacijent unosi ime i prezime liječnika, opis oboljenja i zahtijevani postupak liječenja, te odabire vrstu terapije
+						\item Pacijent odabire opciju "Pošalji"
+						\item Provjera ispravnosti podataka u imeniku liječnika
+						\item Prikaz stranice za odabir termina
+					\end{packed_enum}
+					
+					\item  \textbf{Opis mogućih odstupanja:}
+					
+					\item[] \begin{packed_item}
+						
+						\item[3.a] Liječnik ne postoji u imeniku liječnika
+						\item[] \begin{packed_enum}
+							
+							\item Sustav obavještava pacijenta o neispravnim podacima(ime i prezime liječnika)
+							\item Pacijent mijenja podatke ili odustaje od kreiranja terapije
+							
+						\end{packed_enum}
+												
+					\end{packed_item}
+				\end{packed_item}
+				\noindent \underbar{\textbf{UC7 - Odabir termina}}
+				\begin{packed_item}
+					
+					\item \textbf{Glavni sudionik: }Pacijent
+					\item  \textbf{Cilj: }Poslati zahtjev za željenim terminom
+					\item  \textbf{Sudionici: }Baza podataka
+					\item  \textbf{Preduvjet: }Korisnik je prijavljen u sustav
+					\item  \textbf{Opis osnovnog tijeka: }
+					
+					\item[] \begin{packed_enum}
+						
+						\item Pacijent odabire terapiju za koju se prijavljuje na termin
+						\item Pacijent odabire jedan od ponuđenih termina
+						\item Pacijent opcionalno dodaje napomenu za liječnika
+						\item Pacijent šalje zahtjev klikom na "Pošalji" 
+					\end{packed_enum}
+					
+					\item  \textbf{Opis mogućih odstupanja:}
+					
+					\item[] \begin{packed_item}
+						
+						\item[2.a] Pacijent 
+						\item[] \begin{packed_enum}
+							
+							\item 
+							
+						\end{packed_enum}
+						\item[3.a] Nova lozinka je jednaka staroj
+						\item[]\begin{packed_enum}
+							
+							\item 
+							
+						\end{packed_enum}
+						
+					\end{packed_item}
+				\end{packed_item}
 					
 				\subsubsection{Dijagrami obrazaca uporabe}
 					
