@@ -3,3 +3,4 @@ biljeske.txt
 venv
 .venv
 .vscode
+**/__pycache__/
