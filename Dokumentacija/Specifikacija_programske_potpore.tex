@@ -759,6 +759,18 @@
 				\textbf{\textit{dio 1. revizije}}\\
 				
 				\textit{Nacrtati sekvencijske dijagrame koji modeliraju najvažnije dijelove sustava (max. 4 dijagrama). Ukoliko postoji nedoumica oko odabira, razjasniti s asistentom. Uz svaki dijagram napisati detaljni opis dijagrama.}
+				
+				\textbf{\underbar{UC6 - Kreiranje terapije}}
+				
+				Pacijent šalje zahtjev poslužitelju za naručivanje na terapiju. Web aplikacija mu prikazuje obrazac koji mora ispuniti kako i se naručio na terapiju. Pacijent unosi potrebne podatke(ime i prezime liječnika koji ga je uputio na rehabilitaciju, vrstu terapije, opis oboljenja i zahtjevani postupak liječenja). Pacijent šalje popunjeni obrazac. Web aplikacija na temelju primljenih podataka provjerava krebilitet liječnika u imeniku liječnika. Ovisno o rezultatu promjene web aplikacija će učiniti jednu od dvije stvari. Ako liječnik postoji u imeniku liječnika web-aplikacija sprema sve podatke u bazu podataka i prikazuje stranicu za odabir termina. U slučaju da liječnik ne postoji u imeniku liječnika aplikacija ispisuje poruku "Liječnik ne postoji"...
+				
+				
+				\begin{figure}[H]
+					\includegraphics[scale=0.4]{slike/UC6_Kreiranje_terapije.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
+					\centering
+					\caption{Sekvencijski dijagram za UC6}
+					\label{fig:booking}
+				\end{figure}
 				\eject
 	
 		\section{Ostali zahtjevi}
