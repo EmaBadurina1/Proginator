@@ -1,10 +1,13 @@
 from flask import Flask, request, jsonify, session
 from models.accounts import User, Patient, Employee
 from sqlalchemy.exc import SQLAlchemyError
+from external_connector import get_patient_data
 import auth, config
 from db import db
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 def validate_required_fields(data, required_fields):
     missing_fields = [field for field in required_fields if field not in data]
@@ -96,6 +99,17 @@ def register_patient():
     
     if Patient.query.filter_by(MBO=request.json['MBO']).first():
         return jsonify({'error': 'Unique attribute already exists: MBO'}), 400
+    
+    # test if MBO exists in external database
+    patient = get_patient_data(request.json['MBO'])
+    if not patient:
+        return jsonify({'error': 'MBO does not exist in external database'}), 400
+    
+    # test if patient data matches external database
+    MBO_fields = ['name', 'surname', 'MBO', 'date_of_birth']
+    for field in MBO_fields:
+        if patient[field] != request.json[field]:
+            return jsonify({'error': f'Patient data does not match external database: {field}'}), 400
 
     patient = Patient(**request.json)
     db.session.add(patient)
@@ -123,13 +137,11 @@ def register_employee():
     if Employee.query.filter_by(OIB=request.json['OIB']).first():
         return jsonify({'error': 'Unique attribute already exists: OIB'}), 400
     
-
     employee = Employee(**request.json)
     db.session.add(employee)
     db.session.commit()
     return jsonify({"data":{'user_id': employee.user_id}, 
                     "message": "Employee created"}), 201
-
 
 if __name__ == '__main__':
     app.config['SQLALCHEMY_DATABASE_URI'] = config.DATABASE_URI
