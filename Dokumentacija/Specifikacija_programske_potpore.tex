@@ -1,13 +1,6 @@
 \chapter{Specifikacija programske potpore}
 		
-	\section{Funkcionalni zahtjevi}
-			
-			\textbf{\textit{dio 1. revizije}}\\
-			
-			\textit{Navesti \textbf{dionike} koji imaju \textbf{interes u ovom sustavu} ili  \textbf{su nositelji odgovornosti}. To su prije svega korisnici, ali i administratori sustava, naručitelji, razvojni tim.}\\
-				
-			\textit{Navesti \textbf{aktore} koji izravno \textbf{koriste} ili \textbf{komuniciraju sa sustavom}. Oni mogu imati inicijatorsku ulogu, tj. započinju određene procese u sustavu ili samo sudioničku ulogu, tj. obavljaju određeni posao. Za svakog aktora navesti funkcionalne zahtjeve koji se na njega odnose.}\\
-			
+	\section{Funkcionalni zahtjevi}			
 			
 			\noindent \textbf{Dionici:}
 			
@@ -42,17 +35,18 @@
 				
 				\item  \underbar{Pacijent-\textit{prijavljeni korisnik} (inicijator) može:}
 				\begin{packed_enum}
+					\item prikazati i mijenjati svoje osobne podatke i lozinku
 					\item vidjeti svoje zahtjeve za terminom terapije (vrijeme predaje zahtjeva, vrijeme željenog termina, tip rehabilitacije, liječnika koji ga je uputio na rehabilitaciju, referencu na prošlu terapiju i status) 
 					\item vidjeti svoje termine (vrijeme termina, prostoriju, tip rehabilitacije, liječnika, napomene i ishod termina) 
 					\item filtrirati svoje termine
 					\item prikazati nalaz (detalji i komentari) s termina odrađene terapije
-					\item naručiti se na terapiju, unijeti tip rehabilitacije, liječnika koji ga je uputio na terapiju i opcionalno referencu na prošlu terapiju; također može odabrati predložene termine ili unijeti nepredloženi termin i dodati napomenu za liječnika
-					\item ...
+					\item naručiti se na terapiju, unijeti tip rehabilitacije, liječnika koji ga je uputio na terapiju, opis oboljenja i zahtijevani postupak liječenja
+					\item odabrati termin za neku terapiju između priloženih ili unijeti datum i odabrati neki na temelju toga ponuđeni termin
 				\end{packed_enum}
 				
 				\item  \underbar{Djelatnik-\textit{prijavljeni korisnik} (inicijator) može:}
 				\begin{packed_enum}
-					
+					\item prikazati i mijenjati svoje osobne podatke i lozinku
 					\item vidjeti popis svih pacijenata (ime, prezime, MBO, e-mail adresa, broj telefona)
 					\item prikazati termine pojedinog pacijenta i prikazati evidenciju termina pojedinog pacijenta
 					\item evidentirati dolazak pacijenta na termin, dodati komentar o odrađenom terminu i vidjeti informacije o terapiji
@@ -67,8 +61,8 @@
 					\item ukloniti djelatnika
 					\item dodati/registrirati novog djelatnika (ime, prezime, e-mail adresa, OIB, lozinka)
 					\item mijenjati raspoloživost soba i opreme
-					\item dodavati opremu
-					\item ????
+					\item dodavati opremu i sobe
+					\item otkazivati i mijenjati termine, te o tome obavještavati pacijenta
 					
 				\end{packed_enum}
 				
@@ -88,10 +82,8 @@
 				
 			\subsection{Obrasci uporabe}
 				
-				\textbf{\textit{dio 1. revizije}}
 				
 				\subsubsection{Opis obrazaca uporabe}
-					\textit{Funkcionalne zahtjeve razraditi u obliku obrazaca uporabe. Svaki obrazac je potrebno razraditi prema donjem predlošku. Ukoliko u nekom koraku može doći do odstupanja, potrebno je to odstupanje opisati i po mogućnosti ponuditi rješenje kojim bi se tijek obrasca vratio na osnovni tijek.}\\
 					
 
 					\noindent \underbar{\textbf{UC1 - Prijava u sustav}}
@@ -749,27 +741,48 @@
 					\end{packed_item}
 				\end{packed_item}
 				
+				
 				\subsubsection{Dijagrami obrazaca uporabe}
 					
-					\textit{Prikazati odnos aktora i obrazaca uporabe odgovarajućim UML dijagramom. Nije nužno nacrtati sve na jednom dijagramu. Modelirati po razinama apstrakcije i skupovima srodnih funkcionalnosti.}
+					\begin{figure}[H]
+						\includegraphics[scale=0.3]{slike/dijagram_obrasca_uporabe1.JPG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
+						\centering
+						\caption{Dijagram obrasca uporabe - Korisnik i neregistrirani korisnik}
+						\label{fig:dijagram_UC1}
+					\end{figure}
+					
+					\begin{figure}[H]
+						\includegraphics[scale=0.45]{slike/dijagram_obrasca_uporabe2.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
+						\centering
+						\caption{Dijagram obrasca uporabe - Djelatnik i pacijent}
+						\label{fig:dijagram_UC2}
+					\end{figure}
+					
+					\begin{figure}[H]
+						\includegraphics[scale=0.45]{slike/dijagram_obrasca_uporabe3.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
+						\centering
+						\caption{Dijagram obrasca uporabe - Administrator}
+						\label{fig:dijagram_UC3}
+					\end{figure}
+					
 				\eject		
 				
 			\subsection{Sekvencijski dijagrami}
 				
-				\textbf{\textit{dio 1. revizije}}\\
-				
-				\textit{Nacrtati sekvencijske dijagrame koji modeliraju najvažnije dijelove sustava (max. 4 dijagrama). Ukoliko postoji nedoumica oko odabira, razjasniti s asistentom. Uz svaki dijagram napisati detaljni opis dijagrama.}
-				
 				\textbf{\underbar{UC6 - Kreiranje terapije}}
 				
 				Pacijent šalje zahtjev poslužitelju za naručivanje na terapiju. Web aplikacija mu prikazuje obrazac koji mora ispuniti kako i se naručio na terapiju. Pacijent unosi potrebne podatke(ime i prezime liječnika koji ga je uputio na rehabilitaciju, vrstu terapije, opis oboljenja i zahtjevani postupak liječenja). Pacijent šalje popunjeni obrazac. Web aplikacija na temelju primljenih podataka provjerava krebilitet liječnika u imeniku liječnika. Ovisno o rezultatu promjene web aplikacija će učiniti jednu od dvije stvari. Ako liječnik postoji u imeniku liječnika web-aplikacija sprema sve podatke u bazu podataka i prikazuje stranicu za odabir termina. U slučaju da liječnik ne postoji u imeniku liječnika aplikacija ispisuje poruku "Liječnik ne postoji"...
+				
+				\textit{UC6 sekvencijski dijagram nije točan, kako ga poboljšati?}
+				
+				\textit{Koje bi još obrasce uporabe trebalo odabrati za napraviti sekvencijske dijagrame?}
 				
 				
 				\begin{figure}[H]
 					\includegraphics[scale=0.4]{slike/UC6_Kreiranje_terapije.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
 					\centering
 					\caption{Sekvencijski dijagram za UC6}
-					\label{fig:booking}
+					\label{fig:sekvencijski_dijagram_1}
 				\end{figure}
 				\eject
 	

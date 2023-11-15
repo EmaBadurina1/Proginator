@@ -1,20 +1,17 @@
 
 \chapter{Opis projektnog zadatka}
 		
-		\textbf{\textit{dio 1. revizije}}\\
-		
-		
-		Cilj ovog projekta je izgradnja web aplikacije koja će omogućiti ljudima/bolesnicima lakše prijavljivanje na slobodne termine za medicinsku rehabilitaciju i fizikalnu terapiju te praćenje njihovog zdravstvenog napretka. Također će omogućiti zaposlenicima ustanove da odbijaju ili prihvaćaju termine ovisno o raspoloživosti prostorija, opreme i osoblja pritom imajući mogućnost uvida u pacijentove prošle terapije i napredak. Vrijeme porovođenja rehabilitacije je svakim radnim danom od ponedjeljka do petka od 8:00 do 20:00 sati.
+		Cilj ovog projekta je izgradnja web aplikacije koja će omogućiti ljudima/pacijentima lakše prijavljivanje na slobodne termine za medicinsku rehabilitaciju i fizikalnu terapiju te praćenje njihovog zdravstvenog napretka. Također će omogućiti zaposlenicima ustanove da odbijaju ili prihvaćaju termine ovisno o raspoloživosti prostorija, opreme i osoblja pritom imajući mogućnost uvida u pacjentove prošle terapije i napredak. Vrijeme provođenja rehabilitacije je svakim radnim danom od ponedjeljka do petka od 8:00 do 20:00 sati.
 		
 		\noindent Aplikacija će razlikovati tri vrste korisnika: 
 		\begin{packed_item}
 			
-			\item  pacijenta/bolesnika
+			\item  pacijenta
 			\item  liječnika - djelatnika zdravstvene ustanove
-			\item  administratora
+			\item  administratora - djelatnika zdravstvene ustanove
 		\end{packed_item}
 		
-		Prilikom pokretanja web aplikacije svaki korisnik unosi svoj e-mail i lozinku. Ovisno o vrsti korisnika biti će preusmjereni na različite stranice.
+		Prilikom pokretanja web aplikacije svaki korisnik unosi svoju e-mail adresu i lozinku. Ovisno o vrsti korisnika biti će preusmjereni na različite stranice.
 		
 		\textit{Pacijent} se samostalno prijavljuje u sustav. U slučaju da još ne postoji imati će opciju registracije. Za registraciju mora unijeti: 
 		\begin{packed_item}
@@ -33,7 +30,7 @@
 			\item željenog termina
 			\item vrste/tipa rehabilitacije
 			\item liječnika koji je uputio pacijenta na terapiju
-			\item reference na prošlu terapiju
+			\item reference na terapiju
 			\item statusa
 		\end{packed_item}
 		Status može biti odobreno, odbijeno, čeka na odobrenje ili isteklo u slučaju da nitko nije odobrio niti odbio termin do željenog vremena terapije.
@@ -41,7 +38,7 @@
 		
 		\textit{Liječnik} nakon prijavljivanja u sustav ima pregled svih pacijenata i njihovih podataka, klikom na prikaz terapije bit će mu prikazani svi termini odabranog pacijenta i detalji o njima, tu će imati opciju evidentirati dolazak pacijenta i zabilježiti komentare vezane uz napredak ili pregledati napredak i komentare iz prošlih termina. Također svaki djelatnik ustanove imati će mogućnost prihvaćanja ili odbijanja termina ovisno o raspoloživosti prostorija i opreme. Liječnik koji prihvati zahtjev automatski će se dodati kao liječnik koji će tu terapiju izvoditi. 
 		
-		\textit{Administrator} ima pregled svih pacijenata i djelatnika. Uz ovlasti koje imaju djelatnici administrator pri zaposlenju novog liječnika izrađuje korisnički račun za njega s inicijalnom lozinkom. Također nakon prestanka radnog odnosa administrator može ukloniti tog liječnika. Administrator definira sve što je potrebno za ispravan rad sustava, dakle može mijenjati broj opreme, dostupne prostorije.
+		\textit{Administrator} ima pregled svih pacijenata i djelatnika. Uz ovlasti koje imaju liječnici administrator pri zaposlenju novog liječnika izrađuje korisnički račun za njega s inicijalnom lozinkom. Također nakon prestanka radnog odnosa administrator može ukloniti tog liječnika. Administrator definira sve što je potrebno za ispravan rad sustava, dakle može mijenjati dostupnost opreme i unositi novu opremu, mijenjati dostupnost prostorija i unositi nove. Također ako dođe do promjena u dostupnosti prostorija ili opreme, liječnik će imati mogućnost obaviještavanja pacijenta o otkazanom terminu te mogućnost izdavanja novog termina.
 		
 		---
 		
@@ -49,7 +46,7 @@
 		
 		---
 		
-		Odgovarajući primjer slične aplikacije na istu temu nije pronađen, moguće da zbog zatvorenosti ovakvog tipa aplikacije prema javnosti, ali primjer sa sličnim funkcijama iako ne u istu svrhu je booking.com (\ref{fig:booking}). Na početnoj stranici \textit{booking}-a nailazimo na opcije prijave i registracije, iako za početak korištenja same stranice to nije nužno kao kod ovo aplikacije. Korisnik \textit{booking}-a rezervira 
+		Odgovarajući primjer slične aplikacije na istu temu nije pronađen, moguće, zbog zatvorenosti ovakvog tipa aplikacije prema javnosti, ali primjer sa sličnim funkcijama iako ne u istu svrhu je booking.com (\ref{fig:booking}). Na početnoj stranici \textit{booking}-a nailazimo na opcije prijave i registracije, iako za početak korištenja same stranice to nije nužno kao kod ove aplikacije. Korisnik \textit{booking}-a rezervira apartman, dok korisnik aplikacije za rehabilitaciju rezervira svoj termin za terapiju. Kao što korisnik na \textit{booking}-u unosi grad u kojem želi rezervirati apartman, korisnik u ovoj aplikaciji odabire tip rehabilitacije za koju se želi prijaviti. U oba slučaja kod prijave na željeni termin ili rezervacije apartmana korisnik dobiva neke ponuđene termine/opcije ili može samostalno odabrati vrijeme željenog termina/rezervacije. 
 		
 		\begin{figure}[H]
 			\includegraphics[scale=0.4]{slike/slicna_aplikacija.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
@@ -60,20 +57,9 @@
 		
 		---
 		
-		Aplikacija će se moći proširiti da djelatnici uopće ne moraju prihvaćati ili odbijati prijave, već će to sustav raditi automatski na temelju raspoloživih podataka o opremi, prostorijama, djelatnicima i već zauzetim terminima. Svi termini, prostorije, oprema i djelatnici vidljivi su adminu koji im može mijenjati status za određeno vrijeme, na primjer kada liječnik ode na godišnji odmor može promijeniti njegov status u neaktivan za to razdoblje ili kada cijela ustanova ima sastanak onemogućiti sve termine za vrijeme tog sastanka. Ostala bi mogućnost upućivanja maila ili telefonskog poziva pacijentu u slučaju ikakvih promjena. 
+		Aplikacija će se moći proširiti da djelatnici uopće ne moraju prihvaćati ili odbijati prijave, već će to sustav raditi automatski na temelju raspoloživih podataka o opremi, prostorijama, djelatnicima i već zauzetim terminima. Svi termini, prostorije, oprema i djelatnici vidljivi su administratoru koji im može mijenjati status za određeno vrijeme, na primjer kada liječnik ode na godišnji odmor može promijeniti njegov status u neaktivan za to razdoblje ili kada cijela ustanova ima sastanak onemogućiti sve termine za vrijeme tog sastanka. Ostala bi mogućnost upućivanja maila ili telefonskog poziva pacijentu u slučaju ikakvih promjena.
 		
 	
-		
-		\begin{packed_item}
-			\item \textit{potencijalna korist ovog projekta}
-			\item \textit{postojeća slična rješenja (istražiti i ukratko opisati razlike u odnosu na zadani zadatak). Dodajte slike koja predočavaju slična rješenja.}
-			\item \textit{skup korisnika koji bi mogao biti zainteresiran za ostvareno rješenje.}
-			\item \textit{mogućnost prilagodbe rješenja }
-			\item \textit{opseg projektnog zadatka}
-			\item \textit{moguće nadogradnje projektnog zadatka}
-		\end{packed_item}
-		
-		\textit{Za pomoć pogledati reference navedene u poglavlju „Popis literature“, a po potrebi konzultirati sadržaj na internetu koji nudi dobre smjernice u tom pogledu.}
 		\eject
 		
 				
