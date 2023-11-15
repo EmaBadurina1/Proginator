@@ -1,37 +1,55 @@
-\chapter{Arhitektura i dizajn sustava}
+\chapter{Arhitektura i dizajn sustava}		
+	
+	Sustav se može podijeliti na podsustave:
+		\begin{packed_item}
+			
+			\item  Klijent
+			\item  Poslužitelj
+			\item  Baza podataka
+			
+		\end{packed_item}
+	
+		\begin{figure}[H]
+			\includegraphics[width=\textwidth]{slike/Organizacija_sustava.PNG} %veličina u odnosu na širinu linije
+			\caption{Organizacija sustava}
+			\label{fig:organizacija_sustava1} %label mora biti drugaciji za svaku sliku
+		\end{figure}
 		
-		
-		\textbf{\textit{dio 1. revizije}}\\
+\underbar{\textit{Klijent}} 
+Klijent je web preglednik pomoću kojeg korisnici pristupaju našoj web aplikaciji. Često korišteni web preglednici su: Google Chrome, Apple Safari, Mozilla Firefox. Kada korisnik pristupa web aplikaciji, web preglednik šalje HTTP (\textit{engl. Hypertext Transfer Protocol}) zahtjeve za preuzimanje statičkih datoteka web poslužitelju. Statičke datoteke mogu biti HTML, CSS i JavaScript datoteke koje sadrže React kod. Nakon preuzimanja datoteka, preglednik ih koristi za izgradnju i prikaz korisničkog sučelja te izvršavanje funkcija unutar aplikacije. 
 
-		\textit{ Potrebno je opisati stil arhitekture te identificirati: podsustave, preslikavanje na radnu platformu, spremišta podataka, mrežne protokole, globalni upravljački tok i sklopovsko-programske zahtjeve. Po točkama razraditi i popratiti odgovarajućim skicama:}
-	\begin{itemize}
-		\item 	\textit{izbor arhitekture temeljem principa oblikovanja pokazanih na predavanjima (objasniti zašto ste baš odabrali takvu arhitekturu)}
-		\item 	\textit{organizaciju sustava s najviše razine apstrakcije (npr. klijent-poslužitelj, baza podataka, datotečni sustav, grafičko sučelje)}
-		\item 	\textit{organizaciju aplikacije (npr. slojevi frontend i backend, MVC arhitektura) }		
-	\end{itemize}
+\underbar{\textit{Poslužitelj}} 
+Poslužitelj je Python kod pisan unutar web mikrookvira Flask. On služi kao posrednik između  klijenta (korisničkog sučelja) i baze podataka. U Python kodu (Flask aplikaciji) definirani su RESTful API-ji (kao rute ili krajnje točke) koji omogućuju klijentima da šalju HTTP zahtjeve za određene podatke. Prilikom obrade tih zahtjeva, Python kod šalje upite bazi podataka kako bi dohvatio, promijenio ili dodao tražene podatke.
+
+\underbar{\textit{Baza podataka}}
+Kada baza podataka zaprimi upite od poslužitelja, ona ih izvršava i vraća rezultate poslužitelju. Vraćeni rezultati mogu biti u obliku potvrde o izvršenom upitu ili u obliku podataka koje je poslužitelj zatražio od baze podataka. Baza podataka ostaje pasivna sve dok ne zaprimi nove upite od poslužitelja.
+
+Aplikacije je organizirana po MVC (\textit{engl. Model-View-Controller}, hrv. Model-Pogled-Nadglednik) obrascu.  
+
+Općenito, \underbar{\textit{Model}} definira podatke, njihovu strukturu i operacije koje se mogu izvršavati nad tim podacima. \underbar{\textit{Pogled}} predstavlja prikaz podataka korisniku (npr. korisničko sučelje). \underbar{\textit{Nadglednik}} predstavlja posrednike između Modela i Nadglednika. Oni obrađuju zahtjeve korisnika, vrše operacije nad Modelom i ažuriraju Pogled. Organizacijom prema ovom obrascu olakšava se proširivanje i održavanje aplikacije.
+
+Naša aplikacija ne sadrži doslovno sve tri navedene komponente. Ovdje Python objedinjuje Model i dio logike Nadglednika. Komponente u React-u odgovaraju Pogledu te je i ovdje sadržan dio logike Nadglednika.
 
 				
 		\section{Baza podataka}
-			
-			\textbf{\textit{dio 1. revizije}}\\
-			
-		\textit{Potrebno je opisati koju vrstu i implementaciju baze podataka ste odabrali, glavne komponente od kojih se sastoji i slično.}
-\textnormal{Za rješavanje projektnog zadatka odabrana je relacijska baza podataka. Implementirali smo je korištenjem sustava PostgreSQL. To je besplatan sustav za upravljanje bazom podataka otvorenog koda. Objekti relacijske baze podataka su relacije. Neformalno, i u PostgreSQL-u, to su dvodimenzionalne imenovane tablice gdje imenovani stupac predstavlja atribut, a redak zapis relacije. Izbor ovakve baze podataka omogućio nam je lakše strukturiranje podatka i definiranje veza između njih, normalizaciju, skalabilnost te sigurnost kod pohrane i dohvata podataka. 
-Zbog potreba naše aplikacije, baza podataka sadrži entitete:}
-             \begin{packed_item}
+
+Za rješavanje projektnog zadatka odabrana je relacijska baza podataka. Implementirali smo je korištenjem sustava PostgreSQL. To je besplatan sustav za upravljanje bazom podataka otvorenog koda. Objekti relacijske baze podataka su relacije. Neformalno, i u PostgreSQL-u, to su dvodimenzionalne imenovane tablice gdje imenovani stupac predstavlja atribut, a redak zapis relacije. Izbor ovakve baze podataka omogućio nam je lakše strukturiranje podatka i definiranje veza između njih, normalizaciju, skalabilnost te sigurnost kod pohrane i dohvata podataka. 
+Zbog potreba naše aplikacije, baza podataka sadrži entitete:
+
+        \begin{packed_item}
 		\item 	\textnormal{Korisnik}
 		\item 	\textnormal{Djelatnik}
 		\item 	\textnormal{Uloga}
-                   \item 	\textnormal{Pacijent}
-                   \item 	\textnormal{Terapija}
-                   \item 	\textnormal{VrstaTerapije}	
-                   \item 	\textnormal{Termin}			
-                   \item 	\textnormal{Status}	
-                   \item 	\textnormal{Oprema}
-                   \item 	\textnormal{ZauzetaOprema}	
-                   \item 	\textnormal{Soba}	
-                   \item 	\textnormal{Uredaj}
-                   \item 	\textnormal{VrstaUredaja}
+        \item 	\textnormal{Pacijent}
+        \item 	\textnormal{Terapija}
+        \item 	\textnormal{VrstaTerapije}	
+        \item 	\textnormal{Termin}			
+        \item 	\textnormal{Status}	
+        \item 	\textnormal{Oprema}
+        \item 	\textnormal{ZauzetaOprema}	
+        \item 	\textnormal{Soba}	
+        \item 	\textnormal{Uredaj}
+        \item 	\textnormal{VrstaUredaja}
                    				
 	 \end{packed_item}
 
@@ -292,14 +310,14 @@ Entitet VrstaTerapije sadrži sve bitne informacije o vrsti terapije na koju je 
                                                imeStatus & VARCHAR(50) & naziv statusa (npr. u tijeku, završen...) \\ \hline
      
 				\end{longtblr}	
-			
-				\textit{Svaku tablicu je potrebno opisati po zadanom predlošku. Lijevo se nalazi točno ime varijable u bazi podataka, u sredini se nalazi tip podataka, a desno se nalazi opis varijable. Svjetlozelenom bojom označite primarni ključ. Svjetlo plavom označite strani ključ}
 				
 			
 			\subsection{Dijagram baze podataka}
-				\textit{ U ovom potpoglavlju potrebno je umetnuti dijagram baze podataka. Primarni i strani ključevi moraju biti označeni, a tablice povezane. Bazu podataka je potrebno normalizirati. Podsjetite se kolegija "Baze podataka".}
-			
-			\eject
+		\begin{figure}[H]
+			\includegraphics[width=\textwidth]{slike/Relacijska_shema.PNG} %veličina u odnosu na širinu linije
+			\caption{Relacijska shema baze podataka}
+			\label{fig:relacijska_shema1} %label mora biti drugaciji za svaku sliku
+		\end{figure}
 			
 		\section{Dijagram razreda}
 		
