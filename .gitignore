@@ -1,6 +1,4 @@
-izvorniKod/backend/venv
 biljeske.txt
-venv
-.venv
 .vscode
 **/__pycache__/
+**/.venv/

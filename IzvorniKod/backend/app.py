@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, session
 from models.accounts import User, Patient, Employee
 from sqlalchemy.exc import SQLAlchemyError
-import os
+import auth, config
 from db import db
 
 app = Flask(__name__)
@@ -12,7 +12,8 @@ def validate_required_fields(data, required_fields):
 
 # Route to get a specific user by ID
 @app.route('/users/<int:user_id>', methods=['GET'])
-def get_user(user_id):
+@auth.auth
+def get_user(auth_user_id, user_id):
     try:
         employee = db.session.query(Employee).filter_by(user_id=user_id).first()
     except SQLAlchemyError as e:
@@ -30,11 +31,16 @@ def get_user(user_id):
         return jsonify({"data":{"patient": patient.to_dict()}, "message": "Patient returned"}), 200
     
     user = db.session.query(User).filter_by(user_id=user_id).first()
+
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+    
     return jsonify({"data": {"user": user.to_dict()}, "message": "User returned"}), 200
 
 # Route to get all users
 @app.route('/users', methods=['GET'])
-def get_users():
+@auth.auth
+def get_users(auth_user_id):
     users = User.query.all()
     user_list = [user.to_dict() for user in users]
     return jsonify({"data": user_list, "message": "Users returned"}), 200
@@ -57,11 +63,15 @@ def post_user():
     return jsonify({"data":{'user_id': user.user_id}, 
                     "message": "User created"}), 201
 
-# login
 @app.route('/login', methods=['POST'])
 def login():
     user = User.query.filter_by(email=request.json['email']).first()
     if user and user.check_password(request.json['password']):
+
+        # put token in session
+        token = auth.generate_token(user.user_id)
+        session['Authorization'] = token
+
         return jsonify({"data": {'user_id': user.user_id},
                         "message": "Login successful"}), 200
     else:
@@ -122,10 +132,8 @@ def register_employee():
 
 
 if __name__ == '__main__':
-    current_directory = os.path.abspath(os.path.dirname(__file__))
-    db_file_path = os.path.join(current_directory, 'database.db')
-
-    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///' + db_file_path
+    app.config['SQLALCHEMY_DATABASE_URI'] = config.DATABASE_URI
+    app.config['SECRET_KEY'] = config.SECRET_KEY
 
     db.init_app(app)
 
