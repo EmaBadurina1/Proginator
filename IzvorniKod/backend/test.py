@@ -3,11 +3,13 @@ from flask import json
 from models.accounts import User, Patient, Employee
 from app import app, db
 import os
+import config
 
 app.config['TESTING'] = True
 current_directory = os.path.dirname(os.path.abspath(__file__))
 db_file_path = os.path.join(current_directory, 'test_database.db')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + db_file_path
+app.config['SECRET_KEY'] = config.SECRET_KEY
 
 db.init_app(app)
 
@@ -180,7 +182,7 @@ class FlaskAppTest(unittest.TestCase):
             'surname': 'Doe',
             'email': 'json@example.com',
             'phone_number': '091 123 4567',
-            'date_of_birth': "1999-01-01",
+            'date_of_birth': "1990-01-01",
             'password': 'password',
             'MBO': '123456789'
         }
