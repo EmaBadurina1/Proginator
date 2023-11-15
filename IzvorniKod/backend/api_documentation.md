@@ -28,11 +28,11 @@
     "message": "Patient created successfully."
   }
   ```
-- **Error Codes:** `400 Bad Request`
-
-  - If the email, phone number or MBO is already in use.
-  - If the email, phone number or MBO is not valid.
-  - If the password is not valid.
+- **Error Codes:** 
+  - `400 Bad Request`
+    - If the email, phone number or MBO is already in use.
+    - If the email, phone number or MBO is not valid.
+    - If the password is not valid.
 
 ## Create a New Employee
 
@@ -63,9 +63,10 @@
     "message": "Employee created successfully."
   }
   ```
-- **Error Codes:** `400 Bad Request`
-  - If the email, phone number or OIB is already in use.
-  - If the email, phone number or OIB is not valid.
+- **Error Codes:** 
+  - `400 Bad Request`
+    - If the email, phone number or OIB is already in use.
+    - If the email, phone number or OIB is not valid.
 
   
 ## User Login
@@ -85,11 +86,13 @@
   ```json
   {
     "data":{
-      "user_id": 1,
+      "user_id": 1
     },
     "message": "User logged in successfully."
   }
   ```
+- **Session:**
+  - `Bearer Token`: Token is set so that the user can be authenticated. (expires in 1 day or server restarts)
 - **Error Codes:** `400 Bad Request`
   - If the email or password is not valid.
 
@@ -98,13 +101,12 @@
 ### Request
 
 **Endpoint:** /users/{user_id}
-
 **Method:** `GET`
+**Authentication:** Bearer Token
+- `Brearer Token` (string): Token received after login.
 
 **Parameters**
-
 - `user_id` (integer): ID of the user.
-
 
 ### Response
 
@@ -146,9 +148,11 @@
     "message": "Employee retrieved successfully."
   }
   ```
-- **Error Codes:** `404 Not Found`
-
-  - If the user with the specified ID is not found.
+- **Error Codes:** 
+  - `404 Not Found`
+    - If the user with the specified ID is not found.
+  - `401 Unauthorized`
+    - If the user is not logged in.
 
 ## Lokalno pokretanje servera
 
