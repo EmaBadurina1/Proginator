@@ -32,7 +32,7 @@
   - `400 Bad Request`
     - If the email, phone number or MBO is already in use.
     - If the email, phone number or MBO is not valid.
-    - If the password is not valid.
+    - If the patient data does not exist in the external database
 
 ## Create a New Employee
 

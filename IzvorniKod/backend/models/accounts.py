@@ -50,7 +50,7 @@ class User(db.Model):
 # inheritence from User
 class Patient(User):
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), primary_key=True)
-    MBO = db.Column(db.String(80), unique=True, nullable=False)
+    MBO = db.Column(db.String(9), unique=True, nullable=False)
 
     def __init__(self, MBO, **kwargs):
         super().__init__(**kwargs)
