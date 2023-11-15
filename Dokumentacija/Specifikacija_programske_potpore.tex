@@ -266,7 +266,7 @@
 					\item[] \begin{packed_enum}
 						
 						\item Pacijent odabire terapiju za koju se prijavljuje na termin
-						\item Pacijent odabire jedan od ponuđenih termina ILI unosi datum i na temelju njega bira ponuđene termine
+						\item Pacijent unosi datum i na temelju njega bira ponuđene termine
 						\item Pacijent opcionalno dodaje napomenu za liječnika
 						\item Pacijent šalje zahtjev klikom na "Pošalji" 
 					\end{packed_enum}
@@ -397,33 +397,33 @@
 					\item  \textbf{Opis osnovnog tijeka: }
 					
 					\item[] \begin{packed_enum}
-						\item Djelatnik odaibre opciju "Zahtjevi"
-						\item Djelatnik filtrira zahtjeve na temelju "Zahtjeva na čekanju"
+						\item Djelatnik odabire opciju "Zahtjevi"
+						\item Prikaz stranice sa zahtjevima
 						\item Djelatnik odabire opciju evidentiraj pored zahtjeva 
-						\item Djelatniku se prikazuju slobodne sobe i oprema 
-						\item Djelatnik odabire sobu i opremu 
-						\item Djelatnik opcionalno piše komentar za pacijenta
+						\item Djelatniku se prikazuju moguće vrste opreme 
+						\item Djelatnik odabire vrstu opreme
+						\item Prikaz slobodnih prostorija s odabranom vrstom opreme
+						\item Djelatnik odabire prostoriju i opcionalno piše komentar za pacijenta
 						\item Djelatnik potvrđuje termin
 						\item Sustav šalje e-mail pacijentu čiji je termin potvrđen sa svim potrebnim informacijama
+						\item Prikazuje se popis zahtjeva za terminom
 					\end{packed_enum}
 					
 					\item  \textbf{Opis mogućih odstupanja:}
 					
-					\item[] \begin{packed_item}
-						
-						\item[2.a] Djelatnik odabire opciju filtriranja u kojoj se ne prikakuju zahtjevi na čekanju
+					\item[] \begin{packed_enum}
+						\item[5.a] Nema slobodnih soba za tu vrstu opreme
 						\item[] \begin{packed_enum}
-							\item Djelatnik mijenja filter ili odustaje od odobravanja
-							
-						\end{packed_enum}
-						\item[4.a] Nema slobodnih soba ili opreme
-						\item[] \begin{packed_enum}
-							\item Djelatnik odbija zahtjev za terminom 
+							\item Djelatnik odbija zahtjev za terminom
+							\item Otvara se prozor za dodjeljivanje novog termina s podacima o odabranom pacijentu, vrsti opreme i sljedećim slobodnim terminima
+							\item Djelatnik odabire slijedeći slobodni termin
 							\item Djelatnik dodaje komentar
-							\item Sustav šalje pacijentu e-mail o odbijenom terminu
+							\item Djelatnik potvrđuje novi termin
+							\item Sustav šalje pacijentu e-mail o dodjeljenom terminu
+							\item Prikazuje se popis zahtjeva za terminom
 							
 						\end{packed_enum}
-					\end{packed_item}
+					\end{packed_enum}
 				\end{packed_item}
 				
 				\noindent \underbar{\textbf{UC12 - Registracija djelatnika}}
@@ -603,6 +603,7 @@
 								\item Administrator odabire opciju "Dodaj opremu"
 								\item Otvara se skočni prozor s prostorom za unos podataka o opremi
 								\item Unosi podatke o opremi (ime i opis)
+								\item Odabire prostoriju u kojoj će se oprema nalaziti
 								\item Administrator odabire opciju "Spremi"
 								\item Podatci se spremaju u bazu podataka i generira se jedinstveni identifikator opreme
 								\item Prikazuje se stranica s popisom opreme
@@ -620,7 +621,7 @@
 						\end{packed_item}
 				
 				
-				\noindent \underbar{\textbf{UC17 - Promjena dostupnosti opreme opreme}}
+				\noindent \underbar{\textbf{UC17 - Promjena dostupnosti opreme}}
 				\begin{packed_item}
 					
 					\item \textbf{Glavni sudionik: }Administrator
@@ -680,7 +681,7 @@
 					\end{packed_item}
 				\end{packed_item}
 				
-				\noindent \underbar{\textbf{UC19 - Promjena dostupnosti opreme prostorije}}
+				\noindent \underbar{\textbf{UC19 - Promjena dostupnosti prostorije}}
 				\begin{packed_item}
 					
 					\item \textbf{Glavni sudionik: }Administrator
@@ -699,7 +700,7 @@
 						\item Otvara se stranica s popisom prostorija
 						\item Administrator pretražuje prostorije
 						\item Administrator mijenja dostupnost željene prostorije odabirom opcije "Dostupno"/"Nedostupno" koja se nalazi pored podataka o prostoriji
-						\item Promjena dostupnosti odabrane opreme u bazi podataka
+						\item Promjena dostupnosti odabrane prostorije u bazi podataka
 					\end{packed_enum}
 					
 				\end{packed_item}
