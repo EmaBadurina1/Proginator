@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, session
 from models.accounts import User, Patient, Employee
+from models.appointments import Appointment
 from sqlalchemy.exc import SQLAlchemyError
 import os
 from db import db
@@ -119,6 +120,52 @@ def register_employee():
     db.session.commit()
     return jsonify({"data":{'user_id': employee.user_id}, 
                     "message": "Employee created"}), 201
+
+# get list of appointments
+@app.route('/appointments', methods=['GET'])
+def get_appointments():
+    #if 'user_id' in request.json: dodati filter za svakog korisnika
+
+    appointments = Appointment.query.all()
+    appointments_list = [appointment.to_dict() for appointment in appointments]
+    return jsonify({"data": appointments_list, "message": "Appointments returned"}), 200
+
+# update appointment content
+@app.route('/appointments', methods=['PATCH'])
+def update_appointment():
+    if 'appointment_id' in request.json:
+        appointment_id = request.json.get('appointment_id')
+        appointment = Appointment.query.get(appointment_id)
+        appointment.update_appointment(**request.json)
+
+        db.session.commit()
+        return jsonify({
+            "appointment": appointment.to_dict(), 
+            "message": "Appointment updated"
+        }), 200
+    else:
+        return jsonify({
+            'error': 'Appointment ID missing!'
+        }), 400
+
+
+# create new appointment
+@app.route('/appointments', methods=['POST'])
+def create_appointment():
+    required_fields = ['date_from']
+    missing_fields = validate_required_fields(request.json, required_fields)
+
+    if missing_fields:
+        error_message = f"Missing required fields: {', '.join(missing_fields)}"
+        return jsonify({'error': error_message}), 400
+    
+    appointment = Appointment(**request.json)
+
+    db.session.add(appointment)
+    db.session.commit()
+
+    return jsonify({"data":{'appointment_id': appointment.appointment_id}, 
+                    "message": "Appointment created"}), 201
 
 
 if __name__ == '__main__':
