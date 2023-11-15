@@ -129,7 +129,7 @@
 						
 						\item Korisnik unosi svoje podatke (ime, prezime, e-mail adresu, MBO, lozinka)
 						\item Provjera ispravnosti podataka verifikacijom iz baze podataka sustava zdravstvene zaštite
-						\item prikaz početne stranice
+						\item Prikaz stranice za prijavu u sustav
 					\end{packed_enum}
 					
 					\item  \textbf{Opis mogućih odstupanja:}
@@ -221,7 +221,7 @@
 					\end{packed_item}
 				\end{packed_item}
 				
-				\noindent \underbar{\textbf{UC6 - Kreiranje terapije}}
+				\noindent \underbar{\textbf{UC6 - Kreiranje terapije(\ref{fig:sekvencijski_dijagram_1})}}
 				\begin{packed_item}
 					
 					\item \textbf{Glavni sudionik: }Pacjient
@@ -364,10 +364,10 @@
 					\item[] \begin{packed_enum}
 						\item Djelatnik odabire opciju evidentiraj pored termina odabranog pacijenta
 						\item Otvara se obrazac za evidenciju dolaska na termin
-						\item Djelatnik evidentira dolazak odabirom jedne od tri ponuđene opcije(nije došao, nije uspješno odradio terapiju ili uspješno je odradio terapiju)
+						\item Djelatnik evidentira dolazak odabirom jedne od tri ponuđene opcije(nije došao, došao je)
 						\item Djelatnik unosi komentar o odrađenoj terapiji
 						\item Djelatnik predaje evidenciju
-						\item povratak na popis termina odabranog pacijenta
+						\item Povratak na popis termina odabranog pacijenta
 					\end{packed_enum}
 					
 					\item  \textbf{Opis mogućih odstupanja:}
@@ -382,11 +382,11 @@
 					\end{packed_item}
 				\end{packed_item}
 				
-				\noindent \underbar{\textbf{UC11 - Prihvaćanje zahtjeva za terminom}}
+				\noindent \underbar{\textbf{UC11 - Prihvaćanje zahtjeva za terminom (\ref{fig:sekvencijski_dijagram_2})}}
 				\begin{packed_item}
 					
 					\item \textbf{Glavni sudionik: }Djelatnik
-					\item  \textbf{Cilj: }Prihvatiti/odbiti zahtjev za terminom na temelju 
+					\item  \textbf{Cilj: }Prihvatiti/odbiti zahtjev za terminom na temelju raspoloživosti opreme i soba
 					\item  \textbf{Sudionici: }Baza podataka
 					\item  \textbf{Preduvjet: }
 					\item[] \begin{packed_enum}
@@ -784,6 +784,13 @@
 					\centering
 					\caption{Sekvencijski dijagram za UC6}
 					\label{fig:sekvencijski_dijagram_1}
+				\end{figure}
+				
+				\begin{figure}[H]
+					\includegraphics[scale=0.4]{slike/UC11_Prihvaćanje_zahtjeva_za_termin.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
+					\centering
+					\caption{Sekvencijski dijagram za UC11}
+					\label{fig:sekvencijski_dijagram_2}
 				\end{figure}
 				\eject
 	
