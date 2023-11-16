@@ -7,6 +7,8 @@ import {
   Navigate,
   RouterProvider,
 } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import '../node_modules/react-toastify/dist/ReactToastify.css';
 
 import Registration from "./pages/Registration";
 import Login from "./pages/Login";
@@ -45,6 +47,7 @@ function App() {
   return (
     <div className="App">
       <RouterProvider router={router} />
+      <ToastContainer />
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import axiosInstance from "../axiosInstance";
+import { toast } from 'react-toastify';
 
 class AuthService {
   async login(email, password) {
@@ -10,12 +11,20 @@ class AuthService {
       const user_id = res1.data.data.user_id;
       const res2 = await axiosInstance.get("/users/" + user_id, {withCredentials: true});
       localStorage.setItem("user_data", JSON.stringify(res2.data.data));
+      toast.success("Uspješno ste se prijavili!", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        alert("Pogrešni podaci za prijavu!");
+        toast.warning("Pogrešni podaci za prijavu!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
         return { success: false, message: "Unauthorized" };
       } else {
-        console.error('Error occurred:', error);
+        toast.error("Dogodila se greška!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        return { success: false, message: "Error" };
       }
     }
     
@@ -24,19 +33,37 @@ class AuthService {
 
   async logout() {
     localStorage.removeItem("user_data");
+    toast.info("Odjavljeni ste.", {
+      position: toast.POSITION.TOP_RIGHT,
+    });
     return { success: true, message: "You have logged out!" };
   }
 
-  register(username, email, password) {
-    return axiosInstance.post("/signup", {
-      username,
-      email,
-      password,
-    });
+  async register(reg_data) {
+    try {
+      await axiosInstance.post("/patients", reg_data);
+      toast.success("Uspješno ste se registrirali!", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        toast.warning("Uneseni podaci nisu valjani!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        return { success: false, message: "Bad request" };
+      } else {
+        toast.error("Dogodila se greška!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        return { success: false, message: "Error" };
+      }
+    }
+    
+    return { success: true, message: "You have registered successfully!" };
   }
 
-  getCurrentUser() {
-    return JSON.parse(localStorage.getItem("user"));
+  getCurrentUserData() {
+    return JSON.parse(localStorage.getItem("user_data"));
   }
 }
 
