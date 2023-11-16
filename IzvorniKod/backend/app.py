@@ -7,7 +7,7 @@ from db import db
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True)
 
 def validate_required_fields(data, required_fields):
     missing_fields = [field for field in required_fields if field not in data]
