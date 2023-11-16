@@ -5,5 +5,4 @@ biljeske.txt
 **/venv/
 **/.env
 **/env
-instance/
-IzvorniKod/backend/.env
+**/instance

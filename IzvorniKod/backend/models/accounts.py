@@ -13,6 +13,7 @@ class User(db.Model):
     date_of_birth = db.Column(db.Date)
     hashed_password = db.Column(db.String(300), nullable=False)
 
+
     def __init__(self, password, **kwargs):
         date_of_birth = kwargs.get('date_of_birth', None)
 

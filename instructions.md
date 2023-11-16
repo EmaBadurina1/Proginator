@@ -26,7 +26,12 @@ Ovo je mali tutorial kako krenut radit na projektu. Upute su za Windows, za Linu
 
 1. **Inicijalizirajte Python virtualno okruženje (venv)** :
    Python `venv` je samo folder u kojem se čuvaju svi dodatno instalirani moduli (npr. Flask framework) koji su potrebni za pokretanje backenda. Taj folder zna biti dosta velik pa nije prikladan za spremanje na git/Github (bitno je da ga se stavi u .gitignore), tako da ćete ga trebati sami inicijalizirati i dopuniti sa modulima.
-   Unutar direktorija repozitorija, inicijalizirajte Python virtualno okruženje koristeći sljedeću naredbu:
+   Navigirajte do direktorija gdje je spremljen backend (izvorniKod/backend):
+   ```bash
+   cd izvorniKod/backend
+   ```
+
+   i zatim inicializirajte venv sa sljedećom naredbom:
 
    ```bash
    python -m venv venv
@@ -41,7 +46,7 @@ Ovo je mali tutorial kako krenut radit na projektu. Upute su za Windows, za Linu
    ```
 
    Nakon što ga aktivirate, trebali biste vidjeti da se u Command Prompt-u ispred svake naredbe pojavi ime virtualnog okruženja u zagradama, na primjer: 
-   `(.venv) C:\Users\username\Documents\GitHub\Proginator>`
+   `(.venv) C:\Users\username\Documents\GitHub\Proginator\izvorniKod\backend>`
 
 
 1. **Instalirajte module iz requirements.txt datoteke** :
@@ -65,9 +70,15 @@ Ovo je mali tutorial kako krenut radit na projektu. Upute su za Windows, za Linu
    ```
 Ovako bi trebala izgledati struktura direktorija nakon što ste završili sve korake:
 ```bash
-├───.venv                         <--- virtualno okruženje
 ├───izvorniKod
 │   ├───backend
+|   |   ├───models
+│   │   ├───controllers
+
+│   │   ├───.venv                 <--- virtualno okruženje
+│   │   ├───.gitignore
+│   │   ├───requirements.txt      <--- Python moduli
+│   │   ├───README.md
 │   │   └───app.py
 │   └───frontend
 │       ├───node_modules          <--- React moduli
