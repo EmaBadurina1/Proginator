@@ -27,16 +27,25 @@ class AuthService {
     return { success: true, message: "You have logged out!" };
   }
 
-  register(username, email, password) {
-    return axiosInstance.post("/signup", {
-      username,
-      email,
-      password,
-    });
+  async register(name, surname, email, phone_number, date_of_birth, MBO, password) {
+    try {
+      await axiosInstance.post("/patients", {
+        name, surname, email, phone_number, date_of_birth, MBO, password
+      });
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        alert("Uneseni podaci nisu valjani!");
+        return { success: false, message: "Bad request" };
+      } else {
+        console.error('Error occurred:', error);
+      }
+    }
+    
+    return { success: true, message: "You have registered successfully!" };
   }
 
-  getCurrentUser() {
-    return JSON.parse(localStorage.getItem("user"));
+  getCurrentUserData() {
+    return JSON.parse(localStorage.getItem("user_data"));
   }
 }
 

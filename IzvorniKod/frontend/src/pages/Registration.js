@@ -2,6 +2,20 @@ import React from "react";
 import "./Registration.css";
 
 export default function Registration() {
+
+  // const [values, setValues] = useState({
+  //   Firstname: "", 
+  //   Middlename: "", 
+  //   Lastname: "",
+  //   DOB: "",
+  //   Gender: ""
+  // });
+
+  // const handleChange = e => {
+  //   const {name, value} = e.target
+  //   setValues({...values, [name]: value})
+  // }
+
   return (
     <div className="container-fluid">
       <div className="row align-items-center justify-content-center h-full">
@@ -11,12 +25,13 @@ export default function Registration() {
 
             <div className="mb-3 mt-3">
               <label>Ime</label>
-              <input type="text" className="form-control" placeholder="Ime" />
+              <input type="text" name="Name" className="form-control" placeholder="Ime" />
             </div>
             <div className="mb-3">
               <label>Prezime</label>
               <input
                 type="text"
+                name = "Surname"
                 className="form-control"
                 placeholder="Prezime"
               />
@@ -25,6 +40,7 @@ export default function Registration() {
               <label>MBO</label>
               <input
                 type="text"
+                name = "MBO"
                 className="form-control"
                 placeholder="Unesi matični broj osiguranika"
               />
@@ -33,6 +49,7 @@ export default function Registration() {
               <label>Email adresa</label>
               <input
                 type="email"
+                name="Email"
                 className="form-control"
                 placeholder="Unesi email"
               />
@@ -41,6 +58,7 @@ export default function Registration() {
               <label>Lozinka</label>
               <input
                 type="password"
+                name="Password"
                 className="form-control"
                 placeholder="Unesi lozinku"
               />

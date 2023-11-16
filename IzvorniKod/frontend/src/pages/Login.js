@@ -1,11 +1,11 @@
-import {React, useState} from "react";
+import { React, useState } from "react";
 import "./Login.css";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 import AuthService from "../services/authService";
 import { useNavigate } from "react-router-dom";
 
-const Login = ({onLogin}) => {
+const Login = ({ onLogin }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -21,17 +21,17 @@ const Login = ({onLogin}) => {
     setPassword(e.target.value);
   };
 
-  const handleLogin = (e) =>{
+  const handleLogin = (e) => {
     e.preventDefault();
 
     AuthService.login(email, password).then((resp) => {
-      if(resp.success){
+      if (resp.success) {
         onLogin();
-      nav("/home");
-      // window.location.reload();
+        nav("/home");
+        // window.location.reload();
       }
     });
-  }
+  };
 
   return (
     <div className="container-fluid">
@@ -101,7 +101,7 @@ const Login = ({onLogin}) => {
 };
 
 Login.propTypes = {
-  onLogin: PropTypes.func
+  onLogin: PropTypes.func,
 };
 
 export default Login;
