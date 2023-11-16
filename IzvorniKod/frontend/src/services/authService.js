@@ -16,6 +16,7 @@ class AuthService {
         return { success: false, message: "Unauthorized" };
       } else {
         console.error('Error occurred:', error);
+        return { success: false, message: "Error" };
       }
     }
     
@@ -27,17 +28,16 @@ class AuthService {
     return { success: true, message: "You have logged out!" };
   }
 
-  async register(name, surname, email, phone_number, date_of_birth, MBO, password) {
+  async register(reg_data) {
     try {
-      await axiosInstance.post("/patients", {
-        name, surname, email, phone_number, date_of_birth, MBO, password
-      });
+      await axiosInstance.post("/patients", reg_data);
     } catch (error) {
       if (error.response && error.response.status === 400) {
         alert("Uneseni podaci nisu valjani!");
         return { success: false, message: "Bad request" };
       } else {
         console.error('Error occurred:', error);
+        return { success: false, message: "Error" };
       }
     }
     
