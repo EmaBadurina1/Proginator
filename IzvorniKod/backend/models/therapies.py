@@ -9,8 +9,8 @@ class Therapy(db.Model):
    req_treatment = db.Column(db.String(300))
    date_from = db.Column(db.Date, nullable=False)
    date_to = db.Column(db.Date)
-   patient_id = db.Column(db.Integer, db.ForeginKey('patient.user_id'), nullable=False)
-   therapy_type_id = db.Column(db.Integer, db.ForeginKey('therapy_type.therapy_type_id'))
+   patient_id = db.Column(db.Integer, db.ForeignKey('patient.user_id'), nullable=False)
+   therapy_type_id = db.Column(db.Integer, db.ForeignKey('therapy_type.therapy_type_id'))
 
    def __init__(self, doctor_id, disease_descr, patient_id, date_from, **kwargs):
       self.doctor_id = doctor_id

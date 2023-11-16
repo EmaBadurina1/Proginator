@@ -1,11 +1,31 @@
 from flask import Flask, request, jsonify, session
 from models.accounts import User, Patient, Employee
-from models.appointments import Appointment
+from models.appointments import Appointment, Status
+from models.therapies import Therapy, TherapyType
+from models.devices import Device, DeviceType
+from models.rooms import Room
 from sqlalchemy.exc import SQLAlchemyError
 import os
+from dotenv import load_dotenv
 from db import db
+from flask_migrate import Migrate
+
+load_dotenv()
+
+DB_USERNAME = os.getenv("DB_USERNAME")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+DB_HOST = os.getenv("DB_HOST")
+DB_PORT = os.getenv("DB_PORT")
+DB_NAME = os.getenv("DB_NAME")
+
+# Construct the database URL
+DB_URL = f'postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
 
 app = Flask(__name__)
+migrate = Migrate()
+
+app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # silence the deprecation warning
 
 def validate_required_fields(data, required_fields):
     missing_fields = [field for field in required_fields if field not in data]
@@ -169,14 +189,10 @@ def create_appointment():
 
 
 if __name__ == '__main__':
-    current_directory = os.path.abspath(os.path.dirname(__file__))
-    db_file_path = os.path.join(current_directory, 'database.db')
-
-    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///' + db_file_path
-
     db.init_app(app)
-
+    # migrate.init_app(app, db)
+    
     with app.app_context():
         db.create_all()
-        
+      
     app.run(debug=True)

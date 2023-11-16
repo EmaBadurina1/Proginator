@@ -2,8 +2,8 @@ from db import db
 
 class Device(db.Model):
    device_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
-   room_num = db.Column(db.String(10), db.ForeginKey('room.room_num'))
-   device_type_id = db.Column(db.Integer, db.ForeginKey('device_type.device_type_id'), nullable=False)
+   room_num = db.Column(db.String(10), db.ForeignKey('room.room_num'))
+   device_type_id = db.Column(db.Integer, db.ForeignKey('device_type.device_type_id'), nullable=False)
 
    def __init__(self, device_type_id, **kwargs):
       self.device_type_id = device_type_id

@@ -7,11 +7,11 @@ class Appointment(db.Model):
    date_from = db.Column(db.DateTime, nullable=False)
    date_to = db.Column(db.DateTime)
    comment = db.Column(db.String(300))
-   therapy_id = db.Column(db.Integer, db.ForeginKey('therapy.therapy_id'), nullable=False)
+   therapy_id = db.Column(db.Integer, db.ForeignKey('therapy.therapy_id'), nullable=False)
    # statud_id is default upon initializing 
-   status_id = db.Column(db.Integer, db.ForeginKey('status.status_id'), nullable=False, default=1)
-   room_num = db.Column(db.String(10), db.ForeginKey('room.room_num'))
-   employee_id = db.Column(db.Integer, db.ForeginKey('employee.user_id'))
+   status_id = db.Column(db.Integer, db.ForeignKey('status.status_id'), nullable=False, default=1)
+   room_num = db.Column(db.String(10), db.ForeignKey('room.room_num'))
+   employee_id = db.Column(db.Integer, db.ForeignKey('employee.user_id'))
 
    def __init__(self, date_from, therapy_id, **kwargs):
       # !!!! check for status_id, room_num, doctor_id if it exists !!!!
