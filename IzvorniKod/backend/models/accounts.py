@@ -5,7 +5,7 @@ from db import db
 
 # Define the User model
 class User(db.Model):
-    user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
     name = db.Column(db.String(80), nullable=False)
     surname = db.Column(db.String(80), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
@@ -49,8 +49,8 @@ class User(db.Model):
 
 # inheritence from User
 class Patient(User):
-    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), primary_key=True)
-    MBO = db.Column(db.String(9), unique=True, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), primary_key=True, nullable=False)
+    MBO = db.Column(db.String(80), unique=True, nullable=False)
 
     def __init__(self, MBO, **kwargs):
         super().__init__(**kwargs)
@@ -63,7 +63,7 @@ class Patient(User):
         return user_dict
 
 class Employee(User):
-    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), primary_key=True, nullable=False)
     OIB = db.Column(db.String(11), unique=True, nullable=False)
     is_active = db.Column(db.Boolean, nullable=False)
     is_admin = db.Column(db.Boolean, nullable=False)

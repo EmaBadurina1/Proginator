@@ -1,13 +1,31 @@
 from flask import Flask, request, jsonify, session
 from models.accounts import User, Patient, Employee
+from models.appointments import Appointment, Status
+from models.therapies import Therapy, TherapyType
+from models.devices import Device, DeviceType
+from models.rooms import Room
 from sqlalchemy.exc import SQLAlchemyError
 from external_connector import get_patient_data
 import auth, config
 from db import db
 from flask_cors import CORS
+import os
+from dotenv import load_dotenv
+from flask_migrate import Migrate
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
+
+load_dotenv()
+
+# Construct the database URL
+DB_URL = os.getenv("DB_URL")
+
+app = Flask(__name__)
+migrate = Migrate()
+
+app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # silence the deprecation warning
 
 def validate_required_fields(data, required_fields):
     missing_fields = [field for field in required_fields if field not in data]
@@ -143,13 +161,58 @@ def register_employee():
     return jsonify({"data":{'user_id': employee.user_id}, 
                     "message": "Employee created"}), 201
 
+# get list of appointments
+@app.route('/appointments', methods=['GET'])
+def get_appointments():
+    #if 'user_id' in request.json: dodati filter za svakog korisnika
+
+    appointments = Appointment.query.all()
+    appointments_list = [appointment.to_dict() for appointment in appointments]
+    return jsonify({"data": appointments_list, "message": "Appointments returned"}), 200
+
+# update appointment content
+@app.route('/appointments', methods=['PATCH'])
+def update_appointment():
+    if 'appointment_id' in request.json:
+        appointment_id = request.json.get('appointment_id')
+        appointment = Appointment.query.get(appointment_id)
+        appointment.update_appointment(**request.json)
+
+        db.session.commit()
+        return jsonify({
+            "appointment": appointment.to_dict(), 
+            "message": "Appointment updated"
+        }), 200
+    else:
+        return jsonify({
+            'error': 'Appointment ID missing!'
+        }), 400
+
+
+# create new appointment
+@app.route('/appointments', methods=['POST'])
+def create_appointment():
+    required_fields = ['date_from', 'therapy_id']
+    missing_fields = validate_required_fields(request.json, required_fields)
+
+    if missing_fields:
+        error_message = f"Missing required fields: {', '.join(missing_fields)}"
+        return jsonify({'error': error_message}), 400
+    
+    appointment = Appointment(**request.json)
+
+    db.session.add(appointment)
+    db.session.commit()
+
+    return jsonify({"data":{'appointment_id': appointment.appointment_id}, 
+                    "message": "Appointment created"}), 201
+
+
 if __name__ == '__main__':
-    app.config['SQLALCHEMY_DATABASE_URI'] = config.DATABASE_URI
-    app.config['SECRET_KEY'] = config.SECRET_KEY
-
     db.init_app(app)
-
+    # migrate.init_app(app, db)
+    
     with app.app_context():
         db.create_all()
-        
+      
     app.run(debug=True)
