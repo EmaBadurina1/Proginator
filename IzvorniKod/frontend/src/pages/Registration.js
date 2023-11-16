@@ -49,6 +49,7 @@ export default function Registration() {
                 placeholder="Ime"
                 value={values.name}
                 onChange={handleChange}
+                required
               />
             </div>
             <div className="mb-3">
@@ -60,6 +61,7 @@ export default function Registration() {
                 placeholder="Prezime"
                 value={values.surname}
                 onChange={handleChange}
+                required
               />
             </div>
             <div className="mb-3">
@@ -71,6 +73,7 @@ export default function Registration() {
                 placeholder="Unesi email"
                 value={values.email}
                 onChange={handleChange}
+                required
               />
             </div>
             <div className="mb-3">
@@ -82,16 +85,18 @@ export default function Registration() {
                 placeholder="Unesi broj telefona"
                 value={values.phone_number}
                 onChange={handleChange}
+                required
               />
             </div>
             <div className="mb-3">
               <label>Datum rođenja</label>
               <input
                 type="date"
-                name="Birth"
+                name="date_of_birth"
                 className="form-control"
                 value={values.date_of_birth}
                 onChange={handleChange}
+                required
               />
             </div>
             <div className="mb-3">
@@ -103,17 +108,19 @@ export default function Registration() {
                 placeholder="Unesi matični broj osiguranika"
                 value={values.MBO}
                 onChange={handleChange}
+                required
               />
             </div>
             <div className="mb-5">
               <label>Lozinka</label>
               <input
                 type="password"
-                name="Password"
+                name="password"
                 className="form-control"
                 placeholder="Unesi lozinku"
                 value={values.password}
                 onChange={handleChange}
+                required
               />
             </div>
             <div className="d-flex justify-content-end">

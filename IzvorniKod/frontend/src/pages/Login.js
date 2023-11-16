@@ -48,6 +48,7 @@ const Login = ({ onLogin }) => {
                 placeholder="Unesi email"
                 value={email}
                 onChange={(event) => onChangeEmail(event)}
+                required
               />
             </div>
             <div className="mb-3">
@@ -58,6 +59,7 @@ const Login = ({ onLogin }) => {
                 placeholder="Unesi lozinku"
                 value={password}
                 onChange={(event) => onChangePassword(event)}
+                required
               />
             </div>
             <div className="mb-5">

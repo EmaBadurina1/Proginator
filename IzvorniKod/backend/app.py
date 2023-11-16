@@ -21,7 +21,6 @@ load_dotenv()
 # Construct the database URL
 DB_URL = os.getenv("DB_URL")
 
-app = Flask(__name__)
 migrate = Migrate()
 
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
