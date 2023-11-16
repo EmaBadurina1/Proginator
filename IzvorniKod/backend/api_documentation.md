@@ -28,7 +28,8 @@
     "message": "Patient created successfully."
   }
   ```
-- **Error Codes:** 
+- **Error Codes:**
+
   - `400 Bad Request`
     - If the email, phone number or MBO is already in use.
     - If the email, phone number or MBO is not valid.
@@ -63,12 +64,11 @@
     "message": "Employee created successfully."
   }
   ```
-- **Error Codes:** 
+- **Error Codes:**
   - `400 Bad Request`
     - If the email, phone number or OIB is already in use.
     - If the email, phone number or OIB is not valid.
 
-  
 ## User Login
 
 ### Request
@@ -103,9 +103,11 @@
 **Endpoint:** /users/{user_id}
 **Method:** `GET`
 **Authentication:** Bearer Token
+
 - `Brearer Token` (string): Token received after login.
 
 **Parameters**
+
 - `user_id` (integer): ID of the user.
 
 ### Response
@@ -148,7 +150,8 @@
     "message": "Employee retrieved successfully."
   }
   ```
-- **Error Codes:** 
+- **Error Codes:**
+
   - `404 Not Found`
     - If the user with the specified ID is not found.
   - `401 Unauthorized`
@@ -160,26 +163,27 @@ Prvo treba osigurati da je virtualno okruženje aktivirano i da su instalirane s
 Pozicionirati se u root direktorij projekta i pokrenuti sljedeće naredbe:
 
   Za cmd:
-  ```bash
+
+```bash
   .\venv\Scripts\activate
-  ```
+```
+
   Za powershell:
-  ```bash
+
+```bash
   .\venv\Scripts\Activate.ps1
-  ```
+```
+
   Zatim instalirati biblioteke:
-  ```bash
+
+```bash
   pip install -r requirements.txt
-  ```
-
-
+```
 
 Kako bi pokrenuli server, potrebno je samo pokrenuti skriptu `app.py`:
-  
-  ```bash
+
+```bash
   python IzvorniKod/backend/app.py
-  ```
+```
 
 Server će se pokrenuti lokalno na `http://127.0.0.1/5000/`.
-
-Podaci se spremaju u SQLite bazu podataka, koja se nalazi u datoteci `IzvorniKod/backend/instance/database.db`.

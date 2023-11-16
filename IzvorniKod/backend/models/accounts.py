@@ -11,7 +11,7 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     phone_number = db.Column(db.String(80), unique=True, nullable=False)
     date_of_birth = db.Column(db.Date)
-    hashed_password = db.Column(db.String(80), nullable=False)
+    hashed_password = db.Column(db.String(128), nullable=False)
 
     def __init__(self, password, **kwargs):
         date_of_birth = kwargs.get('date_of_birth', None)
