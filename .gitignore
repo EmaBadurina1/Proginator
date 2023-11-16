@@ -2,3 +2,8 @@ biljeske.txt
 .vscode
 **/__pycache__/
 **/.venv/
+**/venv/
+**/.env
+**/env
+instance/
+IzvorniKod/backend/.env
