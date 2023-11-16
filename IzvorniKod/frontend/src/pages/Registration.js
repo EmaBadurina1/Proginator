@@ -1,7 +1,7 @@
 import React from "react";
 import "./Registration.css";
 
-function Registration() {
+export default function Registration() {
   return (
     <div className="container-fluid">
       <div className="row align-items-center justify-content-center h-full">
@@ -59,5 +59,3 @@ function Registration() {
     </div>
   );
 }
-
-export default Registration;

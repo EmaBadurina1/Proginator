@@ -1,10 +1,11 @@
 import {React, useState} from "react";
 import "./Login.css";
+import PropTypes from 'prop-types';
 
-import AuthService from "../services/auth.service";
+import AuthService from "../services/authService";
 import { useNavigate } from "react-router-dom";
 
-const Login = () => {
+const Login = ({onLogin}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -20,14 +21,18 @@ const Login = () => {
     setPassword(e.target.value);
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = (e) =>{
     e.preventDefault();
 
-    AuthService.login(email, password).then(() => {
+    AuthService.login(email, password).then((resp) => {
+      if(resp.success){
+        onLogin();
       nav("/home");
-      window.location.reload();
+      // window.location.reload();
+      }
     });
-  };
+  }
+
   return (
     <div className="container-fluid">
       <div className="row align-items-center justify-content-center h-full">
@@ -74,7 +79,7 @@ const Login = () => {
               <button
                 type="submit"
                 className="btn btn-primary w-auto"
-                onClick={(event) => handleLogin(event)}
+                onClick={async (event) => await handleLogin(event)}
               >
                 Prijava
               </button>
@@ -93,6 +98,10 @@ const Login = () => {
       </div>
     </div>
   );
+};
+
+Login.propTypes = {
+  onLogin: PropTypes.func
 };
 
 export default Login;
