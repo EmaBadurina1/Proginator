@@ -20,8 +20,8 @@ class Appointment(db.Model):
          self.comment = kwargs.get('comment', None)
       if 'room_num' in kwargs:
          self.room_num = kwargs.get('room_num', None)
-      if 'doctor_id' in kwargs:
-         self.doctor_id = kwargs.get('doctor_id', None)
+      if 'employee_id' in kwargs:
+         self.employee_id = kwargs.get('employee_id', None)
       try:
          self.date_from = datetime.strptime(date_from, '%Y-%m-%d %H:%M')
          if 'date_to' in kwargs:
@@ -43,7 +43,7 @@ class Appointment(db.Model):
          'therapy_id': self.therapy_id,
          'comment': self.comment,
          'status_id': self.status_id,
-         'doctor_id': self.doctor_id
+         'employee_id': self.employee_id
       }
    
    def update_appointment(self, **kwargs):
@@ -67,8 +67,8 @@ class Appointment(db.Model):
          self.status_id = kwargs.get('status_id', None)
       if 'room_num' in kwargs: # and room_num postoji
          self.room_num = kwargs.get('room_num', None)
-      if 'doctor_id' in kwargs: # and doctor_id postoji
-         self.doctor_id = kwargs.get('doctor_id', None)
+      if 'employee_id' in kwargs: # and doctor_id postoji
+         self.employee_id = kwargs.get('employee_id', None)
       if 'therapy_id' in kwargs: # and therapy_id postoji
          self.therapy_id = kwargs.get('therapy_id', None)
 

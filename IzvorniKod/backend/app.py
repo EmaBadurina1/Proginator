@@ -198,7 +198,7 @@ def update_appointment():
 # create new appointment
 @app.route('/appointments', methods=['POST'])
 def create_appointment():
-    required_fields = ['date_from']
+    required_fields = ['date_from', 'therapy_id']
     missing_fields = validate_required_fields(request.json, required_fields)
 
     if missing_fields:
