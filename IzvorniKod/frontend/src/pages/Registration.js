@@ -41,28 +41,32 @@ export default function Registration() {
             <h3>Registracija - novi pacijent</h3>
 
             <div className="mb-3 mt-3">
-              <label>Ime</label>
-              <input
-                type="text"
-                name="name"
-                className="form-control"
-                placeholder="Ime"
-                value={values.name}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="mb-3">
-              <label>Prezime</label>
-              <input
-                type="text"
-                name="surname"
-                className="form-control"
-                placeholder="Prezime"
-                value={values.surname}
-                onChange={handleChange}
-                required
-              />
+              <div className="row">
+                <div className="col-6">
+                  <label>Ime</label>
+                  <input
+                    type="text"
+                    name="name"
+                    className="form-control"
+                    placeholder="Ime"
+                    value={values.name}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                <div className="col-6">
+                  <label>Prezime</label>
+                  <input
+                    type="text"
+                    name="surname"
+                    className="form-control"
+                    placeholder="Prezime"
+                    value={values.surname}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+              </div>
             </div>
             <div className="mb-3">
               <label>Email adresa</label>

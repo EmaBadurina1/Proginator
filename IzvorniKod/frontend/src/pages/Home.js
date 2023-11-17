@@ -13,7 +13,6 @@ const Home = ({ onLogout }) => {
     AuthService.logout().then(() => {
       onLogout();
       nav("/login");
-      window.location.reload();
     });
   };
 

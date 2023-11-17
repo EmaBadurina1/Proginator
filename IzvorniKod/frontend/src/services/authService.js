@@ -1,15 +1,17 @@
 import axiosInstance from "../axiosInstance";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 class AuthService {
   async login(email, password) {
     try {
       const res1 = await axiosInstance.post("/login", {
         email,
-        password
+        password,
       });
       const user_id = res1.data.data.user_id;
-      const res2 = await axiosInstance.get("/users/" + user_id, {withCredentials: true});
+      const res2 = await axiosInstance.get("/users/" + user_id, {
+        withCredentials: true,
+      });
       localStorage.setItem("user_data", JSON.stringify(res2.data.data));
       toast.success("Uspješno ste se prijavili!", {
         position: toast.POSITION.TOP_RIGHT,
@@ -27,15 +29,24 @@ class AuthService {
         return { success: false, message: "Error" };
       }
     }
-    
+
     return { success: true, message: "You have logged in!" };
   }
 
   async logout() {
-    localStorage.removeItem("user_data");
-    toast.info("Odjavljeni ste.", {
-      position: toast.POSITION.TOP_RIGHT,
-    });
+    try {
+      await axiosInstance.post("/logout");
+      localStorage.removeItem("user_data");
+      toast.info("Odjavljeni ste.", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+    } catch (error) {
+      toast.info("Došlo je do greške prilikom odjavljivanja.", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      return { success: false, message: "Error" };
+    }
+
     return { success: true, message: "You have logged out!" };
   }
 
@@ -58,7 +69,7 @@ class AuthService {
         return { success: false, message: "Error" };
       }
     }
-    
+
     return { success: true, message: "You have registered successfully!" };
   }
 

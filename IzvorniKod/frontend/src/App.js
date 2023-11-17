@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import "./App.css";
 import {
   createBrowserRouter,
@@ -16,7 +16,18 @@ import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 
 function App() {
-  const [auth, setAuth] = React.useState(false);
+  const [auth, setAuth] = React.useState(true);
+
+  useEffect(() => {
+    const userData = localStorage.getItem('user_data');
+
+    if (userData === null) {
+      setAuth(false);
+    }
+    else{
+      setAuth(true);
+    }
+  }, []);
 
   function login() {
     setAuth(true);
@@ -46,6 +57,7 @@ function App() {
 
   return (
     <div className="App">
+      <h1>{auth}</h1>
       <RouterProvider router={router} />
       <ToastContainer />
     </div>
