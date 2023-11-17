@@ -11,7 +11,7 @@
 			\item  administratora - djelatnika zdravstvene ustanove
 		\end{packed_item}
 		
-		Prilikom pokretanja web aplikacije svaki korisnik unosi svoju e-mail adresu i lozinku. Ovisno o vrsti korisnika biti će preusmjereni na različite stranice.
+		Prilikom pokretanja web aplikacije svaki korisnik unosi svoju e-mail adresu i lozinku. Ovisno o vrsti korisnika biti će preusmjereni na različite stranice. Svaki korisnik imati će mogućnost mijenjanja nekih osobnih podataka i mijenjanja lozinke.
 		
 		\textit{Pacijent} se samostalno prijavljuje u sustav. U slučaju da još ne postoji imati će opciju registracije. Za registraciju mora unijeti: 
 		\begin{packed_item}
@@ -23,20 +23,24 @@
 			\item lozinku
 		\end{packed_item}
 		Prilikom registracije pomoću MBO-a provjerava se ako korisnik postoji u središnjem informacijskom sustavu zdravstvene zaštite.
-		Nakon prijave ili registracije korisnik je preusmjeren na stranicu gdje se prikazuju njegovi termini i zahtjevi. U terminima se prikazuju protekli i budući termini, za protekle termine piše ako je pacijent došao te komentari djelatnika ustanove o napretku. Termin se dobiva nakon što se odobri zahtjev za jednim.		
+		Nakon prijave korisnik je preusmjeren na stranicu gdje se prikazuju njegovi termini i zahtjevi, ukoliko ih ima. U terminima se prikazuju protekli i budući termini, za protekle termine piše ako je pacijent došao te komentari djelatnika ustanove o napretku. Termin se dobiva nakon što se odobri zahtjev za jednim. No prije nego pacijent može birati termin mora kreirati terapiju, u slučaju da nema ni jednu aktivnu. Terapiju kreira unoseći podatke:
+		\begin{packed_item}
+			\item ime i prezime liječnika koji ga je uputio na terapiju
+			\item tip rehabilitacije
+			\item opis oboljenja 
+			\item opis postupka liječenja
+		\end{packed_item}
+		Nakon što preda podatke o terapiji, provjerava se status liječnika u imeniku liječnika. U slučaju da uneseni liječnik ne postoji, zbog krivo unesenih podataka sustav će upozoriti pacijenta o tome i imati će priliku ispraviti podatke. Nakon uspješno kreirane terapije pacijent će moći napraviti zahtjev za terminom. 
 		Zahtjev se sastoji od:
 		\begin{packed_item}
-			\item vremena predaje
 			\item željenog termina
 			\item vrste/tipa rehabilitacije
-			\item liječnika koji je uputio pacijenta na terapiju
 			\item reference na terapiju
-			\item statusa
+			\item komentara za liječnika
 		\end{packed_item}
-		Status može biti odobreno, odbijeno, čeka na odobrenje ili isteklo u slučaju da nitko nije odobrio niti odbio termin do željenog vremena terapije.
-		Klikom na opciju \textit{naruči se} pacijent može napraviti novi zahtjev za terminom. Zahtjev popunjava unoseći vrstu rehabilitacije, liječnika koji ga je uputio, ukoliko se radi o ponovljenoj terapiji odabrati će i termin već obavljenog postupka terapije u ustanovi, također u komentar za liječnika dodaje opis svojih oboljenja. Status liječnika koji je izdao uputnicu provjerava se u imeniku liječnika. U odabiru termina biti će prikazano prvih nekoliko slobodnih termina za odabrani tip rehabilitacije i opcije da se unese željeni datum i vrijeme. Nakon odabira željenog termina pacijent predaje zahtjev. Pacijent će o odobrenju ili odbijanju zahtjeva, kao i svim mogućim promjenama biti obaviješten mailom.
+		Pacijent odabire željeni termin tako što prvo odabire tip rehabilitacije i referencu na neku od njegovih terapija, nakon toga unosi datum u tražilicu, na temelju kojeg će mu se prikazati slobodni termini. Pacijent će odabrati jedan, opcionalno dodati komentar i poslati zahtjev. Pacijent će o odobrenju ili odbijanju zahtjeva, te o svim mogućim promjenama biti obaviješten e-mailom.
 		
-		\textit{Liječnik} nakon prijavljivanja u sustav ima pregled svih pacijenata i njihovih podataka, klikom na prikaz terapije bit će mu prikazani svi termini odabranog pacijenta i detalji o njima, tu će imati opciju evidentirati dolazak pacijenta i zabilježiti komentare vezane uz napredak ili pregledati napredak i komentare iz prošlih termina. Liječnik koji je evidentirao pacijenta dodati će se u sustav kao liječnik koji je vodio taj termin terapije. Također svaki djelatnik ustanove imati će mogućnost prihvaćanja ili odbijanja termina ovisno o raspoloživosti prostorija i opreme. Kod odbijanja zahtijeva liječnik će morati dodijeliti pacijentu novi termin u kojem su oprema i prostorije raspoloživi.
+		\textit{Liječnik} nakon prijavljivanja u sustav ima pregled svih pacijenata i njihovih podataka. Imati će opciju pretraživanja pacijenta. Klikom na prikaz terapije bit će mu prikazani svi termini odabranog pacijenta i detalji o njima, tu će imati opciju evidentirati dolazak pacijenta i zabilježiti komentare vezane uz napredak ili pregledati napredak i komentare iz prošlih termina. Liječnik koji je evidentirao pacijenta dodati će se u sustav kao liječnik koji je vodio taj termin terapije. Također svaki djelatnik ustanove imati će mogućnost prihvaćanja ili odbijanja termina ovisno o raspoloživosti prostorija i opreme. Kod odbijanja zahtijeva liječnik će morati dodijeliti pacijentu novi termin u kojem su oprema i prostorije raspoloživi. 
 		
 		\textit{Administrator} ima pregled svih pacijenata i djelatnika. Uz ovlasti koje imaju liječnici administrator pri zaposlenju novog liječnika izrađuje korisnički račun za njega s inicijalnom lozinkom. Također nakon prestanka radnog odnosa administrator može ukloniti tog liječnika. Administrator definira sve što je potrebno za ispravan rad sustava, dakle može mijenjati dostupnost opreme i unositi novu opremu, mijenjati dostupnost prostorija i unositi nove. Također ako dođe do promjena u dostupnosti prostorija ili opreme, liječnik će imati mogućnost obavještavanja pacijenta o otkazanom terminu te mogućnost izdavanja novog termina.
 		
