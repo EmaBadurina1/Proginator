@@ -69,8 +69,7 @@ def post_user():
 
 @accounts_bp.route('/login', methods=['POST'])
 def login():
-    # user: User = User.query.filter_by(email=request.json['email']).first()
-    user: User = db.session.execute(db.select(User).where(User.email==request.json['email'])).scalar()
+    user: User = User.query.filter_by(email=request.json['email']).first()
     if user and user.check_password(request.json['password']):
 
         session['user_id'] = user.user_id
