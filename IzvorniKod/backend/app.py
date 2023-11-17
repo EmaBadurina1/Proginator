@@ -20,6 +20,9 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # silence the deprecation w
 app.config["SQLALCHEMY_RECORD_QUERIES"] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
 app.config["SESSION_COOKIE_SAMESITE"] = "None"
+app.config["SESSION_COOKIE_SECURE"] = True
+app.config["CORS_HEADERS"] = "Content-Type"
+app.config["SESSION_PROTECTION"] = "stron"
 
 db.init_app(app)
 
