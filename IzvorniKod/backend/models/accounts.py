@@ -54,8 +54,8 @@ class User(db.Model):
         self.hashed_password = bcrypt.hashpw(res, bcrypt.gensalt())
     
     def check_password(self, password):
-        res = bytes(self.hashed_password, 'utf-8')
-        return bcrypt.checkpw(password.encode('utf-8'), res)
+        #res = bytes(self.hashed_password, 'utf-8')
+        return bcrypt.checkpw(password.encode('utf-8'), self.hashed_password.encode('utf-8'))
 
 # inheritence from User
 class Patient(User):
