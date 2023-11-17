@@ -1,4 +1,4 @@
-from database import db
+from db import db
 
 class Device(db.Model):
    device_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)

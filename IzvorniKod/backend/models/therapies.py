@@ -1,6 +1,6 @@
 from datetime import datetime
 from flask import jsonify, abort
-from database import db
+from db import db
 
 class Therapy(db.Model):
    therapy_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
