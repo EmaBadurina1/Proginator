@@ -268,11 +268,36 @@ Entitet Status sadrži sve bitne informacije o statusu termina terapije koji je 
 			
 		\section{Dijagram razreda}
 		
-			\textit{Potrebno je priložiti dijagram razreda s pripadajućim opisom. Zbog preglednosti je moguće dijagram razlomiti na više njih, ali moraju biti grupirani prema sličnim razinama apstrakcije i srodnim funkcionalnostima.}\\
+			Dijagrami razreda rađeni su po uzoru na MVC obrazac po kojem je naša aplikacija organizirana. Podijeljeni su u 3 dijela: Nadglednik(\textit{Controller}) (\ref{fig:dijagram_razreda_1}), DTO (\ref{fig:dijagram_razreda_2}) i Model (\ref{fig:dijagram_razreda_3}).
 			
-			\textbf{\textit{dio 1. revizije}}\\
+			Nadglednik obrađuje zahtjeve korisnika i preko DTO-a(\textit{Data transfer object}) vrši operacije nad Modelom. Zamišljeno je da funkcije implementirane u Nadgledniku vraćaju html status kod. \textit{KorisnikController} treba imati funkcije dobavljanja podataka i izmjene osobnih podataka. \textit{DjelatnikController} mora imati funkcije dobavljanja pacijenta i termina, evidencije pacijenta i dodavanje zahtjeva. \textit{PacijentController} mora imati funkcije dobavljanja zahtjeva, termina i nalaza, filtraciju termina i postavljanje terapije. \textit{AdminController} treba moći dobavljati djelatnike i termine, mijenjati djelatnike i termine, brisati djelatnike, sobe, uređaje i termine, dohvaćati djelatnike, sobe i uređaje i obavještavati pacijente. \textit{HomeController} treba imati pristup bazi i treba imati funkcije registracije i prijave.
 			
-			\textit{Prilikom prve predaje projekta, potrebno je priložiti potpuno razrađen dijagram razreda vezan uz \textbf{generičku funkcionalnost} sustava. Ostale funkcionalnosti trebaju biti idejno razrađene u dijagramu sa sljedećim komponentama: nazivi razreda, nazivi metoda i vrste pristupa metodama (npr. javni, zaštićeni), nazivi atributa razreda, veze i odnosi između razreda.}\\
+			\begin{figure}[H]
+				\includegraphics[scale=0.4]{slike/Dijagram_razreda_3.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
+				\centering
+				\caption{Dijagram razreda za dio Controller}
+				\label{fig:dijagram_razreda_1}
+			\end{figure}
+			
+			Dio s DTO-om sadrži jednostavne klase i služi isključivo za prenošenje podataka kako bi Nadglednik mogao vršiti operacije nad Modelom. Sadrži klase slične dijagramu razreda za dio Model uz nekoliko iznimaka. \textit{TerapijaSTerminima} sadrži atribute terapije s listom termina koji su vezanu uz pojedinu terapiju. \textit{ZahtjevPacijentaDTO} sadrži atribute Terapije i Termina koji su potrebni da bi Pacijent mogao napraviti Zahtjev.
+			
+			\begin{figure}[H]
+				\includegraphics[scale=0.4]{slike/Dijagram_razreda_2.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
+				\centering
+				\caption{Dijagram razreda za dio DTO}
+				\label{fig:dijagram_razreda_2}
+			\end{figure}
+			
+			Model sadrži atribute i metode koje su potrebne radi komunikacije s bazom podataka. Razred \textit{Korisnik} predstavlja korisnika koji, ako je neprijavljen, ima funkciju registracije, a ako je prijavljen, ima funkciju prikaza i promjene osobnih podataka. \textit{Administrator} predstavlja korisnika koji upravlja djelatnicima, sobama i uređajima i obavještava pacijenta ukoliko je potrebno. \textit{Djelatnik} je liječnik koji ima opciju pregleda pacijenta, njegovih termina i evidencije njegovih termina, evidencije pacijenta i prihvaćanje ili odbijanje zahtjeva za terminom. Razred \textit{Pacijent} je pacijent koji može pregledati predane zahtjeve i termine, filtrirati termine, pregledati nalaze terapije i naručiti novu terapiju. Prisutne su i klase Terapija, vrstaTerapije, Termin, Status, Soba, Uredaj i VrstaUredaja koje za sada nemaju predviđene nikakve funkcije. Svaki razred sadrži atribute bitne za taj razred.
+			
+			\begin{figure}[H]
+				\includegraphics[scale=0.3]{slike/Dijagram_razreda_1.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
+				\centering
+				\caption{Dijagram razreda za dio Model}
+				\label{fig:dijagram_razreda_3}
+			\end{figure}
+			
+			
 			
 			\textbf{\textit{dio 2. revizije}}\\			
 			
