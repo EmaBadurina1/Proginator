@@ -23,7 +23,7 @@ if __name__ == '__main__':
     db.init_app(app)
     # migrate.init_app(app, db)
     
-    with app.app_context():
-        db.create_all()
+    # with app.app_context():
+    #     db.create_all()
       
     app.run(debug=True)
