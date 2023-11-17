@@ -48,7 +48,9 @@ class User(db.Model):
     
     def set_password(self, password):
         salt = os.getenv("SALT")
-        self.hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt).decode()
+        salt = salt.encode('utf-8')
+        res = password.encode('utf-8')
+        self.hashed_password = bcrypt.hashpw(res, salt)
     
     def check_password(self, password):
         res = bytes(self.hashed_password, 'utf-8')
