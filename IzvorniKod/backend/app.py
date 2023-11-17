@@ -22,7 +22,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
 app.config["SESSION_COOKIE_SAMESITE"] = "None"
 app.config["SESSION_COOKIE_SECURE"] = True
 app.config["CORS_HEADERS"] = "Content-Type"
-app.config["SESSION_PROTECTION"] = "stron"
+app.config["SESSION_PROTECTION"] = "strong"
 
 db.init_app(app)
 
