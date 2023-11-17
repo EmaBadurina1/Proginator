@@ -1,7 +1,7 @@
 from datetime import datetime
-from werkzeug.security import generate_password_hash, check_password_hash
 from flask import jsonify, abort
 from db import db
+import bcrypt
 
 # Define the User model
 class User(db.Model):
@@ -42,10 +42,11 @@ class User(db.Model):
         }
     
     def set_password(self, password):
-        self.hashed_password = generate_password_hash(password)
+        salt = bcrypt.gensalt()
+        self.hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
     
     def check_password(self, password):
-        return check_password_hash(self.hashed_password, password)
+        return bcrypt.checkpw(password.encode('utf-8'), self.hashed_password)
 
 # inheritence from User
 class Patient(User):

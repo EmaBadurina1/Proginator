@@ -1,8 +1,7 @@
-from werkzeug.security import generate_password_hash, check_password_hash
+import bcrypt
 
 if __name__ == "__main__":
+   salt = bcrypt.gensalt()
    password = 'progi1234'
-   hash = generate_password_hash(password)
-   print(hash)
-
-   print(check_password_hash(hash, password))
+   hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
+   print(hashed_password.decode('utf-8'))
