@@ -70,11 +70,13 @@ def post_user():
 def login():
     user: User = User.query.filter_by(email=request.json['email']).first()
     if user and user.check_password(request.json['password']):
-
         session['user_id'] = user.user_id
+        print(session['user_id'])
+        response = jsonify({"data": {'user_id': user.user_id},
+                            "message": "Login successful"})
 
-        return jsonify({"data": {'user_id': user.user_id},
-                        "message": "Login successful"}), 200
+        response.status_code = 200
+        return response
     else:
         return jsonify({'error': 'Invalid username or password'}), 401
     
