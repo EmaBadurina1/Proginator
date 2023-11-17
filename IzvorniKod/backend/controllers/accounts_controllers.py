@@ -74,10 +74,10 @@ def login():
 
         response = jsonify({"data": {'user_id': user.user_id},
                             "message": "Login successful"})
-
-        response.set_cookie('session', session['user_id']  , secure=True, samesite='None')
-        return jsonify({"data": {'user_id': user.user_id},
-                        "message": "Login successful"}), 200
+        
+        #response.set_cookie('session', session['user_id']  , secure=True, samesite='None')
+        response.status_code = 200
+        return response
     else:
         return jsonify({'error': 'Invalid username or password'}), 401
     
