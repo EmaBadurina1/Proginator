@@ -347,7 +347,7 @@
 					\end{packed_item}
 				\end{packed_item}
 				
-				\noindent \underbar{\textbf{UC10 - Evidencija dolaska}}
+				\noindent \underbar{\textbf{UC10 - Evidencija dolaska(\ref{fig:sekvencijski_dijagram_2})}}
 				\begin{packed_item}
 					
 					\item \textbf{Glavni sudionik: }Djelatnik
@@ -382,7 +382,7 @@
 					\end{packed_item}
 				\end{packed_item}
 				
-				\noindent \underbar{\textbf{UC11 - Prihvaćanje zahtjeva za terminom (\ref{fig:sekvencijski_dijagram_2})}}
+				\noindent \underbar{\textbf{UC11 - Prihvaćanje zahtjeva za terminom (\ref{fig:sekvencijski_dijagram_3})}}
 				\begin{packed_item}
 					
 					\item \textbf{Glavni sudionik: }Djelatnik
@@ -723,8 +723,12 @@
 						\item Administrator odabire opciju "Promjena termina"
 						\item Otvara se stranica s prostorom za podatke o pacijentu i terminu
 						\item Administrator pretražuje i odabire pacijenta
-						\item Administrator unosi podatke o novom terminu
-						\item Administrator dodaje komentar
+						\item Prikazuju se termini odabranog pacijenta koji još nisu evidentirani
+						\item Administrator odabire termin koji želi promijeniti
+						\item Administrator unosi željene podatke o novom terminu
+						\item Prikaz mogućih termina sa željenim podacima
+						\item Odabir termina
+						\item Administrator opcionalno dodaje komentar
 						\item Administrator odabire opciju "Pošalji"
 						\item Podaci o terminu se spremaju u bazu podataka
 						\item Odabranom pacijentu se šalje e-mail o promjenama i informacijama o novom terminu
@@ -772,11 +776,7 @@
 				
 				\textbf{\underbar{UC6 - Kreiranje terapije}}
 				
-				Pacijent šalje zahtjev poslužitelju za naručivanje na terapiju. Web aplikacija mu prikazuje obrazac koji mora ispuniti kako i se naručio na terapiju. Pacijent unosi potrebne podatke(ime i prezime liječnika koji ga je uputio na rehabilitaciju, vrstu terapije, opis oboljenja i zahtjevani postupak liječenja). Pacijent šalje popunjeni obrazac. Web aplikacija na temelju primljenih podataka provjerava krebilitet liječnika u imeniku liječnika. Ovisno o rezultatu promjene web aplikacija će učiniti jednu od dvije stvari. Ako liječnik postoji u imeniku liječnika web-aplikacija sprema sve podatke u bazu podataka i prikazuje stranicu za odabir termina. U slučaju da liječnik ne postoji u imeniku liječnika aplikacija ispisuje poruku "Liječnik ne postoji"...
-				
-				\textit{UC6 sekvencijski dijagram nije točan, kako ga poboljšati?}
-				
-				\textit{Koje bi još obrasce uporabe trebalo odabrati za napraviti sekvencijske dijagrame?}
+				Pacijent šalje zahtjev poslužitelju za naručivanje na terapiju. Web aplikacija mu prikazuje obrazac koji mora ispuniti kako i se naručio na terapiju. Pacijent unosi potrebne podatke(ime i prezime liječnika koji ga je uputio na rehabilitaciju, vrstu terapije, opis oboljenja i zahtjevani postupak liječenja). Pacijent šalje popunjeni obrazac. Web aplikacija na temelju primljenih podataka provjerava krebilitet liječnika u imeniku liječnika. Ovisno o rezultatu promjene web aplikacija će učiniti jednu od dvije stvari. Ako liječnik postoji u imeniku liječnika web-aplikacija sprema sve podatke u bazu podataka i prikazuje stranicu za odabir termina. U slučaju da liječnik ne postoji u imeniku liječnika aplikacija ispisuje poruku "Liječnik ne postoji", pacijent u tom slučaju mijenja podatke u slučaju da je krivo unio liječnika ili odustaje od prijavljivanja terapije.
 				
 				
 				\begin{figure}[H]
@@ -786,11 +786,42 @@
 					\label{fig:sekvencijski_dijagram_1}
 				\end{figure}
 				
+				\textbf{\underbar{UC10 - Evidencija dolaska}}
+				
+				Djelatnik odabire opciju evidentiraj pored termina odabranog pacijenta. Web aplikacija iz baze podataka dohvaća podatke o terapiji kojoj pripada odabrani termin, te nakon toga prikazuje obrazac za evidenciju s dohvaćenim podacima i prostorom za označavanje dolaska i unosom komentara. Djelatnik odabire status(odrađeno/nije odrađeno) i piše komentar, nakon toga potvrđuje evidenciju, web aplikacija potom unesene podatke sprema u bazu podataka izmjenjujući tako podatke o odabranom terminu. Nakon što su podaci uspješno uneseni web aplikacija traži od baze termine evidentiranog pacijenta i prikazuje stranicu s popisom termina odabranog pacijenta. U slučaju da je djelatnik odabrao krivi termin za evidenciju može odustati od evidentiranja, web aplikacija će dohvatiti podatke o terminima i prikazati stranicu s popisom termina odabranog pacijenta.
+				
+				\begin{figure}[H]
+					\includegraphics[scale=0.4]{slike/UC10_Evidencija_dolaska.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
+					\centering
+					\caption{Sekvencijski dijagram za UC10}
+					\label{fig:sekvencijski_dijagram_2}
+				\end{figure}
+				
+				\textbf{\underbar{UC11 - Prihvaćanje zahtjeva za terminom}}
+				
+				Djelatnik zatražuje najnovije zahtjeva za terminom, web aplikacija ih dohvaća iz baze podataka, web aplikacija prikazuje zahtjeve i podatke o njima: datum slanja zahtjeva, pacijenta, opis terapije i vrijeme željenog termina. Djelatnik odabire zahtjev koji će evidentirati klikom opcije "evidentiraj" pored zahtjeva, web aplikacija nakon toga dohvaća sve vrste opreme iz baze podataka i prikazuje ih. Djelatnik na temelju opisa terapije odabire potrebnu vrstu opreme na temelju čega će web aplikacija iz baze podataka dohvatiti slobodne sobe u željenom terminu s odabranom vrstom opreme, te ih prikazati djelatniku. Ako ima slobodnih soba u navedenom terminu djelatnik bira jednu od njih i dodaje komentar za pacijenta. Kada djelatnik odabere opciju "Potvrdi" web aplikacija u bazi podataka zauzima odabranu sobu i opremu za željeni termin, te šalje e-mail pacijentu s informacijama o terminu. Aplikacija potom dohvaća zahtjeve i prikazuje ih djelatniku. 
+				
+				U slučaju da nema slobodnih soba s tom vrstom opreme u željenom terminu djelatnik odbija zahtjev. Web aplikacija potom dohvaća prve slobodne termine za odabranu vrstu opreme nakon zatraženog termina, te prikazuje djelatniku obrazac za dodjelu termina. Djelatnik bira termin i dodaje komentar. Nakon potvrde zahtjev se modificira i postaje termin. Nakon što su podatci uspješno spremljeni u bazu podataka šalje se mail pacijentu s informacijama o dodjeljenom terminu. Aplikacija potom dohvaća zahtjeve i prikazuje ih djelatniku.
+				
 				\begin{figure}[H]
 					\includegraphics[scale=0.4]{slike/UC11_Prihvaćanje_zahtjeva_za_termin.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
 					\centering
 					\caption{Sekvencijski dijagram za UC11}
-					\label{fig:sekvencijski_dijagram_2}
+					\label{fig:sekvencijski_dijagram_3}
+				\end{figure}
+				\eject
+				
+				\textbf{\underbar{UC20 - Obavijest o promjeni termina}}
+				
+				Administrator na svojoj stranicu odabire opciju "Promjeni termin" te mu nakon toga web aplikacija otvara stranicu za promjenu termina. Administrator unosi pacijenta i pretražuje. Web aplikacija prima podatak i provjerava u bazi podataka ako pacijent postoji. Ako postoji web aplikacija odmah dohvaća neevidentirane termine odabranog pacijenta, te ih prikazuje administratoru. Administrator potom odabire termin koji želi promijeniti i web aplikacija mu pokazuje obrazac za dodjelu novog termina. Administrator unosi podatke o novom terminu (datum/soba/oprema) i aplikacija na temelju toga dohvaća moguće termine iz baze podataka. Administrator odabire neki od mogućih termina i opcionalno dodaje komentar. Nakon što administrator potvrdi odabrani termin web aplikacija dodaje termin u bazu podataka i šalje e-mail pacijentu s informacijama o promjeni termina, a administratoru se ponovno prikazuje stranica za promjenu termina. 
+				
+				U slučaju da pacijent kojeg je administrator unio ne postoji u bazi podataka aplikacija će ga obavijestiti o nepostojanju pacijenta. Nakon toga administrator ima dvije opcije: ponovno unijeti pacijenta ili odustati od promjene termina nakon čega mu se prikazuje početna stranica.
+				
+				\begin{figure}[H]
+					\includegraphics[scale=0.4]{slike/UC20_Obavijest_o_promjeni_termina.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
+					\centering
+					\caption{Sekvencijski dijagram za UC20}
+					\label{fig:sekvencijski_dijagram_4}
 				\end{figure}
 				\eject
 	
@@ -799,6 +830,15 @@
 			\textbf{\textit{dio 1. revizije}}\\
 		 
 			 \textit{Nefunkcionalni zahtjevi i zahtjevi domene primjene dopunjuju funkcionalne zahtjeve. Oni opisuju \textbf{kako se sustav treba ponašati} i koja \textbf{ograničenja} treba poštivati (performanse, korisničko iskustvo, pouzdanost, standardi kvalitete, sigurnost...). Primjeri takvih zahtjeva u Vašem projektu mogu biti: podržani jezici korisničkog sučelja, vrijeme odziva, najveći mogući podržani broj korisnika, podržane web/mobilne platforme, razina zaštite (protokoli komunikacije, kriptiranje...)... Svaki takav zahtjev potrebno je navesti u jednoj ili dvije rečenice.}
+			 
+			 \begin{packed_item}
+			 	\item Sustav mora omogućiti istovremeni pristup korisnika
+			 	\item Neispravno korištenje korisničkog sučelja ne smije narušiti funkcionalnost aplikacije
+			 	\item Lozinka prije spremanja u bazu podataka mora biti kriptirana
+			 	\item Veza s bazom podataka mora biti brza i otporna na greške
+			 	\item Mora biti omogućen pristup sustavu iz javne mreže uz određenu razinu sigurnosti (HTTPS)
+			 	\item 
+			 \end{packed_item}
 			 
 			 
 			 
