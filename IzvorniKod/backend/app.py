@@ -19,6 +19,8 @@ if __name__ == '__main__':
     app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # silence the deprecation warning
     app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
+    app.config["SQLALCHEMY_ECHO"] = True
+    app.config["SQLALCHEMY_RECORD_QUERIES"] = True
 
     db.init_app(app)
     # migrate.init_app(app, db)
