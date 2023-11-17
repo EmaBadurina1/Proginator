@@ -47,15 +47,18 @@ class User(db.Model):
         }
     
     def set_password(self, password):
-        #salt = 
-        #salt = os.getenv("SALT")
-        #salt = salt.encode('utf-8')
+        salt = os.getenv("SALT")
+        salt = salt.encode('utf-8')
         res = password.encode('utf-8')
-        self.hashed_password = bcrypt.hashpw(res, bcrypt.gensalt())
+        self.hashed_password = bcrypt.hashpw(res, salt).decode('utf-8')
+        #res = password.encode('utf-8')
+        #self.hashed_password = bcrypt.hashpw(res, bcrypt.gensalt()).decode()
     
     def check_password(self, password):
-        #res = bytes(self.hashed_password, 'utf-8')
-        return bcrypt.checkpw(password.encode('utf-8'), self.hashed_password.encode('utf-8'))
+        hashed_password = self.hashed_password.encode('utf-8')
+        password = password.encode('utf-8')
+        return bcrypt.checkpw(password, hashed_password)
+        #return bcrypt.checkpw(password.encode('utf-8'), self.hashed_password.encode('utf-8'))
 
 # inheritence from User
 class Patient(User):
