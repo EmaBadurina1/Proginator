@@ -2,7 +2,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from flask import request, jsonify
 
 from models import *
-from database import db
+from db import db
 from auth import auth_validation
 
 # setup blueprint

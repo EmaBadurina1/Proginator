@@ -1,7 +1,7 @@
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import jsonify, abort
-from database import db
+from db import db
 
 # Define the User model
 class User(db.Model):
@@ -12,7 +12,6 @@ class User(db.Model):
     phone_number = db.Column(db.String(80), unique=True, nullable=False)
     date_of_birth = db.Column(db.Date)
     hashed_password = db.Column(db.String(300), nullable=False)
-
 
     def __init__(self, password, **kwargs):
         date_of_birth = kwargs.get('date_of_birth', None)
