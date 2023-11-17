@@ -70,13 +70,15 @@ def post_user():
 def login():
     user: User = User.query.filter_by(email=request.json['email']).first()
     if user and user.check_password(request.json['password']):
-        print("ovdje")
         session['user_id'] = user.user_id
 
+        response = jsonify({"data": {'user_id': user.user_id},
+                            "message": "Login successful"})
+
+        response.set_cookie('session', session['user_id']  , secure=True, samesite='None')
         return jsonify({"data": {'user_id': user.user_id},
                         "message": "Login successful"}), 200
     else:
-        print("tu")
         return jsonify({'error': 'Invalid username or password'}), 401
     
 

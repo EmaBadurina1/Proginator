@@ -51,12 +51,7 @@ class User(db.Model):
     
     def check_password(self, password):
         res = bytes(self.hashed_password, 'utf-8')
-        print(res)
-        print(self.hashed_password)
-        print(password)
-        tmp = bcrypt.checkpw(password.encode('utf-8'), res)
-        print(tmp)
-        return tmp
+        return bcrypt.checkpw(password.encode('utf-8'), res)
 
 # inheritence from User
 class Patient(User):
