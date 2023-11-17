@@ -826,18 +826,18 @@
 				\eject
 	
 		\section{Ostali zahtjevi}
-		
-			\textbf{\textit{dio 1. revizije}}\\
-		 
-			 \textit{Nefunkcionalni zahtjevi i zahtjevi domene primjene dopunjuju funkcionalne zahtjeve. Oni opisuju \textbf{kako se sustav treba ponašati} i koja \textbf{ograničenja} treba poštivati (performanse, korisničko iskustvo, pouzdanost, standardi kvalitete, sigurnost...). Primjeri takvih zahtjeva u Vašem projektu mogu biti: podržani jezici korisničkog sučelja, vrijeme odziva, najveći mogući podržani broj korisnika, podržane web/mobilne platforme, razina zaštite (protokoli komunikacije, kriptiranje...)... Svaki takav zahtjev potrebno je navesti u jednoj ili dvije rečenice.}
 			 
 			 \begin{packed_item}
-			 	\item Sustav mora omogućiti istovremeni pristup korisnika
-			 	\item Neispravno korištenje korisničkog sučelja ne smije narušiti funkcionalnost aplikacije
-			 	\item Lozinka prije spremanja u bazu podataka mora biti kriptirana
-			 	\item Veza s bazom podataka mora biti brza i otporna na greške
-			 	\item Mora biti omogućen pristup sustavu iz javne mreže uz određenu razinu sigurnosti (HTTPS)
-			 	\item 
+			 	\item Sustav mora omogućiti istovremeni pristup više korisnika (100 korisnika istovremeno) uz očuvanje performansi.
+			 	\item Poslužitelj mora vratiti odgovor na korisnički zahtjev unutar 5 sekundi.
+			 	\item Sustav mora biti dostupan korisnicima barem 90\% vremena unutar jedne godine.
+			 	\item Lozinka prije spremanja u bazu podataka mora biti kriptirana.
+			 	\item Veza s bazom podataka mora biti brza i otporna na greške.
+			 	\item Mora biti omogućen pristup sustavu iz javne mreže uz određenu razinu sigurnosti (HTTPS).
+			 	\item Klijentska aplikacija mora raditi u pregledniku Google Chrome.
+			 	\item Neispravno korištenje korisničkog sučelja ne smije narušiti funkcionalnost aplikacije.
+			 	\item Korisničko sučelje mora podržavati hrvatski jezik.
+			 	\item Korisničko sučelje mora biti jednostavno za upotrebu (intuitivno).
 			 \end{packed_item}
 			 
 			 

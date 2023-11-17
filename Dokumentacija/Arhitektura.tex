@@ -71,7 +71,7 @@ Entitet Korisnik sadrži sve bitne informacije o korisniku aplikacije. Entitet s
 					ime & VARCHAR(50) & ime korisnika	\\ \hline 
                      prezime & VARCHAR(50) & prezime korisnika	\\ \hline
                      datumRodenja & DATE & datum rođenja korisnika	\\ \hline  
-                     telefon & VARCHAR(50) & 	\\ \hline 
+                     telefon & VARCHAR(50) & broj mobilnog telefona korisnika	\\ \hline 
 					email & VARCHAR(100) & e-mail adresa korisnika   \\ \hline 
 					lozinka & VARCHAR(100) & hash lozinke za prijavu u aplikaciju	\\ \hline 
 					 
@@ -198,7 +198,7 @@ Entitet Soba sadrži sve bitne informacije o sobi u kojoj se provodi neka terapi
 						rowhead = 1,
 					} %definicija širine tablice, širine stupaca, poravnanje i broja redaka naslova tablice
 					\hline \SetCell[c=3]{c}{\textbf{Soba}}	 \\ \hline[3pt]
-					\SetCell{LightGreen}brSobe & VRACHAR(10) & jedinstveni identifikator sobe \\ \hline
+					\SetCell{LightGreen}brSobe & VARCHAR(10) & jedinstveni identifikator sobe \\ \hline
                      kapacitet & INT & kapacitet sobe, broj pacijenata koji istovremeno mogu biti na terapiji u nekoj sobi	\\ \hline
                      uUporabi & BOOLEAN & označava je li soba popunjena (true = popunjena, false = nije popunjena)	\\ \hline
 				\end{longtblr}
