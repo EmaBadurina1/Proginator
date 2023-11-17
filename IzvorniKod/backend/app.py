@@ -22,5 +22,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
 
 db.init_app(app)
 
+
 if __name__ == "__main__":
     app.run()

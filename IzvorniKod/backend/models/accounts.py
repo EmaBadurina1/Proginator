@@ -2,6 +2,11 @@ from datetime import datetime
 from flask import jsonify, abort
 import bcrypt  # Import the bcrypt library
 from db import db
+import bcrypt
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Define the User model
 class User(db.Model):
@@ -42,12 +47,15 @@ class User(db.Model):
         }
     
     def set_password(self, password):
-        # Hash the password using bcrypt
-        self.hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-
+        salt = os.getenv("SALT")
+        self.hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
+    
     def check_password(self, password):
-        # Check the password using bcrypt
-        return bcrypt.checkpw(password.encode('utf-8'), self.hashed_password)
+        res = bytes(self.hashed_password, 'utf-8')
+        print(res)
+        print(self.hashed_password)
+        print(password)
+        return bcrypt.checkpw(password.encode('utf-8'), res)
 
 # inheritence from User
 class Patient(User):
