@@ -26,5 +26,6 @@ app.config["SESSION_PROTECTION"] = "strong"
 
 db.init_app(app)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     app.run()

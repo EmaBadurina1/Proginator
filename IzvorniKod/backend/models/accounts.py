@@ -1,5 +1,6 @@
 from datetime import datetime
 from flask import jsonify, abort
+import bcrypt  # Import the bcrypt library
 from db import db
 import bcrypt
 import os

@@ -1,9 +1,5 @@
-import jwt
-from datetime import datetime, timedelta
-from flask import abort, jsonify
+from flask import abort, jsonify, session
 from functools import wraps
-from flask import request, session
-from flask import current_app as app
 
 
 def auth_validation(f):
