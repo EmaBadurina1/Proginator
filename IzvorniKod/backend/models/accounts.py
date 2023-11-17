@@ -2,6 +2,10 @@ from datetime import datetime
 from flask import jsonify, abort
 from db import db
 import bcrypt
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Define the User model
 class User(db.Model):
@@ -42,7 +46,7 @@ class User(db.Model):
         }
     
     def set_password(self, password):
-        salt = bcrypt.gensalt()
+        salt = os.getenv("SALT")
         self.hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
     
     def check_password(self, password):
