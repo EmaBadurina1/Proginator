@@ -51,6 +51,7 @@ class User(db.Model):
     
     def check_password(self, password):
         res = bytes(self.hashed_password, 'utf-8')
+        print(res)
         print(self.hashed_password)
         print(password)
         return bcrypt.checkpw(password.encode('utf-8'), res)
