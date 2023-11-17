@@ -2,7 +2,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from flask import request, jsonify, session
 
 from models import *
-from db import db
+from database import db
 from auth import auth_validation
 from external_connector import get_patient_data
 

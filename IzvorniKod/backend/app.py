@@ -5,7 +5,7 @@ import os
 
 from controllers import accounts_bp, appointments_bp
 from models import *
-from db import db
+from database import db
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)

@@ -1,6 +1,6 @@
 from datetime import datetime
 from flask import jsonify, abort
-from db import db
+from database import db
 
 class Appointment(db.Model):
    appointment_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)

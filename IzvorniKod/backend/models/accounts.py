@@ -1,7 +1,7 @@
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import jsonify, abort
-from db import db
+from database import db
 
 # Define the User model
 class User(db.Model):

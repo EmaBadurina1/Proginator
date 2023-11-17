@@ -1,4 +1,4 @@
-from db import db
+from database import db
 
 class Room(db.Model):
    room_num = db.Column(db.String(10), primary_key=True, nullable=False)
