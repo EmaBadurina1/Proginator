@@ -17,15 +17,23 @@
 
 ### Response
 
-- **Success Code:** `200 OK`
+- **Success Code:** `201 OK`
 - **Content:**
 
   ```json
   {
     "data": {
-      "user_id": 1
-    },
-    "message": "Patient created successfully."
+      "patient": {
+        "user_id": 22,
+        "name": "John",
+        "surname": "Doe",
+        "email": "john.doe@gmail.com",
+        "phone_number": "0916767123",
+        "date_of_birth": "Thu, 23 Nov 1989 00:00:00 GMT",
+        "MBO": "111111111"
+      }
+    }, 
+    "message": "Uspješno dodan pacijent John Doe."
   }
   ```
 - **Error Codes:**
@@ -33,7 +41,16 @@
   - `400 Bad Request`
     - If the email, phone number or MBO is already in use.
     - If the email, phone number or MBO is not valid.
-    - If the patient data does not exist in the external database
+    - If the patient data does not exist in the external database.
+    - If the required data is not in response.
+    - If the required data is empty.
+    - If the data sent is not in valid format.
+
+  ```json
+  {
+    "error": "Error message."
+  }
+  ```
 
 ## Create a New Employee
 
@@ -54,20 +71,39 @@
 
 ### Response
 
-- **Success Code:** `200 OK`
+- **Success Code:** `201 OK`
 - **Content:**
   ```json
   {
-    "data":{
-      "user_id": 1
+    "data": {
+      "employee": {
+        "user_id": 22,
+        "name": "John",
+        "surname": "Doe",
+        "email": "john.doe@gmail.com",
+        "phone_number": "0916767123",
+        "date_of_birth": "Thu, 23 Nov 1989 00:00:00 GMT",
+        "OIB": "11111111111",
+        "is_active": true,
+        "is_admin": false
+      }
     },
-    "message": "Employee created successfully."
+    "message": "Uspješno dodan djeltanik John Doe."
   }
   ```
 - **Error Codes:**
   - `400 Bad Request`
     - If the email, phone number or OIB is already in use.
     - If the email, phone number or OIB is not valid.
+    - If the required data is not in response.
+    - If the required data is empty.
+    - If the data sent is not in valid format.
+
+  ```json
+  {
+    "error": "Error message."
+  }
+  ```
 
 ## User Login
 
@@ -85,16 +121,71 @@
 - **Content:**
   ```json
   {
-    "data":{
-      "user_id": 1
-    },
-    "message": "User logged in successfully."
+    "data": {
+      "patient": {
+        "user_id": 22,
+        "name": "John",
+        "surname": "Doe",
+        "email": "john.doe@gmail.com",
+        "phone_number": "0916767123",
+        "date_of_birth": "Thu, 23 Nov 1989 00:00:00 GMT",
+        "MBO": "111111111"
+      }
+    }, 
+    "message": message
   }
   ```
 - **Session:**
   - `Bearer Token`: Token is set so that the user can be authenticated. (expires in 1 day or server restarts)
 - **Error Codes:** `400 Bad Request`
   - If the email or password is not valid.
+
+## Get Users
+
+### Request
+
+**Endpoint:** /users
+**Method:** `GET`
+**Authentication:** Bearer Token
+
+- `Brearer Token` (string): Token received after login.
+
+### Response
+
+- **Success Code:** `200 OK`
+- **Content:**
+
+  ```json
+  {
+    "users": {
+        "employees": [
+            {
+                "OIB": "12345678900",
+                "date_of_birth": "Mon, 10 Mar 1980 00:00:00 GMT",
+                "email": "jane.doe@gmail.com",
+                "is_active": true,
+                "is_admin": true,
+                "name": "Jane",
+                "phone_number": "0992347681",
+                "surname": "Doe",
+                "user_id": 21
+            }
+        ],
+        "patients": [
+            {
+                "MBO": "111111111",
+                "date_of_birth": "Mon, 01 Jan 1990 00:00:00 GMT",
+                "email": "john.doe@fer.hr",
+                "name": "John",
+                "phone_number": "0915672146",
+                "surname": "Doe",
+                "user_id": 20
+            }
+        ]
+    },
+    "message": "Dohvaćeni svi korisnici."
+  }
+  ```
 
 ## Get Patient/Employee by ID
 

@@ -14,6 +14,7 @@ import Registration from "./pages/Registration";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
+import UserAdd from "./pages/UserAdd";
 
 function App() {
   const [auth, setAuth] = React.useState(true);
@@ -50,6 +51,7 @@ function App() {
           path="/home"
           element={auth ? <Home onLogout={logout} /> : <Navigate to="/login" replace />}
         />
+        <Route path="/super-secret-route" element={<UserAdd/>} />
         <Route path="*" element={<NotFound />} />
       </Route>
     )

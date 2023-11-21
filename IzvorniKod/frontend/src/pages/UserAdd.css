@@ -1,0 +1,76 @@
+.user-add {
+   display: flex;
+   justify-content: center;
+}
+
+.form {
+   display: flex;
+   flex-direction: column;
+   border: 3px solid #3498db;
+   border-radius: 8px;
+   padding: 20px;
+   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+   margin: 20px;
+   padding: 40px;
+}
+
+.form-row {
+   display: flex;
+   flex-direction: column;
+}
+
+.form-input {
+   margin: 15px !important;
+   padding: 0;
+}
+
+.form-input.date-picker {
+   margin-top: 7px !important;
+   width: 100%;
+}
+
+.form-row.select-form {
+   align-items: center;
+}
+
+.submit-btn {
+   margin: 15px !important;
+}
+
+.form-row.submit {
+   display: flex;
+   flex-direction: row;
+   justify-content: center;
+}
+
+.form-row.password {
+   width: 100%;
+}
+
+.form-input.select-role {
+   min-width: 120px;
+   width: 100%;
+   display: flex;
+   flex-direction: column;
+}
+
+.form-input.date-picker, .form-input.select-role {
+   padding-left: 15px;
+   padding-right: 15px;
+}
+
+@media (min-width: 768px) {
+   .form-row {
+      display: flex;
+      flex-direction: row;
+   }
+
+   .form-input.date-picker, .form-input.select-role {
+      padding-left: 0px;
+      padding-right: 0px;
+   }
+
+   .form-row.password {
+      width: 50%;
+   }
+}
