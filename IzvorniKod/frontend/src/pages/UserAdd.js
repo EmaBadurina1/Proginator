@@ -1,5 +1,5 @@
 import { React, useEffect, useState } from "react";
-import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'
+import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
@@ -60,7 +60,7 @@ const UserAdd = () => {
    check if form field are filled */
    useEffect(() => {
       /* Check if all required fields are filled */
-      function isFilled() {
+      const isFilled = () => {
          if(form.name === "") return false;
          if(form.surname === "") return false;
          if(form.email === "") return false;
@@ -319,7 +319,7 @@ const UserAdd = () => {
                      helperText={helperText.phone_number}
                   />
                </div>
-               <div className="form-row select-form">
+               <div className="form-row ua-form-select">
                   <div className="form-input date-picker">
                      <LocalizationProvider dateAdapter={AdapterLuxon}>
                         <DemoContainer components={['DatePicker']}>

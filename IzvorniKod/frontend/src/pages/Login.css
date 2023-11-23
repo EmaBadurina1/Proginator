@@ -1,17 +1,50 @@
-.h-full {
+.login-page {
   height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .login-border {
   border: 3px solid #3498db;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .registration-border {
-   border: 3px solid #9216f0;
-   border-radius: 8px;
-   padding: 20px;
-   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
- }
+  border: 3px solid #9216f0;
+  text-align: center;
+}
+
+.login-border h3 {
+  text-align: center;
+  padding-bottom: 20px;
+}
+
+.login-border, .registration-border {
+  margin: 30px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 40px;
+  max-width: 400px;
+}
+
+.login-form-row {
+  display: flex;
+  margin: 15px 0 15px 0;
+}
+
+.login-form-input {
+  width: 100%;
+}
+
+.login-form-row.login-form-submit {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+@media (min-width: 768px) {
+  .login-page {
+    flex-direction: row;
+  }
+}

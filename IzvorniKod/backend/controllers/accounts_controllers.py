@@ -185,7 +185,7 @@ def register_patient():
         db.session.rollback()
         return jsonify({
             'error': "Dogodila se pogreška prilikom unosa."
-        }), 400
+        }), 500
     finally:
         db.session.close()
 
@@ -265,7 +265,7 @@ def register_employee():
         db.session.rollback()
         return jsonify({
             'error': "Dogodila se pogreška prilikom unosa."
-        }), 400
+        }), 500
     finally:
         db.session.close()
 

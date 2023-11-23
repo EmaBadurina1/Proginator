@@ -1,12 +1,103 @@
-.h-full {
-   height: 100vh;
- }
- 
+.registration {
+  display: flex;
+  justify-content: center;
+}
 
- 
- .registration-border {
-    border: 3px solid #9216f0;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+.reg-form {
+  display: flex;
+  flex-direction: column;
+  border: 3px solid #3498db;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin: 20px;
+  padding: 40px;
+}
+
+.reg-form h3, .reg-form h4 {
+  text-align: center;
+}
+
+.reg-form h4 {
+  margin-bottom: 30px;
+}
+
+.reg-form-row {
+  display: flex;
+  flex-direction: column;
+}
+
+.reg-form-input {
+  margin: 15px !important;
+  padding: 0;
+}
+
+.reg-form-input.reg-date-picker {
+  margin-top: 7px !important;
+  width: 263px;
+}
+
+.reg-form-row.reg-password {
+  width: 100%;
+}
+
+.reg-form-input.reg-date-picker, .reg-form-input.reg-MBO-input {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.reg-form-input.reg-MBO-input {
+  flex: 1;
+  width: 263px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.reg-form-input.reg-MBO-input div {
+  width: 100%;
+}
+
+.reg-form-row.reg-form-buttons {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 7.5px;
+}
+
+.reg-form-row.reg-form-buttons > * {
+  margin-top: 7.5px;
+  margin-bottom: 7.5px;
+}
+
+.reg-btn-cancel {
+  background-color: firebrick !important;
+}
+
+@media (min-width: 576px) {
+  .reg-form-row.reg-form-buttons {
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 15px;
   }
+}
+
+@media (min-width: 768px) {
+  .reg-form-row {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .reg-form-input {
+    width: 223px;
+  }
+
+  .reg-form-input.reg-date-picker, .reg-form-input.reg-MBO-input {
+    width: 223px;
+  }
+
+  .reg-form-row.reg-password {
+    width: 50%;
+  }
+}

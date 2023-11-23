@@ -3,10 +3,6 @@ from flask import jsonify, abort
 import bcrypt  # Import the bcrypt library
 from db import db
 import bcrypt
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
 
 # Define the User model
 class User(db.Model):
