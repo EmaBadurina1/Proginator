@@ -22,7 +22,7 @@ class User(db.Model):
             date_of_birth = datetime.strptime(date_of_birth, '%Y-%m-%d')
             kwargs['date_of_birth'] = date_of_birth
         except ValueError:
-            response = jsonify({'error': 'Pogrešan datum. Format mroa biti YYYY-MM-DD'})
+            response = jsonify({'error': 'Pogrešan datum. Format mora biti YYYY-MM-DD'})
             response.status_code = 400
             return abort(response)
 
@@ -43,20 +43,13 @@ class User(db.Model):
         }
     
     def set_password(self, password):
-        #salt = os.getenv("SALT")
-        #salt = salt.encode('utf-8')
-        #res = password.encode('utf-8')
-        #self.hashed_password = bcrypt.hashpw(res, salt).decode('utf-8')
         res = password.encode('utf-8')
         self.hashed_password = bcrypt.hashpw(res, bcrypt.gensalt()).decode()
     
     def check_password(self, password):
-        #hashed_password = self.hashed_password.encode('utf-8')
-        #password = password.encode('utf-8')
-        #return bcrypt.checkpw(password, hashed_password)
         return bcrypt.checkpw(password.encode('utf-8'), self.hashed_password.encode('utf-8'))
 
-# inheritence from User
+# inheritance from User
 class Patient(User):
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), primary_key=True, nullable=False)
     MBO = db.Column(db.String(80), unique=True, nullable=False)
