@@ -1,5 +1,8 @@
-IzvorniKod/frontend/node_modules/
 biljeske.txt
-.vscode/
-IzvorniKod/backend/.env
-IzvorniKod/frontend/.env
+.vscode
+**/__pycache__/
+**/.venv/
+**/venv/
+**/.env
+**/env
+**/instance
