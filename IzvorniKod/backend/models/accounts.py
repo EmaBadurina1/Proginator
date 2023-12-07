@@ -48,6 +48,18 @@ class User(db.Model):
     
     def check_password(self, password):
         return bcrypt.checkpw(password.encode('utf-8'), self.hashed_password.encode('utf-8'))
+    
+    def get_role(self):
+        if hasattr(self, 'patient'):
+            return 'patient'
+        elif hasattr(self, 'employee'):
+            # get is_admin from employee
+            if self.employee.is_admin:
+                return 'admin'
+            else:
+                return 'doctor'
+        else:
+            return 'user'
 
 # inheritance from User
 class Patient(User):
