@@ -1,3 +1,5 @@
 IzvorniKod/frontend/node_modules/
 biljeske.txt
 .vscode/
+IzvorniKod/backend/.env
+IzvorniKod/frontend/.env
