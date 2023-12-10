@@ -16,7 +16,7 @@ class User(db.Model):
 
     def __init__(self, password, **kwargs):
         date_of_birth = kwargs.get('date_of_birth', None)
-
+ 
         # test date format and convert to datetime
         try:
             date_of_birth = datetime.strptime(date_of_birth, '%Y-%m-%d')
