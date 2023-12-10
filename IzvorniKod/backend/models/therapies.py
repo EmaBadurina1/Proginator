@@ -1,5 +1,6 @@
 from datetime import datetime
 from flask import jsonify, abort
+from models import *
 from db import db
 
 class Therapy(db.Model):
@@ -29,15 +30,17 @@ class Therapy(db.Model):
       return f'<Therapy ID {self.therapy_id}>'
    
    def to_dict(self):
+      patient = Patient.query.get(self.patient_id)
+      therapy_type = TherapyType.query.get(self.therapy_type_id)
       return {
          'therapy_id': self.therapy_id,
-         'doctor_id': self.doctor_id,
+         'doctor_id': self.doctor_id, # spojiti s doktorom iz eksterne baze
          'disease_descr': self.disease_descr,
          'req_treatment': self.req_treatment,
          'date_from': self.date_from,
          'date_to': self.date_to,
-         'patient_id': self.patient_id,
-         'therapy_type_id': self.therapy_type_id,
+         'patient': patient.to_dict(),
+         'therapy_type': therapy_type.to_dict(),
       }
    
    def update(self, **kwargs):

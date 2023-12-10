@@ -1,4 +1,5 @@
 from db import db
+from models import *
 from flask import jsonify
 
 class Device(db.Model):
@@ -15,10 +16,12 @@ class Device(db.Model):
       return f'<Device ID {self.device_id}>'
    
    def to_dict(self):
+      room = Room.query.get(self.room_num)
+      device_type = DeviceType.query.get(self.device_type_id)
       return {
          'device_id': self.device_id,
-         'room_num': self.room_num,
-         'device_type_id': self.device_type_id
+         'room': room.to_dict(),
+         'device_type': device_type.to_dict()
       }
    
    def update(self, **kwargs):

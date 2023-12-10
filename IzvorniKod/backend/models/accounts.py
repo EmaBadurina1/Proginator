@@ -60,6 +60,9 @@ class User(db.Model):
     
     def check_password(self, password):
         return bcrypt.checkpw(password.encode('utf-8'), self.hashed_password.encode('utf-8'))
+    
+    def change_password(self, new_password):
+        self.hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt()).decode()
 
 # inheritance from User
 class Patient(User):

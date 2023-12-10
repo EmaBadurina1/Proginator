@@ -1,5 +1,6 @@
 from datetime import datetime
 from flask import jsonify, abort
+from models import *
 from db import db
 
 class Appointment(db.Model):
@@ -29,15 +30,19 @@ class Appointment(db.Model):
       return f'<Appointment ID {self.appointment_id}>'
    
    def to_dict(self):
+      room = Room.query.get(self.room_num)
+      therapy = Therapy.query.get(self.therapy_id)
+      status = Status.query.get(self.status_id)
+      employee = Employee.query.get(self.employee_id)
       return {
          'appointment_id': self.appointment_id,
-         'room_num': self.room_num,
+         'room': room.to_dict(),
          'date_from': self.date_from,
          'date_to': self.date_to,
-         'therapy_id': self.therapy_id,
+         'therapy': therapy.to_dict(),
          'comment': self.comment,
-         'status_id': self.status_id,
-         'employee_id': self.employee_id
+         'status': status.to_dict(),
+         'employee': employee.to_dict()
       }
    
    def update(self, **kwargs):

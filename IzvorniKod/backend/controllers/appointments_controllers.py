@@ -8,31 +8,62 @@ appointments_bp = Blueprint('appointments_bp', __name__)
 
 # get list of appointments
 @appointments_bp.route('/appointments', methods=['GET'])
-#@auth_validation
+@auth_validation
 def get_appointments():
     return get_all(Model=Appointment)
 
 # get appointment with id=appointment_id
 @appointments_bp.route('/appointments/<int:appointment_id>', methods=['GET'])
-#@auth_validation
+@auth_validation
 def get_appointment(appointment_id):
     return get_one(id=appointment_id, Model=Appointment)
 
 # create new appointment
 @appointments_bp.route('/appointments', methods=['POST'])
-#@auth_validation
+@auth_validation
 def create_appointment():
     required_fields = ['date_from', 'therapy_id']
     return create(required_fields=required_fields, Model=Appointment)
 
 # update appointment with id=appointment_id
 @appointments_bp.route('/appointments/<int:appointment_id>', methods=['PATCH'])
-#@auth_validation
+@auth_validation
 def update_appointment(appointment_id):
     return update(id=appointment_id, Model=Appointment)
     
 # delete appointment with id=appointment_id
 @appointments_bp.route('/appointments/<int:appointment_id>', methods=['DELETE'])
-#@auth_validation
+@auth_validation
 def delete_appointment(appointment_id):
     return delete(id=appointment_id, Model=Appointment)
+
+# get list of statuses
+@appointments_bp.route('/statuses', methods=['GET'])
+@auth_validation
+def get_statuses():
+    return get_all(Model=Status)
+
+# get status with id=status_id
+@appointments_bp.route('/statuses/<int:status_id>', methods=['GET'])
+@auth_validation
+def get_status(status_id):
+    return get_one(id=status_id, Model=Status)
+
+# create new status
+@appointments_bp.route('/statuses', methods=['POST'])
+@auth_validation
+def create_status():
+    required_fields = ['status_name']
+    return create(required_fields=required_fields, Model=Status)
+
+# update status with id=status_id
+@appointments_bp.route('/statuses/<int:status_id>', methods=['PATCH'])
+@auth_validation
+def update_status(status_id):
+    return update(id=status_id, Model=Status)
+    
+# delete status with id=status_id
+@appointments_bp.route('/statuses/<int:status_id>', methods=['DELETE'])
+@auth_validation
+def delete_status(status_id):
+    return delete(id=status_id, Model=Status)
