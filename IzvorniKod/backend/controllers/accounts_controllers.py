@@ -116,7 +116,7 @@ def register_patient():
 
     # check if required_fields are empty
     if empty_fields:
-        error_message = f"Obavezna polja nesmiju biti prazna: {', '.join(empty_fields)}"
+        error_message = f"Obavezna polja ne smiju biti prazna: {', '.join(empty_fields)}"
         return jsonify({'error': error_message}), 400
 
     # check is MBO is in right format
@@ -125,17 +125,24 @@ def register_patient():
             'error': 'MBO mora biti 9 znamenki.'
         }), 400
 
-    # test for unique email, phone_number and MBO
-    if User.query.filter_by(email=request.json['email']).first():
-        error_message = f"E-mail '{request.json['email']}' već postoji u sustavu."
-        return jsonify({'error': error_message}), 400
-    
-    if User.query.filter_by(phone_number=request.json['phone_number']).first():
-        error_message = f"Broj '{request.json['phone_number']}' već postoji u sustavu."
-        return jsonify({'error': error_message}), 400
+    email = request.json['email']
+    phone_number = request.json['phone_number']
+    MBO = request.json['MBO']
 
-    if Patient.query.filter_by(MBO=request.json['MBO']).first():
-        error_message = f"MBO '{request.json['MBO']}' već postoji u sustavu."
+    query_patient = Patient.query.filter((Patient.email == email) | 
+                                         (Patient.phone_number == phone_number) | 
+                                         (Patient.MBO == MBO)).first()
+    
+    if query_patient:
+        duplicate_params = []
+        if query_patient.email == email:
+            duplicate_params.append("email")
+        if query_patient.phone_number == phone_number:
+            duplicate_params.append("phone_number")
+        if query_patient.MBO == MBO:
+            duplicate_params.append("MBO")
+
+        error_message = f"Podatci koje pokušavate unijeti trebaju biti jedinstveni, a oni već postoje: {', '.join(duplicate_params)}"
         return jsonify({'error': error_message}), 400
     
     # test if MBO exists in external database
@@ -174,12 +181,12 @@ def register_patient():
     except IntegrityError as e:
         db.session.rollback()
         return jsonify({
-            'error': "Podatci koje pokušavate unjeti trebaju biti jedinstveni, a oni već postoje."
+            'error': "Podatci koje pokušavate unijeti trebaju biti jedinstveni, a oni već postoje."
         }), 400
     except DataError as e:
         db.session.rollback()
         return jsonify({
-            'error': "Podatci koje pokušavate unjeti nisu u valjanom formatu."
+            'error': "Podatci koje pokušavate unijeti nisu u valjanom formatu."
         }), 400
     except Exception as e:
         db.session.rollback()
@@ -203,37 +210,43 @@ def register_employee():
         'is_active',
         'is_admin'
     ]
-    missing_fields = validate_required_fields(request.json, required_fields)
 
     # check if there are all required fields
+    missing_fields = validate_required_fields(request.json, required_fields)
     if missing_fields:
         error_message = f"Nedostaju obavezna polja: {', '.join(missing_fields)}"
         return jsonify({'error': error_message}), 400
     
-    empty_fields = validate_empty_fields(request.json, required_fields)
-
     # check if required_fields are empty
+    empty_fields = validate_empty_fields(request.json, required_fields)
     if empty_fields:
-        error_message = f"Obavezna polja nesmiju biti prazna: {', '.join(empty_fields)}"
+        error_message = f"Obavezna polja ne smiju biti prazna: {', '.join(empty_fields)}"
         return jsonify({'error': error_message}), 400
 
     # check if OIB is in right format
     if not validate_number(request.json['OIB'], 11):
         return jsonify({
-            'error': 'OIB mora biti 11 znamenki.'
+            'error': 'OIB mora imati 11 znamenki.'
         }), 400
-
-    # test for unique email, phone_number and MBO
-    if User.query.filter_by(email=request.json['email']).first():
-        error_message = f"E-mail '{request.json['email']}' već postoji u sustavu."
-        return jsonify({'error': error_message}), 400
     
-    if User.query.filter_by(phone_number=request.json['phone_number']).first():
-        error_message = f"Broj '{request.json['phone_number']}' već postoji u sustavu."
-        return jsonify({'error': error_message}), 400
+    email = request.json['email']
+    phone_number = request.json['phone_number']
+    OIB = request.json['OIB']
 
-    if Patient.query.filter_by(MBO=request.json['OIB']).first():
-        error_message = f"OIB '{request.json['OIB']}' već postoji u sustavu."
+    query_patient = Employee.query.filter((Employee.email == email) | 
+                                         (Employee.phone_number == phone_number) | 
+                                         (Employee.OIB == OIB)).first()
+    
+    if query_patient:
+        duplicate_params = []
+        if query_patient.email == email:
+            duplicate_params.append("email")
+        if query_patient.phone_number == phone_number:
+            duplicate_params.append("phone_number")
+        if query_patient.MBO == OIB:
+            duplicate_params.append("OIB")
+
+        error_message = f"Podatci koje pokušavate unijeti trebaju biti jedinstveni, a oni već postoje: {', '.join(duplicate_params)}"
         return jsonify({'error': error_message}), 400
     
     data = {}
@@ -251,15 +264,16 @@ def register_employee():
             },
             "message": message
         }), 201
+    
     except IntegrityError as e:
         db.session.rollback()
         return jsonify({
-            'error': "Podatci koje pokušavate unjeti trebaju biti jedinstveni, a oni već postoje."
+            'error': "Podatci koje pokušavate unijeti trebaju biti jedinstveni, a oni već postoje."
         }), 400
     except DataError as e:
         db.session.rollback()
         return jsonify({
-            'error': "Podatci koje pokušavate unjeti nisu u valjanom formatu."
+            'error': "Podatci koje pokušavate unijeti nisu u valjanom formatu."
         }), 400
     except Exception as e:
         db.session.rollback()
