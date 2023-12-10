@@ -15,6 +15,8 @@ import Login from "./pages/Login";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import UserAdd from "./pages/UserAdd";
+import AttendanceRecord from "./pages/AttendanceRecord";
+import PatientPreview from "./pages/PatientPreview";
 
 function App() {
   const [auth, setAuth] = React.useState(true);
@@ -47,6 +49,8 @@ function App() {
         />
         <Route path="/login" element={<Login onLogin={login} />} />
         <Route path="/registration" element={<Registration />} />
+        <Route path="/attendance" element={<AttendanceRecord />} />
+        <Route path="/patientpreview" element={<PatientPreview />} />
         <Route
           path="/home"
           element={auth ? <Home onLogout={logout} /> : <Navigate to="/login" replace />}
