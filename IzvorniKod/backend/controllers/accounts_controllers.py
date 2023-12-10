@@ -283,6 +283,45 @@ def register_employee():
     finally:
         db.session.close()
 
+@accounts_bp.route('/users/<int:user_id>/password', methods=['PATCH'])
+@auth_validation
+def get_user(user_id):
+    required_fields = [
+        "old_password",
+        "new_password",
+        "new_password_rep"
+    ]
+
+    missing_fields = validate_required_fields(request.json, required_fields)
+    if missing_fields:
+        error_message = f"Missing fields: {', '.join(missing_fields)}"
+        return jsonify({
+            "error": error_message,
+            "status": 400
+        }), 400
+    
+    if request.json["new_password"] != request.json["new_password_rep"]:
+        return jsonify({
+            "error": "Passwords are not the same",
+            "status": 400
+        }), 400
+    
+    user = User.query.get(id);
+
+    if not user.check_password(request.json["password"]):
+        return jsonify({
+            "error": "Wrong password",
+            "status": 400
+        }), 400
+    
+    user.change_password(request.json["new_password"])
+    db.session.commit()
+
+    return jsonify({
+        "message": "Password changed",
+        "status": 200
+    }), 200
+
 """
 # adding new user
 @accounts_bp.route('/users', methods=['POST'])

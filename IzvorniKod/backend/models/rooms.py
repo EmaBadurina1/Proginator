@@ -1,4 +1,5 @@
 from db import db
+from flask import jsonify
 
 class Room(db.Model):
    room_num = db.Column(db.String(10), primary_key=True, nullable=False)
@@ -20,7 +21,7 @@ class Room(db.Model):
          'in_use': self.in_use
       }
    
-   def update_room(self, **kwargs):
+   def update(self, **kwargs):
       if 'room_num' in kwargs:
          self.room_num = kwargs.get('room_num', None)
       if 'capacity' in kwargs:

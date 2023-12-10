@@ -16,7 +16,7 @@ class User(db.Model):
 
     def __init__(self, password, **kwargs):
         date_of_birth = kwargs.get('date_of_birth', None)
-
+ 
         # test date format and convert to datetime
         try:
             date_of_birth = datetime.strptime(date_of_birth, '%Y-%m-%d')
@@ -42,12 +42,27 @@ class User(db.Model):
             'date_of_birth': self.date_of_birth
         }
     
+    def update(self, **kwargs):
+        if 'name' in kwargs:
+            self.name = kwargs.get('name', None)
+        if 'surname' in kwargs:
+            self.surname = kwargs.get('surname', None)
+        if 'email' in kwargs:
+            self.email = kwargs.get('email', None)
+        if 'phone_number' in kwargs:
+            self.phone_number = kwargs.get('phone_number', None)
+        if 'date_of_birth' in kwargs:
+            self.date_of_birth = kwargs.get('date_of_birth', None)
+
     def set_password(self, password):
         res = password.encode('utf-8')
         self.hashed_password = bcrypt.hashpw(res, bcrypt.gensalt()).decode()
     
     def check_password(self, password):
         return bcrypt.checkpw(password.encode('utf-8'), self.hashed_password.encode('utf-8'))
+    
+    def change_password(self, new_password):
+        self.hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt()).decode()
 
 # inheritance from User
 class Patient(User):
@@ -63,6 +78,12 @@ class Patient(User):
         user_dict['MBO'] = self.MBO
 
         return user_dict
+    
+    def update(self, **kwargs):
+        if 'MBO' in kwargs:
+            self.MBO = kwargs.get('MBO', None)
+        super().update(**kwargs)
+
 
 class Employee(User):
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), primary_key=True, nullable=False)
@@ -84,3 +105,12 @@ class Employee(User):
         user_dict['OIB'] = self.OIB
 
         return user_dict
+    
+    def update(self, **kwargs):
+        if 'OIB' in kwargs:
+            self.OIB = kwargs.get('MBO', None)
+        if 'is_active' in kwargs:
+            self.is_active = kwargs.get('is_active', None)
+        if 'is_admin' in kwargs:
+            self.is_admin = kwargs.get('is_admin', None)
+        super().update(**kwargs)

@@ -1,4 +1,6 @@
 from db import db
+from models import *
+from flask import jsonify
 
 class Device(db.Model):
    device_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
@@ -14,13 +16,15 @@ class Device(db.Model):
       return f'<Device ID {self.device_id}>'
    
    def to_dict(self):
+      room = Room.query.get(self.room_num)
+      device_type = DeviceType.query.get(self.device_type_id)
       return {
          'device_id': self.device_id,
-         'room_num': self.room_num,
-         'device_type_id': self.device_type_id
+         'room': room.to_dict(),
+         'device_type': device_type.to_dict()
       }
    
-   def update_device(self, **kwargs):
+   def update(self, **kwargs):
       if 'device_type_id' in kwargs:
          self.device_type_id = kwargs.get('device_type_id', None)
       if 'room_num' in kwargs:
@@ -46,8 +50,8 @@ class DeviceType(db.Model):
          'device_type_descr': self.device_type_descr
       }
    
-   def update_device_type(self, **kwargs):
-      if 'device_type_descr' in kwargs:
-         self.device_type_descr = kwargs.get('device_type_descr', None)
+   def update(self, **kwargs):
+      if 'device_type_name' in kwargs:
+         self.device_type_name = kwargs.get('device_type_name', None)
       if 'device_type_descr' in kwargs:
          self.device_type_descr = kwargs.get('device_type_descr', None)

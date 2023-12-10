@@ -1,5 +1,6 @@
 from datetime import datetime
 from flask import jsonify, abort
+from models import *
 from db import db
 
 class Therapy(db.Model):
@@ -15,25 +16,13 @@ class Therapy(db.Model):
    def __init__(self, doctor_id, disease_descr, patient_id, date_from, **kwargs):
       self.doctor_id = doctor_id
       self.disease_descr = disease_descr
-      
-      try:
-         self.date_from = datetime.strptime(date_from, '%Y-%m-%d')
-      except ValueError:
-         response = jsonify({'error': 'Invalid date format'})
-         response.status_code = 400
-         return abort(response)
-      
       self.patient_id = patient_id
+      self.date_from = datetime.strptime(date_from, '%Y-%m-%d')
       
       if 'req_treatment' in kwargs:
          self.req_treatment = kwargs.get('req_treatment', None)
       if 'date_to' in kwargs:
-         try:
-            self.date_to = datetime.strptime(kwargs.get('date_to', None), '%Y-%m-%d')
-         except ValueError:
-            response = jsonify({'error': 'Invalid date format'})
-            response.status_code = 400
-            return abort(response)
+         self.date_to = datetime.strptime(kwargs.get('date_to', None), '%Y-%m-%d')
       if 'therapy_type_id' in kwargs:
          self.therapy_type_id = kwargs.get('therapy_type_id', None)
 
@@ -41,18 +30,20 @@ class Therapy(db.Model):
       return f'<Therapy ID {self.therapy_id}>'
    
    def to_dict(self):
+      patient = Patient.query.get(self.patient_id)
+      therapy_type = TherapyType.query.get(self.therapy_type_id)
       return {
          'therapy_id': self.therapy_id,
-         'doctor_id': self.doctor_id,
+         'doctor_id': self.doctor_id, # spojiti s doktorom iz eksterne baze
          'disease_descr': self.disease_descr,
          'req_treatment': self.req_treatment,
          'date_from': self.date_from,
          'date_to': self.date_to,
-         'patient_id': self.patient_id,
-         'therapy_type_id': self.therapy_type_id,
+         'patient': patient.to_dict(),
+         'therapy_type': therapy_type.to_dict(),
       }
    
-   def update_therapy(self, **kwargs):
+   def update(self, **kwargs):
       if 'doctor_id' in kwargs:
          self.doctor_id = kwargs.get('doctor_id', None)
       if 'disease_descr' in kwargs:
@@ -60,19 +51,9 @@ class Therapy(db.Model):
       if 'req_treatment' in kwargs:
          self.req_treatment = kwargs.get('req_treatment', None)
       if 'date_from' in kwargs:
-         try:
-            self.date_from = datetime.strptime(kwargs.get('date_from', None), '%Y-%m-%d')
-         except ValueError:
-            response = jsonify({'error': 'Invalid date format'})
-            response.status_code = 400
-            return abort(response)
+         self.date_from = datetime.strptime(kwargs.get('date_from', None), '%Y-%m-%d')
       if 'date_to' in kwargs:
-         try:
-            self.date_to = datetime.strptime(kwargs.get('date_to', None), '%Y-%m-%d')
-         except ValueError:
-            response = jsonify({'error': 'Invalid date format'})
-            response.status_code = 400
-            return abort(response)
+         self.date_to = datetime.strptime(kwargs.get('date_to', None), '%Y-%m-%d')
       if 'patient_id' in kwargs:
          self.patient_id = kwargs.get('patient_id', None)
       if 'therapy_type_id' in kwargs:
@@ -98,7 +79,7 @@ class TherapyType(db.Model):
          'therapy_type_descr': self.therapy_type_descr
       }
    
-   def update_therapy_type(self, **kwargs):
+   def update(self, **kwargs):
       if 'therapy_type_name' in kwargs:
          self.therapy_type_name = kwargs.get('therapy_type_name', None)
       if 'therapy_type_descr' in kwargs:
