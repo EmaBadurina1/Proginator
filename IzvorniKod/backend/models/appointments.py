@@ -14,22 +14,16 @@ class Appointment(db.Model):
    employee_id = db.Column(db.Integer, db.ForeignKey('employee.user_id'))
 
    def __init__(self, date_from, therapy_id, **kwargs):
-      # !!!! check for status_id, room_num, doctor_id if it exists !!!!
       self.therapy_id = therapy_id
+      self.date_from = datetime.strptime(date_from, '%Y-%m-%d %H:%M')
       if 'comment' in kwargs:
          self.comment = kwargs.get('comment', None)
       if 'room_num' in kwargs:
          self.room_num = kwargs.get('room_num', None)
       if 'employee_id' in kwargs:
          self.employee_id = kwargs.get('employee_id', None)
-      try:
-         self.date_from = datetime.strptime(date_from, '%Y-%m-%d %H:%M')
-         if 'date_to' in kwargs:
-            self.date_to = datetime.strptime(kwargs.get('date_to', None), '%Y-%m-%d %H:%M')
-      except ValueError:
-         response = jsonify({'error': 'Invalid date format'})
-         response.status_code = 400
-         return abort(response)
+      if 'date_to' in kwargs:
+         self.date_to = datetime.strptime(kwargs.get('date_to', None), '%Y-%m-%d %H:%M')
 
    def __repr__(self):
       return f'<Appointment ID {self.appointment_id}>'
@@ -46,21 +40,11 @@ class Appointment(db.Model):
          'employee_id': self.employee_id
       }
    
-   def update_appointment(self, **kwargs):
+   def update(self, **kwargs):
       if 'date_from' in kwargs:
-         try:
-            self.date_from = datetime.strptime(kwargs.get('date_from', None), '%Y-%m-%d %H:%M')
-         except ValueError:
-            response = jsonify({'error': 'Invalid date format'})
-            response.status_code = 400
-            return abort(response)
+         self.date_from = datetime.strptime(kwargs.get('date_from', None), '%Y-%m-%d %H:%M')
       if 'date_to' in kwargs:
-         try:
-            self.date_to = datetime.strptime(kwargs.get('date_to', None), '%Y-%m-%d %H:%M')
-         except ValueError:
-            response = jsonify({'error': 'Invalid date format'})
-            response.status_code = 400
-            return abort(response)
+         self.date_to = datetime.strptime(kwargs.get('date_to', None), '%Y-%m-%d %H:%M')
       if 'comment' in kwargs:
          self.comment = kwargs.get('comment', None)
       if 'status_id' in kwargs: # and status_id postoji
@@ -88,6 +72,6 @@ class Status(db.Model):
          'status_name': self.status_name
       }
    
-   def update_status(self, **kwargs):
+   def update(self, **kwargs):
       if 'status_name' in kwargs:
          self.status_name = kwargs.get('status_name', None)
