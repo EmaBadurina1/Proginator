@@ -285,7 +285,7 @@ def register_employee():
 
 @accounts_bp.route('/users/<int:user_id>/password', methods=['PATCH'])
 @auth_validation
-def get_user(user_id):
+def change_password(user_id):
     required_fields = [
         "old_password",
         "new_password",
