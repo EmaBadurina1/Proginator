@@ -21,21 +21,21 @@ import AttendanceRecord from "./pages/AttendanceRecord";
 import PatientPreview from "./pages/PatientPreview";
 
 function App() {
-  const [auth, setAuth] = React.useState(true);
+  const [isAuthenticated, setIsAuthenticated] = React.useState(true);
   const [userRole, setUserRole] = React.useState(null);
 
   useEffect(() => {
     let userData = localStorage.getItem("user_data");
 
     if (userData === null) {
-      setAuth(false);
+      setIsAuthenticated(false);
     } else {
       userData = JSON.parse(userData);
       let userRole = Object.keys(userData)[0];
       if (userRole == "employee" && userData.employee.is_admin) {
         userRole = "admin";
       }
-      setAuth(true);
+      setIsAuthenticated(true);
       setUserRole(userRole);
     }
   }, []);
@@ -46,17 +46,17 @@ function App() {
     if (userRole == "employee" && userData.employee.is_admin) {
       userRole = "admin";
     }
-    setAuth(true);
+    setIsAuthenticated(true);
     setUserRole(userRole);
   }
 
   function logout() {
-    setAuth(false);
+    setIsAuthenticated(false);
     setUserRole(null);
   }
 
   const ProtectedRoute = ({ children }) => {
-    const isLoggedIn = auth;
+    const isLoggedIn = isAuthenticated;
     return isLoggedIn ? children : <Navigate replace to="/login" />;
   };
 
@@ -74,8 +74,8 @@ function App() {
   };
 
   const EmployeeRoute = ({ children }) => {
-    const isEmployee = userRole == "employee";
-    return isEmployee ? children : <Unauthorized />;
+    const isEmployeeOrAdmin = userRole == "employee" || userRole == "admin";
+    return isEmployeeOrAdmin ? children : <Unauthorized />;
   };
 
   EmployeeRoute.propTypes = {
@@ -96,12 +96,30 @@ function App() {
       <Route path="/">
         <Route
           path="/"
-          element={<Navigate to={auth ? "/home" : "/login"} replace />}
+          element={<Navigate to={isAuthenticated ? "/home" : "/login"} replace />}
         />
         <Route path="/login" element={<Login onLogin={login} />} />
         <Route path="/registration" element={<Registration />} />
-        <Route path="/attendance" element={<AttendanceRecord />} />
-        <Route path="/patientpreview" element={<PatientPreview />} />
+        <Route
+          path="/attendance"
+          element={
+            <ProtectedRoute>
+              <EmployeeRoute>
+                <AttendanceRecord />
+              </EmployeeRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/patient-preview"
+          element={
+            <ProtectedRoute>
+              <EmployeeRoute>
+                <PatientPreview />
+              </EmployeeRoute>
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/home"
           element={
@@ -127,7 +145,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>{auth}</h1>
+      <h1>{isAuthenticated}</h1>
       <RouterProvider router={router} />
       <ToastContainer />
     </div>
