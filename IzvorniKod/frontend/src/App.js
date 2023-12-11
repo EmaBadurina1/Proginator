@@ -13,6 +13,7 @@ import PropTypes from "prop-types";
 
 import Registration from "./pages/Registration";
 import Login from "./pages/Login";
+import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Unauthorized from "./pages/Unauthorized";
@@ -57,7 +58,11 @@ function App() {
 
   const ProtectedRoute = ({ children }) => {
     const isLoggedIn = isAuthenticated;
-    return isLoggedIn ? children : <Navigate replace to="/login" />;
+    return isLoggedIn ? (
+      <Layout>
+        {children}
+      </Layout>
+    ) : <Navigate replace to="/login" />;
   };
 
   ProtectedRoute.propTypes = {
@@ -145,7 +150,6 @@ function App() {
 
   return (
     <div className="App">
-      <h1>{isAuthenticated}</h1>
       <RouterProvider router={router} />
       <ToastContainer />
     </div>

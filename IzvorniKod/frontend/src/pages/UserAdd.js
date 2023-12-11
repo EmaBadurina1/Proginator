@@ -248,7 +248,7 @@ const UserAdd = () => {
          if(response.ok) {
             toast.success(
                response.message,
-               { position: toast.POSITION.TOP_RIGHT }
+               { position: toast.POSITION.BOTTOM_RIGHT }
             );
             navigate("/home"); // kasnije skociti na rutu sa svim korisnicima
          }
@@ -256,12 +256,12 @@ const UserAdd = () => {
          if(error.response && error.response.status === 400) {
             toast.error(
                error.response.data.error,
-               { position: toast.POSITION.TOP_RIGHT }
+               { position: toast.POSITION.BOTTOM_RIGHT }
             );
          } else {
             toast.error(
                "Dogodila se greška prilikom dodavanja novog korisnika",
-               { position: toast.POSITION.TOP_RIGHT }
+               { position: toast.POSITION.BOTTOM_RIGHT }
             );
          }
          setSubmitMessage("Dodaj korisnika");

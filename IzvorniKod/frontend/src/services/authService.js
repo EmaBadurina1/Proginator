@@ -14,17 +14,17 @@ class AuthService {
       });
       localStorage.setItem("user_data", JSON.stringify(res2.data.data));
       toast.success("Uspješno ste se prijavili!", {
-        position: toast.POSITION.TOP_RIGHT,
+        position: toast.POSITION.BOTTOM_RIGHT,
       });
     } catch (error) {
       if (error.response && error.response.status === 401) {
         toast.warning("Pogrešni podaci za prijavu!", {
-          position: toast.POSITION.TOP_RIGHT,
+          position: toast.POSITION.BOTTOM_RIGHT,
         });
         return { success: false, message: "Unauthorized" };
       } else {
         toast.error("Dogodila se greška!", {
-          position: toast.POSITION.TOP_RIGHT,
+          position: toast.POSITION.BOTTOM_RIGHT,
         });
         return { success: false, message: "Error" };
       }
@@ -38,11 +38,11 @@ class AuthService {
       await axiosInstance.post("/logout");
       localStorage.removeItem("user_data");
       toast.info("Odjavljeni ste.", {
-        position: toast.POSITION.TOP_RIGHT,
+        position: toast.POSITION.BOTTOM_RIGHT,
       });
     } catch (error) {
       toast.info("Došlo je do greške prilikom odjavljivanja.", {
-        position: toast.POSITION.TOP_RIGHT,
+        position: toast.POSITION.BOTTOM_RIGHT,
       });
       return { success: false, message: "Error" };
     }
@@ -54,17 +54,17 @@ class AuthService {
     try {
       await axiosInstance.post("/patients", reg_data);
       toast.success("Uspješno ste se registrirali!", {
-        position: toast.POSITION.TOP_RIGHT,
+        position: toast.POSITION.BOTTOM_RIGHT,
       });
     } catch (error) {
       if (error.response && error.response.status === 400) {
         toast.warning("Uneseni podaci nisu valjani!", {
-          position: toast.POSITION.TOP_RIGHT,
+          position: toast.POSITION.BOTTOM_RIGHT,
         });
         return { success: false, message: "Bad request" };
       } else {
         toast.error("Dogodila se greška!", {
-          position: toast.POSITION.TOP_RIGHT,
+          position: toast.POSITION.BOTTOM_RIGHT,
         });
         return { success: false, message: "Error" };
       }
