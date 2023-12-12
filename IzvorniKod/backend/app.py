@@ -3,7 +3,7 @@ from flask import Flask
 
 from flask_cors import CORS
 from dotenv import load_dotenv
-from controllers import accounts_bp, appointments_bp
+from controllers import *
 from db import db
 
 app = Flask(__name__)
@@ -11,6 +11,10 @@ CORS(app, supports_credentials=True)
 
 app.register_blueprint(accounts_bp)
 app.register_blueprint(appointments_bp)
+app.register_blueprint(auth_bp)
+app.register_blueprint(devices_bp)
+app.register_blueprint(rooms_bp)
+app.register_blueprint(therapies_bp)
 
 load_dotenv()
 DB_URL = os.getenv("DB_URL")

@@ -1,7 +1,8 @@
 from datetime import datetime
-from flask import jsonify, abort
-from models import *
 from db import db
+from models.accounts import Employee
+from models.rooms import Room
+from models.therapies import Therapy
 
 class Appointment(db.Model):
    appointment_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
@@ -30,20 +31,29 @@ class Appointment(db.Model):
       return f'<Appointment ID {self.appointment_id}>'
    
    def to_dict(self):
-      room = Room.query.get(self.room_num)
-      therapy = Therapy.query.get(self.therapy_id)
-      status = Status.query.get(self.status_id)
-      employee = Employee.query.get(self.employee_id)
-      return {
+      dict = {
          'appointment_id': self.appointment_id,
-         'room': room.to_dict(),
+         'room': None,
          'date_from': self.date_from,
          'date_to': self.date_to,
-         'therapy': therapy.to_dict(),
+         'therapy': None,
          'comment': self.comment,
-         'status': status.to_dict(),
-         'employee': employee.to_dict()
+         'status': None,
+         'employee': None
       }
+      room = Room.query.get(self.room_num)
+      if room:
+         dict['room'] = room.to_dict()
+      therapy = Therapy.query.get(self.therapy_id)
+      if therapy:
+         dict['therapy'] = therapy.to_dict()
+      status = Status.query.get(self.status_id)
+      if status:
+         dict['status'] = status.to_dict()
+      employee = Employee.query.get(self.employee_id)
+      if employee:
+         dict['employee'] = employee.to_dict()
+      return dict
    
    def update(self, **kwargs):
       if 'date_from' in kwargs:
@@ -60,6 +70,14 @@ class Appointment(db.Model):
          self.employee_id = kwargs.get('employee_id', None)
       if 'therapy_id' in kwargs: # and therapy_id postoji
          self.therapy_id = kwargs.get('therapy_id', None)
+   
+   @staticmethod
+   def get_name_singular():
+      return "appointment"
+   
+   @staticmethod
+   def get_name_plural():
+      return "appointments"
 
 class Status(db.Model):
    status_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
@@ -80,3 +98,11 @@ class Status(db.Model):
    def update(self, **kwargs):
       if 'status_name' in kwargs:
          self.status_name = kwargs.get('status_name', None)
+
+   @staticmethod
+   def get_name_singular():
+      return "status"
+   
+   @staticmethod
+   def get_name_plural():
+      return "statuses"

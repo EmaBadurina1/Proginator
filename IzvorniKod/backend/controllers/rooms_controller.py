@@ -16,7 +16,19 @@ def get_rooms():
 @rooms_bp.route('/rooms/<string:room_num>', methods=['GET'])
 @auth_validation
 def get_room(room_num):
-    return get_one(id=room_num, Model=Room)
+    room = Room.query.get(room_num);
+    if room:
+        return jsonify({
+            "data": {
+                "room": room.to_dict()
+            },
+            "status": 200
+        }), 200
+    else:
+        return jsonify({
+            "error": f"No room: {room_num}",
+            "status": 404
+        }), 404
 
 # create new room
 @rooms_bp.route('/rooms', methods=['POST'])
@@ -29,10 +41,50 @@ def create_room():
 @rooms_bp.route('/rooms/<string:room_num>', methods=['PATCH'])
 @auth_validation
 def update_room(room_num):
-    return update(id=room_num, Model=Room)
+    room = Room.query.get(room_num)
+    if room:
+        try:
+            room.update(**request.json)
+            db.session.commit()
+        except (ValueError, IntegrityError, DataError) as e:
+            db.session.rollback()
+            return jsonify({
+                "error": f"Invalid input: {str(e)}",
+                "status": 400
+            }), 400
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({
+                "error": "There was a problem storing your data",
+                "status": 400
+            }), 400
+        return jsonify({
+            "data": {
+                "room": room.to_dict()
+            },
+            "status": 200
+        }), 200
+    else:
+        return jsonify({
+            "error": f"No room: {room_num}",
+            "status": 404
+        }), 404
     
 # delete room with id=room_num
 @rooms_bp.route('/rooms/<string:room_num>', methods=['DELETE'])
 @auth_validation
 def delete_room(room_num):
-    return delete(id=room_num, Model=Room)
+    room = Room.query.get(room_num)
+
+    if room:
+        db.session.delete(room)
+        db.session.commit()
+        return jsonify({
+            "message": "Deleted",
+            "status": 200
+        }), 200
+    else:
+        return jsonify({
+            "error": f"No room: {room_num}",
+            "status": 404
+        }), 404

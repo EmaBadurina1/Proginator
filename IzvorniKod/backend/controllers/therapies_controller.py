@@ -7,7 +7,7 @@ from flask import Blueprint
 therapies_bp = Blueprint('therapies_bp', __name__)
 
 # get list of therapies
-@therapies_bp.route('/get_therapies', methods=['GET'])
+@therapies_bp.route('/therapies', methods=['GET'])
 @auth_validation
 def get_therapies():
    return get_all(Model=Therapy)
@@ -35,7 +35,25 @@ def update_therapy(therapy_id):
 @therapies_bp.route('/therapies/<int:therapy_id>', methods=['DELETE'])
 @auth_validation
 def delete_therapy(therapy_id):
-   return delete(id=therapy_id, Model=Therapy)
+   therapy = Therapy.query.get(therapy_id)
+
+   if therapy:
+      appointments = Appointment.query.filter_by(therapy_id=therapy_id)
+
+      for appointment in appointments:
+         db.session.delete(appointment)
+
+      db.session.delete(therapy)
+      db.session.commit()
+      return jsonify({
+         "message": "Deleted",
+         "status": 200
+      }), 200
+   else:
+      return jsonify({
+         "error": f"No ID: {therapy_id}",
+         "status": 404
+      }), 404
 
 # get list of therapy types
 @therapies_bp.route('/therapy-types', methods=['GET'])
@@ -66,4 +84,22 @@ def update_therapy_type(therapy_type_id):
 @therapies_bp.route('/therapy-types/<int:therapy_type_id>', methods=['DELETE'])
 @auth_validation
 def delete_therapy_type(therapy_type_id):
-   return delete(id=therapy_type_id, Model=TherapyType)
+   therapy_type = TherapyType.query.get(therapy_type_id)
+
+   if therapy_type:
+      therapies = Therapy.query.filter_by(therapy_type_id=therapy_type_id)
+
+      for therapy in therapies:
+         therapy.therapy_type_id = None
+
+      db.session.delete(therapy_type)
+      db.session.commit()
+      return jsonify({
+         "message": "Deleted",
+         "status": 200
+      }), 200
+   else:
+      return jsonify({
+         "error": f"No ID: {therapy_type_id}",
+         "status": 404
+      }), 404

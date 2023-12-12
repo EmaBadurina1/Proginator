@@ -30,18 +30,23 @@ class Therapy(db.Model):
       return f'<Therapy ID {self.therapy_id}>'
    
    def to_dict(self):
-      patient = Patient.query.get(self.patient_id)
-      therapy_type = TherapyType.query.get(self.therapy_type_id)
-      return {
+      dict = {
          'therapy_id': self.therapy_id,
          'doctor_id': self.doctor_id, # spojiti s doktorom iz eksterne baze
          'disease_descr': self.disease_descr,
          'req_treatment': self.req_treatment,
          'date_from': self.date_from,
          'date_to': self.date_to,
-         'patient': patient.to_dict(),
-         'therapy_type': therapy_type.to_dict(),
+         'patient': None,
+         'therapy_type': None,
       }
+      patient = Patient.query.get(self.patient_id)
+      if patient:
+         dict['patient'] = patient.to_dict()
+      therapy_type = TherapyType.query.get(self.therapy_type_id)
+      if therapy_type:
+         dict['therapy_type'] = therapy_type.to_dict()
+      return dict
    
    def update(self, **kwargs):
       if 'doctor_id' in kwargs:
@@ -58,11 +63,21 @@ class Therapy(db.Model):
          self.patient_id = kwargs.get('patient_id', None)
       if 'therapy_type_id' in kwargs:
          self.therapy_type_id = kwargs.get('therapy_type_id', None)
+   
+   @staticmethod
+   def get_name_singular():
+      return "therapy"
+   
+   @staticmethod
+   def get_name_plural():
+      return "therapies"
 
 class TherapyType(db.Model):
    therapy_type_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
    therapy_type_name = db.Column(db.String(50), nullable=False)
    therapy_type_descr = db.Column(db.String(300))
+
+   therapies = db.relationship('Therapy', backref='therapy_type', cascade='all,delete-orphan')
 
    def __init__(self, therapy_type_name, **kwargs):
       self.therapy_type_name = therapy_type_name
@@ -84,3 +99,11 @@ class TherapyType(db.Model):
          self.therapy_type_name = kwargs.get('therapy_type_name', None)
       if 'therapy_type_descr' in kwargs:
          self.therapy_type_descr = kwargs.get('therapy_type_descr', None)
+   
+   @staticmethod
+   def get_name_singular():
+      return "therapy_type"
+   
+   @staticmethod
+   def get_name_plural():
+      return "therapy_types"

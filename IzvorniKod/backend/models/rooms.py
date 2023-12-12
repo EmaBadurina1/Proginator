@@ -1,5 +1,5 @@
 from db import db
-from flask import jsonify
+from models import *
 
 class Room(db.Model):
    room_num = db.Column(db.String(10), primary_key=True, nullable=False)
@@ -28,3 +28,45 @@ class Room(db.Model):
          self.capacity = kwargs.get('capacity', None)
       if 'in_use' in kwargs:
          self.in_use = kwargs.get('in_use', None)
+   
+   @staticmethod
+   def get_name_singular():
+      return "room"
+   
+   @staticmethod
+   def get_name_plural():
+      return "rooms"
+"""
+class RoomFor(db.Model):
+   room_num = db.Column(db.String(10), nullable=False)
+   therapy_type_id = db.Column(db.Integer, nullable=False)
+
+   def __init__(self, room_num, therapy_type_id):
+      self.room_num = room_num
+      self.therapy_type_id = therapy_type_id
+   
+   def __repr__(self):
+      therapy_type = TherapyType.query.get(self.therapy_type_id)
+      return f'<Room: {self.room_num} for {therapy_type.therapy_type_name}>'
+   
+   def to_dict(self):
+      therapy_type = TherapyType.query.get(self.therapy_type_id)
+      return {
+         'room_num': self.room_num,
+         'therapy_type': therapy_type.to_dict()
+      }
+   
+   def update(self, **kwargs):
+      if 'room_num' in kwargs:
+         self.room_num = kwargs.get('room_num', None)
+      if 'therapy_type_id' in kwargs:
+         self.therapy_type_id = kwargs.get('therapy_type_id', None)
+   
+   @staticmethod
+   def get_name_singular():
+      return "room_for"
+   
+   @staticmethod
+   def get_name_plural():
+      return "rooms_for"
+"""

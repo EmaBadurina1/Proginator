@@ -61,8 +61,13 @@ class User(db.Model):
     def check_password(self, password):
         return bcrypt.checkpw(password.encode('utf-8'), self.hashed_password.encode('utf-8'))
     
-    def change_password(self, new_password):
-        self.hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt()).decode()
+    @staticmethod
+    def get_name_singular():
+        return "user"
+    
+    @staticmethod
+    def get_name_plural():
+        return "users"
 
 # inheritance from User
 class Patient(User):
@@ -83,6 +88,14 @@ class Patient(User):
         if 'MBO' in kwargs:
             self.MBO = kwargs.get('MBO', None)
         super().update(**kwargs)
+
+    @staticmethod
+    def get_name_singular():
+        return "patient"
+    
+    @staticmethod
+    def get_name_plural():
+        return "patients"
 
 
 class Employee(User):
@@ -108,9 +121,17 @@ class Employee(User):
     
     def update(self, **kwargs):
         if 'OIB' in kwargs:
-            self.OIB = kwargs.get('MBO', None)
+            self.OIB = kwargs.get('OIB', None)
         if 'is_active' in kwargs:
             self.is_active = kwargs.get('is_active', None)
         if 'is_admin' in kwargs:
             self.is_admin = kwargs.get('is_admin', None)
         super().update(**kwargs)
+
+    @staticmethod
+    def get_name_singular():
+        return "employee"
+    
+    @staticmethod
+    def get_name_plural():
+        return "employees"

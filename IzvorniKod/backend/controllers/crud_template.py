@@ -1,26 +1,29 @@
 from flask import request, jsonify
 from sqlalchemy.exc import IntegrityError, DataError
 from db import db
-
-def validate_required_fields(data, required_fields):
-   missing_fields = [field for field in required_fields if field not in data]
-   return missing_fields
+from utils.utils import validate_required_fields
 
 # get list of all rows of entity
+# methods=['GET']
 def get_all(Model):
    rows = Model.query.all()
    list = [row.to_dict() for row in rows]
    return jsonify({
-      "data": list,
+      "data": {
+         f"{Model.get_name_plural()}": list
+      },
       "status": 200
    }), 200
 
 # get a row by id
+# methods=['GET']
 def get_one(id, Model):
    row = Model.query.get(id);
-   if row: 
+   if row:
       return jsonify({
-         f"{Model.__name__.lower()}": row.to_dict(),
+         "data": {
+            f"{Model.get_name_singular()}": row.to_dict()
+         },
          "status": 200
       }), 200
    else:
@@ -30,6 +33,7 @@ def get_one(id, Model):
       }), 404
 
 # create new row
+# methods=['POST']
 def create(required_fields, Model):
    missing_fields = validate_required_fields(request.json, required_fields)
 
@@ -55,19 +59,18 @@ def create(required_fields, Model):
       db.session.rollback()
       return jsonify({
          "error": "There was a problem storing your data",
-         "status": 400
-      }), 400
-   
-   row_id = getattr(row, f"{Model.__name__.lower()}_id")
+         "status": 500
+      }), 500
 
    return jsonify({
       "data": {
-         f"{Model.__name__.lower()}_id": row_id
+         f"{Model.get_name_singular()}": row.to_dict()
       },
       "status": 201
    }), 201
 
 # update row
+# methods=['PATCH']
 def update(id, Model):
    row = Model.query.get(id)
    if row:
@@ -84,10 +87,12 @@ def update(id, Model):
          db.session.rollback()
          return jsonify({
             "error": "There was a problem storing your data",
-            "status": 400
-         }), 400
+            "status": 500
+         }), 500
       return jsonify({
-         f"{Model.__name__.lower()}": row.to_dict(), 
+         "data": {
+            f"{Model.get_name_singular()}": row.to_dict()
+         },
          "status": 200
       }), 200
    else:
@@ -97,6 +102,7 @@ def update(id, Model):
       }), 404
    
 # delete row
+# methods=['DELETE']
 def delete(id, Model):
    row = Model.query.get(id)
 

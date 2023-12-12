@@ -1,99 +1,36 @@
-from sqlalchemy.exc import SQLAlchemyError
-from flask import request, jsonify, session
 from db import db
 from models import *
 from auth import auth_validation
 from external_connector import get_patient_data
 from sqlalchemy.exc import IntegrityError, DataError
-import re
+from utils.utils import *
+from .crud_template import *
 
 # setup blueprint
 from flask import Blueprint
 accounts_bp = Blueprint('accounts_bp', __name__)
 
-def validate_required_fields(data, required_fields):
-    missing_fields = [field for field in required_fields if field not in data]
-    return missing_fields
-
-# check if required_fields are empty
-def validate_empty_fields(data, required_fields):
-    empty_fields = [field for field in required_fields if data[field] == ""]
-    return empty_fields
-
-# check if OIB or MBO is in right format
-def validate_number(number, length):
-    pattern = re.compile(r'^\d{' + str(length) + '}$')
-    return bool(pattern.match(number))
-
-# Route to get a specific user by ID
-@accounts_bp.route('/users/<int:user_id>', methods=['GET'])
-@auth_validation
-def get_user(user_id):
-    try:
-        employee = db.session.query(Employee).filter_by(user_id=user_id).first()
-    except SQLAlchemyError as e:
-        employee = None
-
-    if employee:
-        return jsonify({"data":{"employee": employee.to_dict()}, "message": "Employee returned"}), 200
-    
-    try:
-        patient = db.session.query(Patient).filter_by(user_id=user_id).first()
-    except SQLAlchemyError as e:
-        patient = None
-        
-    if patient:
-        return jsonify({"data":{"patient": patient.to_dict()}, "message": "Patient returned"}), 200
-    
-    user = db.session.query(User).filter_by(user_id=user_id).first()
-
-    if not user:
-        return jsonify({'error': 'User not found'}), 404
-    
-    return jsonify({"data": {"user": user.to_dict()}, "message": "User returned"}), 200
-
-# get all users
+# get list of users
 @accounts_bp.route('/users', methods=['GET'])
 @auth_validation
 def get_users():
-    data = {
-        "users": {
-            "patients": [],
-            "employees": []
+    patients = []
+    for patient in Patient.query.all():
+        patients.append(patient.to_dict())
+    
+    employees = []
+    for employee in Employee.query.all():
+        employees.append(employee.to_dict())
+
+    return jsonify({
+        "data": {
+            "patients": patients,
+            "employees": employees
         },
-        "message": "Dohvaćeni svi korisnici."
-    }
-    patients = Patient.query.all()
-    for patient in patients:
-        data["users"]["patients"].append(patient.to_dict())
-    
-    employees = Employee.query.all()
-    for employee in employees:
-        data["users"]["employees"].append(employee.to_dict())
+        "status": 200
+    }), 200
 
-    return jsonify(data), 200
-                    
-@accounts_bp.route('/login', methods=['POST'])
-def login():
-    user: User = User.query.filter_by(email=request.json['email']).first()
-    if user and user.check_password(request.json['password']):
-        session['user_id'] = user.user_id
-        print(session['user_id'])
-        response = jsonify({"data": {'user_id': user.user_id},
-                            "message": "Login successful"})
-
-        response.status_code = 200
-        return response
-    else:
-        return jsonify({'error': 'Invalid username or password'}), 401
-    
-
-@accounts_bp.route('/logout', methods=['POST'])
-def logout():
-    session.pop('user_id', None)
-    return jsonify({"message": "Logout successful"}), 200
-    
-# register patient
+# create new patient
 @accounts_bp.route('/patients', methods=['POST'])
 def register_patient():
     required_fields = [
@@ -109,20 +46,25 @@ def register_patient():
 
     # check if there are all required fields
     if missing_fields:
-        error_message = f"Nedostaju obavezna polja: {', '.join(missing_fields)}"
-        return jsonify({'error': error_message}), 400
+        return jsonify({
+            "error": f"Missing required fields: {', '.join(missing_fields)}",
+            "status": 400
+        }), 400
     
     empty_fields = validate_empty_fields(request.json, required_fields)
 
     # check if required_fields are empty
     if empty_fields:
-        error_message = f"Obavezna polja ne smiju biti prazna: {', '.join(empty_fields)}"
-        return jsonify({'error': error_message}), 400
+        return jsonify({
+            "error": f"Required fields cannot be empty: {', '.join(empty_fields)}",
+            "status": 400
+        }), 400
 
     # check is MBO is in right format
     if not validate_number(request.json['MBO'], 9):
         return jsonify({
-            'error': 'MBO mora biti 9 znamenki.'
+            "error": "MBO must be 9 characters long",
+            "status": 400
         }), 400
 
     email = request.json['email']
@@ -142,13 +84,18 @@ def register_patient():
         if query_patient.MBO == MBO:
             duplicate_params.append("MBO")
 
-        error_message = f"Podatci koje pokušavate unijeti trebaju biti jedinstveni, a oni već postoje: {', '.join(duplicate_params)}"
-        return jsonify({'error': error_message}), 400
+        return jsonify({
+            "error": f"Data is not unique: {', '.join(duplicate_params)}",
+            "status": 400
+        }), 400
     
     # test if MBO exists in external database
     patient = get_patient_data(request.json['MBO'])
     if not patient:
-        return jsonify({'error': 'MBO nije evidentiran u vanjskoj bazi podataka.'}), 400
+        return jsonify({
+            "error": f"MBO: {request.json['MBO']} does not exist",
+            "status": 400
+        }), 400
     
     # test if patient data matches external database
     MBO_fields = [
@@ -160,7 +107,8 @@ def register_patient():
     for field in MBO_fields:
         if patient[field] != request.json[field]:
             return jsonify({
-                'error': f'Uneseni podatci se ne podudaraju sa podatcima iz vanjske baze podataka.'
+                "error": "Data is not correct",
+                "status": 400
             }), 400
 
     data = {}
@@ -171,33 +119,127 @@ def register_patient():
         patient = Patient(**data)
         db.session.add(patient)
         db.session.commit()
-        message = "Uspješno dodan pacijent " + patient.name + " " + patient.surname
         return jsonify({
             "data": {
                 "patient": patient.to_dict()
             }, 
-            "message": message
+            "message": f"Patient added: {patient.name} {patient.surname}",
+            "status": 201
         }), 201
     except IntegrityError as e:
         db.session.rollback()
         return jsonify({
-            'error': "Podatci koje pokušavate unijeti trebaju biti jedinstveni, a oni već postoje."
+            "error": "Data is not unique",
+            "status": 400
         }), 400
     except DataError as e:
         db.session.rollback()
         return jsonify({
-            'error': "Podatci koje pokušavate unijeti nisu u valjanom formatu."
+            "error": "Invalid data format",
+            "status": 400
         }), 400
     except Exception as e:
         db.session.rollback()
         return jsonify({
-            'error': "Dogodila se pogreška prilikom unosa."
+            "error": "There was an error with storing your data",
+            "status": 500
         }), 500
     finally:
         db.session.close()
 
-# register employee
+# get list of all patients
+@accounts_bp.route('/patients', methods=['GET'])
+@auth_validation
+def get_patients():
+    return get_all(Model=Patient)
+
+# get patient with id=user_id
+@accounts_bp.route('/patients/<int:user_id>', methods=['GET'])
+@auth_validation
+def get_patient(user_id):
+    return get_one(id=user_id, Model=Patient)
+
+# update patient with id=user_id
+@accounts_bp.route('/patients/<int:user_id>', methods=['PATCH'])
+@auth_validation
+def update_patient(user_id):
+    patient = Patient.query.get(user_id)
+    if patient:
+        MBO = patient.MBO
+        if 'MBO' in request.json:
+            MBO = request.json['MBO']
+
+        patient_external = get_patient_data(MBO)
+        
+        # test if patient data matches external database
+        MBO_fields = []
+        if 'name' in request.json:
+            MBO_fields.append('name')
+        if 'surname' in request.json:
+            MBO_fields.append('surname')
+        if 'MBO' in request.json:
+            MBO_fields.append('MBO')
+        if 'date_of_birth' in request.json:
+            MBO_fields.append('date_of_birth')
+        
+        for field in MBO_fields:
+            if patient_external[field] != request.json[field]:
+                return jsonify({
+                    "error": f"Data is not correct. Expected: {patient_external[field]} Given: {request.json[field]}",
+                    "status": 400
+                }), 400
+
+        try:
+            patient.update(**request.json)
+            db.session.commit()
+        except (ValueError, IntegrityError, DataError) as e:
+            db.session.rollback()
+            return jsonify({
+                "error": f"Invalid input: {str(e)}",
+                "status": 400
+            }), 400
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({
+                "error": "There was a problem storing your data",
+                "status": 500
+            }), 500
+        return jsonify({
+            "data": {
+                "patient": patient.to_dict()
+            },
+            "status": 200
+        }), 200
+    else:
+        return jsonify({
+            "error": f"No ID: {id}",
+            "status": 404
+        }), 404
+
+# delete patient with id=user_id
+@accounts_bp.route('/patients/<int:user_id>', methods=['DELETE'])
+@auth_validation
+def delete_patient(user_id):
+    patient = Patient.query.get(user_id)
+    user = User.query.get(user_id)
+
+    if patient and user:
+        db.session.delete(patient)
+        db.session.delete(user)
+        db.session.commit()
+        return jsonify({
+            "message": "Deleted",
+            "status": 200
+        }), 200
+    else:
+        return jsonify({
+            "error": f"No ID: {user_id}",
+            "status": 404
+        }), 404
+
+# create new employee
 @accounts_bp.route('/employees', methods=['POST'])
+@auth_validation
 def register_employee():
     required_fields = [
         'name',
@@ -211,43 +253,52 @@ def register_employee():
         'is_admin'
     ]
 
-    # check if there are all required fields
     missing_fields = validate_required_fields(request.json, required_fields)
-    if missing_fields:
-        error_message = f"Nedostaju obavezna polja: {', '.join(missing_fields)}"
-        return jsonify({'error': error_message}), 400
     
-    # check if required_fields are empty
+    # check if there are all required fields
+    if missing_fields:
+        return jsonify({
+            "error": f"Missing required fields: {', '.join(missing_fields)}",
+            "status": 400
+        }), 400
+    
     empty_fields = validate_empty_fields(request.json, required_fields)
+
+    # check if required_fields are empty
     if empty_fields:
-        error_message = f"Obavezna polja ne smiju biti prazna: {', '.join(empty_fields)}"
-        return jsonify({'error': error_message}), 400
+        return jsonify({
+            "error": f"Required fields cannot be empty: {', '.join(empty_fields)}",
+            "status": 400
+        }), 400
 
     # check if OIB is in right format
     if not validate_number(request.json['OIB'], 11):
         return jsonify({
-            'error': 'OIB mora imati 11 znamenki.'
+            "error": "OIB must be 9 characters long",
+            "status": 400
         }), 400
     
     email = request.json['email']
     phone_number = request.json['phone_number']
     OIB = request.json['OIB']
 
-    query_patient = Employee.query.filter((Employee.email == email) | 
+    query_employee = Employee.query.filter((Employee.email == email) | 
                                          (Employee.phone_number == phone_number) | 
                                          (Employee.OIB == OIB)).first()
     
-    if query_patient:
+    if query_employee:
         duplicate_params = []
-        if query_patient.email == email:
+        if query_employee.email == email:
             duplicate_params.append("email")
-        if query_patient.phone_number == phone_number:
+        if query_employee.phone_number == phone_number:
             duplicate_params.append("phone_number")
-        if query_patient.MBO == OIB:
+        if query_employee.MBO == OIB:
             duplicate_params.append("OIB")
 
-        error_message = f"Podatci koje pokušavate unijeti trebaju biti jedinstveni, a oni već postoje: {', '.join(duplicate_params)}"
-        return jsonify({'error': error_message}), 400
+        return jsonify({
+            "error": f"Data is not unique: {', '.join(duplicate_params)}",
+            "status": 400
+        }), 400
     
     data = {}
     for key in required_fields:
@@ -257,158 +308,70 @@ def register_employee():
         employee = Employee(**data)
         db.session.add(employee)
         db.session.commit()
-        message = "Uspješno dodan djelatnik " + employee.name + " " + employee.surname
         return jsonify({
             "data": {
                 "employee": employee.to_dict()
-            },
-            "message": message
+            }, 
+            "message": f"Employee added: {employee.name} {employee.surname}",
+            "status": 201
         }), 201
     
     except IntegrityError as e:
         db.session.rollback()
         return jsonify({
-            'error': "Podatci koje pokušavate unijeti trebaju biti jedinstveni, a oni već postoje."
+            "error": "Data is not unique",
+            "status": 400
         }), 400
     except DataError as e:
         db.session.rollback()
         return jsonify({
-            'error': "Podatci koje pokušavate unijeti nisu u valjanom formatu."
+            "error": "Invalid data format",
+            "status": 400
         }), 400
     except Exception as e:
         db.session.rollback()
         return jsonify({
-            'error': "Dogodila se pogreška prilikom unosa."
+            "error": "There was an error with storing your data",
+            "status": 500
         }), 500
     finally:
         db.session.close()
 
-@accounts_bp.route('/users/<int:user_id>/password', methods=['PATCH'])
+# get list of all employees
+@accounts_bp.route('/employees', methods=['GET'])
 @auth_validation
-def change_password(user_id):
-    required_fields = [
-        "old_password",
-        "new_password",
-        "new_password_rep"
-    ]
+def get_employees():
+    return get_all(Model=Employee)
 
-    missing_fields = validate_required_fields(request.json, required_fields)
-    if missing_fields:
-        error_message = f"Missing fields: {', '.join(missing_fields)}"
-        return jsonify({
-            "error": error_message,
-            "status": 400
-        }), 400
-    
-    if request.json["new_password"] != request.json["new_password_rep"]:
-        return jsonify({
-            "error": "Passwords are not the same",
-            "status": 400
-        }), 400
-    
-    user = User.query.get(id);
+# get employee with id=user_id
+@accounts_bp.route('/employees/<int:user_id>', methods=['GET'])
+@auth_validation
+def get_employee(user_id):
+    return get_one(id=user_id, Model=Employee)
 
-    if not user.check_password(request.json["password"]):
-        return jsonify({
-            "error": "Wrong password",
-            "status": 400
-        }), 400
-    
-    user.change_password(request.json["new_password"])
-    db.session.commit()
+# update employee with id=user_id
+@accounts_bp.route('/employees/<int:user_id>', methods=['PATCH'])
+@auth_validation
+def update_employee(user_id):
+    return update(id=user_id, Model=Employee)
 
-    return jsonify({
-        "message": "Password changed",
-        "status": 200
-    }), 200
+# delete employee with id=user_id
+@accounts_bp.route('/employees/<int:user_id>', methods=['DELETE'])
+@auth_validation
+def delete_employee(user_id):
+    employee = Employee.query.get(user_id)
+    user = User.query.get(user_id)
 
-"""
-# adding new user
-@accounts_bp.route('/users', methods=['POST'])
-def add_user():
-    required_fields = [
-        'name',
-        'surname',
-        'email',
-        'phone_number',
-        'password',
-        'date_of_birth',
-        'role'
-    ]
-
-    if 'role' not in request.json:
-        error_message = "There is no key named role in request."
-        return jsonify({'error': error_message}), 400
-    elif request.json['role'] == "":
-        error_message = "Role is not defined."
-        return jsonify({'error': error_message}), 400
-    else:
-        if request.json['role'] == "patient":
-            required_fields.append("MBO")
-        elif request.json['role'] == "admin" or request.json['role'] == "doctor":
-            required_fields.append("OIB")
-
-    missing_fields = validate_required_fields(request.json, required_fields)
-
-    if missing_fields:
-        error_message = f"Missing required fields: {', '.join(missing_fields)}"
-        return jsonify({'error': error_message}), 400
-    
-    empty_fields = validate_empty_fields(request.json, required_fields)
-
-    if empty_fields:
-        error_message = f"Required fields can not be empty: {', '.join(empty_fields)}"
-        return jsonify({'error': error_message}), 400
-
-    if User.query.filter_by(email=request.json['email']).first():
-        return jsonify({'error': 'Unique attribute already exists: email'}), 400
-
-    if User.query.filter_by(phone_number=request.json['phone_number']).first():
-        return jsonify({'error': 'Unique attribute already exists: phone_number'}), 400
-    
-    role = request.json['role']
-    data = {}
-    for key in required_fields:
-        data[key] = request.json[key]
-    data.pop("role", None)
-
-    if role == "patient":
-        if len(request.json['MBO']) != 9:
-            return jsonify({'error': 'MBO must have 9 characters.'}), 400
-
-        if Employee.query.filter_by(MBO=request.json['MBO']).first():
-            return jsonify({'error': 'Unique attribute already exists: MBO'}), 400
-
-        patient = Patient(**data)
-        db.session.add(patient)
+    if employee and user:
+        db.session.delete(employee)
+        db.session.delete(user)
         db.session.commit()
         return jsonify({
-            "data": patient.to_dict(), 
-            "message": "Patient created"
-        }), 201
-
-    elif role == "doctor" or role == "admin":
-        if len(request.json['OIB']) != 11:
-            return jsonify({'error': 'OIB must have 11 characters.'}), 400
-
-        if Employee.query.filter_by(OIB=request.json['OIB']).first():
-            return jsonify({'error': 'Unique attribute already exists: OIB'}), 400
-
-        if role == "doctor":
-            data["is_active"] = True
-            data["is_admin"] = False
-        if role == "admin":
-            data["is_active"] = True
-            data["is_admin"] = True
-
-        employee = Employee(**data)
-        db.session.add(employee)
-        db.session.commit()
-        return jsonify({
-            "data": employee.to_dict(), 
-            "message": "Employee created"
-        }), 201
+            "message": "Deleted",
+            "status": 200
+        }), 200
     else:
-        error_message = f"There is no role '{request.json['role']}'."
-        return jsonify({'error': error_message}), 400
-"""
+        return jsonify({
+            "error": f"No ID: {user_id}",
+            "status": 404
+        }), 404
