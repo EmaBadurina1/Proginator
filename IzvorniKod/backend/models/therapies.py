@@ -1,6 +1,6 @@
 from datetime import datetime
-from flask import jsonify, abort
 from models import *
+from .rooms import room_for_table
 from db import db
 
 class Therapy(db.Model):
@@ -77,7 +77,14 @@ class TherapyType(db.Model):
    therapy_type_name = db.Column(db.String(50), nullable=False)
    therapy_type_descr = db.Column(db.String(300))
 
-   therapies = db.relationship('Therapy', backref='therapy_type', cascade='all,delete-orphan')
+   """
+   rooms = db.relationship(
+      'Room',
+      secondary=room_for_table,
+      back_populates='therapy_types',
+      cascade='all, delete-orphan'
+   )
+   """
 
    def __init__(self, therapy_type_name, **kwargs):
       self.therapy_type_name = therapy_type_name

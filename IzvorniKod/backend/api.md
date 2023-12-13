@@ -530,7 +530,8 @@
             "name": "Jane",
             "phone_number": "0910000001",
             "surname": "Smith",
-            "user_id": 1
+            "user_id": 1,
+            "role": "doctor"
          }
       },
       "message": "Login successful",

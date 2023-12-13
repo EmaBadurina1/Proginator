@@ -1,11 +1,24 @@
 from db import db
 from models import *
 
+room_for_table = db.Table('roomFor',
+   db.Column('room_num', db.String(10), db.ForeignKey('room.room_num')),
+   db.Column('therapy_type_id', db.Integer, db.ForeignKey('therapy_type.therapy_type_id')),
+   db.PrimaryKeyConstraint('room_num', 'therapy_type_id')
+)
+
 class Room(db.Model):
    room_num = db.Column(db.String(10), primary_key=True, nullable=False)
    capacity = db.Column(db.Integer, nullable=False)
    in_use = db.Column(db.Boolean, default=True, nullable=False)
-
+   """
+   therapy_types = db.relationship(
+      'TherapyType',
+      secondary=room_for_table,
+      back_populates='rooms',
+      cascade='all, delete-orphan'
+   )
+   """
    def __init__(self, room_num, capacity, in_use):
       self.room_num = room_num
       self.capacity = capacity

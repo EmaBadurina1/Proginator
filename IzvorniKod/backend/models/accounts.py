@@ -39,7 +39,7 @@ class User(db.Model):
             'surname': self.surname,
             'email': self.email,
             'phone_number': self.phone_number,
-            'date_of_birth': self.date_of_birth
+            'date_of_birth': self.date_of_birth,
         }
     
     def update(self, **kwargs):
