@@ -108,21 +108,19 @@ function App() {
         <Route
           path="/attendance"
           element={
-            <ProtectedRoute>
-              <EmployeeRoute>
+
                 <AttendanceRecord />
-              </EmployeeRoute>
-            </ProtectedRoute>
+              
           }
         />
         <Route
           path="/patient-preview"
           element={
-            <ProtectedRoute>
-              <EmployeeRoute>
+            
+              
                 <PatientPreview />
-              </EmployeeRoute>
-            </ProtectedRoute>
+              
+            
           }
         />
         <Route

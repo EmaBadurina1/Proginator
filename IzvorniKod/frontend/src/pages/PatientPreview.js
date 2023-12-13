@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import SearchIcon from "@mui/icons-material/Search";
 //import ForwardIcon from '@mui/icons-material/Forward';
+import EmployeeService from "../services/employeeService";
 
 const PatientPreview = () => {
   const cellStyle = {
@@ -39,13 +40,11 @@ const PatientPreview = () => {
   const [patients, setPatients] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:8000/patients")
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        setPatients(data);
-      });
+    EmployeeService.patientPreview();
+    const patientData = EmployeeService.getCurrentPatientData();
+
+    setPatients(patientData.data.patients);
+    console.log(patientData);
   }, []);
 
   const onChangeSearch = (e) => {
@@ -54,23 +53,21 @@ const PatientPreview = () => {
   };
 
   const getFilteredPatients = (v) => {
-    fetch("http://localhost:8000/patients")
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        const filteredPatients = data.filter((patient) => {
-          return (
-            patient &&
-            (
-              patient.name.toLowerCase() +
-              " " +
-              patient.surname.toLowerCase()
-            ).includes(v.toLowerCase())
-          );
-        });
-        setPatients(filteredPatients);
-      });
+
+    EmployeeService.patientPreview();
+    const data = EmployeeService.getCurrentPatientData().data.patients;
+
+    const filteredPatients = data.filter((patient) => {
+      return (
+        patient &&
+        (
+          patient.name.toLowerCase() +
+          " " +
+          patient.surname.toLowerCase()
+        ).includes(v.toLowerCase())
+      );
+    });
+    setPatients(filteredPatients);
   };
 
   return (
