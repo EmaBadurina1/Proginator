@@ -20,6 +20,7 @@ import Unauthorized from "./pages/Unauthorized";
 import UserAdd from "./pages/UserAdd";
 import AttendanceRecord from "./pages/AttendanceRecord";
 import PatientPreview from "./pages/PatientPreview";
+import AppointmentsPreview from "./pages/AppointmentsPreview";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(true);
@@ -108,19 +109,19 @@ function App() {
         <Route
           path="/attendance"
           element={
-
-                <AttendanceRecord />
-              
+            <AttendanceRecord />
           }
         />
         <Route
           path="/patient-preview"
           element={
-            
-              
-                <PatientPreview />
-              
-            
+            <PatientPreview />
+          }
+        />
+        <Route
+          path ="/appointments-preview/:patientId"
+          element={
+            <AppointmentsPreview />
           }
         />
         <Route

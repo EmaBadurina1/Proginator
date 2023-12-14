@@ -15,6 +15,7 @@ import Button from "@mui/material/Button";
 import SearchIcon from "@mui/icons-material/Search";
 //import ForwardIcon from '@mui/icons-material/Forward';
 import EmployeeService from "../services/employeeService";
+import { Link } from "react-router-dom";
 
 const PatientPreview = () => {
   const cellStyle = {
@@ -122,14 +123,16 @@ const PatientPreview = () => {
                   </TableCell>
                   <TableCell style={cellStyle2}>
                     <div>
-                      <Button
-                        variant="contained"
-                        size="medium"
-                        className="reg-btn"
-                        style={buttonStyle}
-                      >
-                        Prikaži termine
-                      </Button>
+                      <Link to={`/appointments-preview/${patient.user_id}`}>
+                        <Button
+                          variant="contained"
+                          size="medium"
+                          className="reg-btn"
+                          style={buttonStyle}
+                        >
+                          Prikaži termine
+                        </Button>
+                      </Link>
                     </div>
                   </TableCell>
                 </TableRow>
