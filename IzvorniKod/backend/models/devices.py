@@ -4,7 +4,14 @@ from models import *
 class Device(db.Model):
    device_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
    room_num = db.Column(db.String(10), db.ForeignKey('room.room_num'))
-   device_type_id = db.Column(db.Integer, db.ForeignKey('device_type.device_type_id'), nullable=False)
+   device_type_id = db.Column(
+      db.Integer,
+      db.ForeignKey(
+         'device_type.device_type_id',
+         ondelete="SET NULL"
+      ),
+      nullable=True # If device_type is deleted we don't want to delete device also so we only set foregin key to null
+   )
 
    def __init__(self, device_type_id, **kwargs):
       self.device_type_id = device_type_id
@@ -46,6 +53,14 @@ class DeviceType(db.Model):
    device_type_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
    device_type_name = db.Column(db.String(50), nullable=False)
    device_type_descr = db.Column(db.String(300))
+
+   devices = db.relationship(
+      'Device',
+      backref=db.backref(
+         'device_type',
+         passive_deletes=True
+      )
+   )
 
    def __init__(self, device_type_name, **kwargs):
       self.device_type_name = device_type_name

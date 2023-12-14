@@ -17,16 +17,10 @@ def login():
       session['user_id'] = user.user_id
       #print(session['user_id'])
       dict = user.to_dict()
-      if db.session.query(exists().where(Patient.user_id == user.user_id)).scalar():
-         dict["role"] = "patient"
-      elif db.session.query(exists().where(Employee.user_id == user.user_id)).scalar():
-         employee = Employee.query.get(user.user_id)
-         if employee.is_admin == True:
-            dict["role"] = "admin"
-         else:
-            dict["role"] = "doctor"
-      else:
+      if user.role == "":
          dict["role"] = None
+      else:
+         dict["role"] = user.role
 
       return jsonify({
          "data": {

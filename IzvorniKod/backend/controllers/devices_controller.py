@@ -37,6 +37,19 @@ def update_device(device_id):
 def delete_device(device_id):
    return delete(id=device_id, Model=Device)
 
+# get list of devices by device_type
+@devices_bp.route('/devices/by-type/<int:device_type_id>', methods=['GET'])
+@auth_validation
+def get_by_device_type(device_type_id):
+    devices = Device.query.filter_by(device_type_id=device_type_id).all()
+    list = [device.to_dict() for device in devices]
+    return jsonify({
+        "data": {
+            "devices": list
+        },
+        "status": 200
+    }), 200
+
 # get list of device types
 @devices_bp.route('/device-types', methods=['GET'])
 @auth_validation

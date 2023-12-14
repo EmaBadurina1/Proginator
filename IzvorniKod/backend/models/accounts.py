@@ -14,9 +14,27 @@ class User(db.Model):
     date_of_birth = db.Column(db.Date)
     hashed_password = db.Column(db.String(300), nullable=False)
 
-    def __init__(self, password, **kwargs):
+    role = ""
+
+    patients = db.relationship(
+        'Patient',
+        backref=db.backref(
+            'user',
+            passive_deletes=True
+        ) 
+    )
+
+    employees = db.relationship(
+        'Employee',
+        backref=db.backref(
+            'user',
+            passive_deletes=True
+        ) 
+    )
+
+    def __init__(self, password, role, **kwargs):
         date_of_birth = kwargs.get('date_of_birth', None)
- 
+        self.role = role
         # test date format and convert to datetime
         try:
             date_of_birth = datetime.strptime(date_of_birth, '%Y-%m-%d')
@@ -30,7 +48,7 @@ class User(db.Model):
         self.set_password(password)
 
     def __repr__(self):
-        return f'<User {self.username}>'
+        return f'<User {self.name} {self.surname}>'
     
     def to_dict(self):
         return {
@@ -71,11 +89,27 @@ class User(db.Model):
 
 # inheritance from User
 class Patient(User):
-    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), primary_key=True, nullable=False)
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey(
+            'user.user_id',
+            ondelete="CASCADE"
+        ),
+        primary_key=True,
+        nullable=False
+    )
     MBO = db.Column(db.String(80), unique=True, nullable=False)
 
+    therapies = db.relationship(
+        'Therapy',
+        backref=db.backref(
+            'patient',
+            passive_deletes=True
+        ) 
+    )
+
     def __init__(self, MBO, **kwargs):
-        super().__init__(**kwargs)
+        super().__init__(role="patient", **kwargs)
         self.MBO = MBO
 
     def to_dict(self):
@@ -99,13 +133,32 @@ class Patient(User):
 
 
 class Employee(User):
-    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), primary_key=True, nullable=False)
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey(
+            'user.user_id',
+            ondelete="CASCADE"
+        ),
+        primary_key=True,
+        nullable=False
+    )
     OIB = db.Column(db.String(11), unique=True, nullable=False)
     is_active = db.Column(db.Boolean, nullable=False)
     is_admin = db.Column(db.Boolean, nullable=False)
 
+    appointments = db.relationship(
+        'Appointment',
+        backref=db.backref(
+            'doctor',
+            passive_deletes=True
+        ) 
+    )
+
     def __init__(self, is_active, is_admin, OIB, **kwargs):
-        super().__init__(**kwargs)
+        role = "doctor"
+        if is_admin:
+            role = "admin"
+        super().__init__(role=role, **kwargs)
         self.is_active = is_active
         self.is_admin = is_admin
         self.OIB = OIB

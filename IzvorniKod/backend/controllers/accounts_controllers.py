@@ -10,10 +10,58 @@ from .crud_template import *
 from flask import Blueprint
 accounts_bp = Blueprint('accounts_bp', __name__)
 
-# get list of users
+# get list of users by page
 @accounts_bp.route('/users', methods=['GET'])
 @auth_validation
 def get_users():
+    """
+    page = 1
+    page_size = 20 # max page size is 20 elements
+    print(1)
+    try:
+        if "page" in request.json:
+            page = int(request.json["page"])
+        if "page_size" in request.json:
+            size = int(request.json["page_size"])
+        if size <= 20:
+            page_size = size
+    except ValueError:
+        return jsonify({
+            "error": "Page and page size must be integers",
+            "status": 400
+        }), 400
+    print(2)
+    users = User.query.paginate(page=page, max_per_page=page_size, error_out=False)
+    if page > users.pages or page < 1:
+        return jsonify({
+            'error': 'Requested page does not exist',
+            'status': 404
+        }), 404
+
+    print(3)
+    patients = []
+    employees = []
+    
+    for user in users.items:
+        print(user)
+        if user.role == "patient":
+            patient = Patient.query.get(user.user_id)
+            patients.append(patient.to_dict())
+        else:
+            employee = Employee.query.get(user.user_id)
+            employees.append(employee.to_dict())
+    print(4)
+    return jsonify({
+        "data": {
+            "patients": patients,
+            "employees": employees,
+            "page": page,
+            "page_size": page_size,
+            "pages": users.pages
+        },
+        "status": 200
+    }), 200
+    """
     patients = []
     for patient in Patient.query.all():
         patients.append(patient.to_dict())
@@ -221,11 +269,9 @@ def update_patient(user_id):
 @auth_validation
 def delete_patient(user_id):
     patient = Patient.query.get(user_id)
-    user = User.query.get(user_id)
 
-    if patient and user:
+    if patient:
         db.session.delete(patient)
-        db.session.delete(user)
         db.session.commit()
         return jsonify({
             "message": "Deleted",
@@ -360,11 +406,9 @@ def update_employee(user_id):
 @auth_validation
 def delete_employee(user_id):
     employee = Employee.query.get(user_id)
-    user = User.query.get(user_id)
 
-    if employee and user:
+    if employee:
         db.session.delete(employee)
-        db.session.delete(user)
         db.session.commit()
         return jsonify({
             "message": "Deleted",
