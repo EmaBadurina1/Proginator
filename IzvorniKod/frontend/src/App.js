@@ -21,6 +21,7 @@ import UserAdd from "./pages/UserAdd";
 import AttendanceRecord from "./pages/AttendanceRecord";
 import PatientPreview from "./pages/PatientPreview";
 import AppointmentsPreview from "./pages/AppointmentsPreview";
+import DenyAppointment from "./pages/DenyAppointment";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(true);
@@ -122,6 +123,12 @@ function App() {
           path ="/appointments-preview/:patientId"
           element={
             <AppointmentsPreview />
+          }
+        />
+        <Route
+          path="/deny-appointment"
+          element={
+            <DenyAppointment />
           }
         />
         <Route

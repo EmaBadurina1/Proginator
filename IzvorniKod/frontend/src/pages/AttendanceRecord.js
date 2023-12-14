@@ -11,6 +11,7 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { TextareaAutosize } from "@mui/base/TextareaAutosize";
 //import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
+import TherapyInfo from "../components/TherapyInfo";
 
 const buttonStyle = {
   backgroundColor: "purple",
@@ -83,15 +84,7 @@ const AttendanceRecord = () => {
             </div>
           </div>
           <div className="mid-div2">
-            <h4>Informacije o terapiji</h4>
-            Vrsta terapije:
-            <br></br>
-            Zahtjevani postupak liječenja:
-            <br></br>
-            Datum početka:
-            <br></br>
-            Opis:
-            <br></br>
+            <TherapyInfo />
           </div>
         </div>
         <div className="big-div2">
