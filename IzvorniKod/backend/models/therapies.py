@@ -1,5 +1,4 @@
 from datetime import datetime
-from flask import jsonify, abort
 from models import *
 from db import db
 
@@ -10,8 +9,29 @@ class Therapy(db.Model):
    req_treatment = db.Column(db.String(300))
    date_from = db.Column(db.Date, nullable=False)
    date_to = db.Column(db.Date)
-   patient_id = db.Column(db.Integer, db.ForeignKey('patient.user_id'), nullable=False)
-   therapy_type_id = db.Column(db.Integer, db.ForeignKey('therapy_type.therapy_type_id'))
+   patient_id = db.Column(
+      db.Integer,
+      db.ForeignKey(
+         'patient.user_id',
+         ondelete="CASCADE"
+      ),
+      nullable=False
+   )
+   therapy_type_id = db.Column(
+      db.Integer,
+      db.ForeignKey(
+         'therapy_type.therapy_type_id',
+         ondelete="SET NULL"
+      )
+   )
+
+   appointments = db.relationship(
+      'Appointment',
+      backref=db.backref(
+         'therapy',
+         passive_deletes=True
+      )
+   )
 
    def __init__(self, doctor_id, disease_descr, patient_id, date_from, **kwargs):
       self.doctor_id = doctor_id
@@ -77,7 +97,13 @@ class TherapyType(db.Model):
    therapy_type_name = db.Column(db.String(50), nullable=False)
    therapy_type_descr = db.Column(db.String(300))
 
-   therapies = db.relationship('Therapy', backref='therapy_type', cascade='all,delete-orphan')
+   therapies = db.relationship(
+      'Therapy',
+      backref=db.backref(
+         'therapy_type',
+         passive_deletes=True
+      )
+   )
 
    def __init__(self, therapy_type_name, **kwargs):
       self.therapy_type_name = therapy_type_name

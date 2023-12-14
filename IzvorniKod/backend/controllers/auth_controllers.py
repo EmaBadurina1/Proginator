@@ -1,4 +1,5 @@
 from flask import request, jsonify, session
+from sqlalchemy.sql import exists
 from db import db
 from models import *
 from auth import auth_validation
@@ -14,10 +15,22 @@ def login():
    user: User = User.query.filter_by(email=request.json['email']).first()
    if user and user.check_password(request.json['password']):
       session['user_id'] = user.user_id
-      print(session['user_id'])
+      #print(session['user_id'])
+      dict = user.to_dict()
+      if db.session.query(exists().where(Patient.user_id == user.user_id)).scalar():
+         dict["role"] = "patient"
+      elif db.session.query(exists().where(Employee.user_id == user.user_id)).scalar():
+         employee = Employee.query.get(user.user_id)
+         if employee.is_admin == True:
+            dict["role"] = "admin"
+         else:
+            dict["role"] = "doctor"
+      else:
+         dict["role"] = None
+
       return jsonify({
          "data": {
-            "user": user.to_dict()
+            "user": dict
          },
          "message": "Login successful",
          "status": 200

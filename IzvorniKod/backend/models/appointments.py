@@ -9,11 +9,38 @@ class Appointment(db.Model):
    date_from = db.Column(db.DateTime, nullable=False)
    date_to = db.Column(db.DateTime)
    comment = db.Column(db.String(300))
-   therapy_id = db.Column(db.Integer, db.ForeignKey('therapy.therapy_id'), nullable=False)
+   therapy_id = db.Column(
+      db.Integer,
+      db.ForeignKey(
+         'therapy.therapy_id',
+         ondelete="CASCADE"
+      ),
+      nullable=False
+   )
    # statud_id is default upon initializing 
-   status_id = db.Column(db.Integer, db.ForeignKey('status.status_id'), nullable=False, default=1)
-   room_num = db.Column(db.String(10), db.ForeignKey('room.room_num'))
-   employee_id = db.Column(db.Integer, db.ForeignKey('employee.user_id'))
+   status_id = db.Column(
+      db.Integer,
+      db.ForeignKey(
+         'status.status_id',
+         ondelete="SET NULL"
+      ),
+      nullable=True, # if status is deleted we do not want to delete appointment also
+      default=1
+   )
+   room_num = db.Column(
+      db.String(10),
+      db.ForeignKey(
+         'room.room_num',
+         ondelete="SET NULL"
+      )
+   )
+   employee_id = db.Column(
+      db.Integer,
+      db.ForeignKey(
+         'employee.user_id',
+         ondelete="SET NULL"
+      )
+   )
 
    def __init__(self, date_from, therapy_id, **kwargs):
       self.therapy_id = therapy_id
@@ -82,6 +109,14 @@ class Appointment(db.Model):
 class Status(db.Model):
    status_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
    status_name = db.Column(db.String(50), nullable=False)
+
+   appointments = db.relationship(
+      'Appointment',
+      backref=db.backref(
+         'status',
+         passive_deletes=True
+      )
+   )
 
    def __init__(self, status_name):
       self.status_name = status_name
