@@ -24,36 +24,37 @@ import PatientPreview from "./pages/PatientPreview";
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(true);
   const [userRole, setUserRole] = React.useState(null);
+  const [, setUserData] = React.useState(null);
 
   useEffect(() => {
-    let userData = localStorage.getItem("user_data");
+    let userDataLS = localStorage.getItem("user_data");
+    let userRoleLS = localStorage.getItem("user_role");
 
-    if (userData === null) {
+    if (userDataLS === null) {
       setIsAuthenticated(false);
     } else {
-      userData = JSON.parse(userData);
-      let userRole = Object.keys(userData)[0];
-      if (userRole == "employee" && userData.employee.is_admin) {
-        userRole = "admin";
-      }
+      userDataLS = JSON.parse(userDataLS);
+      userRoleLS = JSON.parse(userRoleLS);
       setIsAuthenticated(true);
-      setUserRole(userRole);
+      setUserData(userDataLS);
+      setUserRole(userRoleLS);
     }
   }, []);
 
   function login() {
-    const userData = JSON.parse(localStorage.getItem("user_data"));
-    let userRole = Object.keys(userData)[0];
-    if (userRole == "employee" && userData.employee.is_admin) {
-      userRole = "admin";
-    }
-    setIsAuthenticated(true);
-    setUserRole(userRole);
+    let userDataLS = localStorage.getItem("user_data");
+    let userRoleLS = localStorage.getItem("user_role");
+      userDataLS = JSON.parse(userDataLS);
+      userRoleLS = JSON.parse(userRoleLS);
+      setIsAuthenticated(true);
+      setUserData(userDataLS);
+      setUserRole(userRoleLS);
   }
 
   function logout() {
     setIsAuthenticated(false);
     setUserRole(null);
+    setUserData(null);
   }
 
   const ProtectedRoute = ({ children }) => {
