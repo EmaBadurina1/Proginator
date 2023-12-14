@@ -47,7 +47,7 @@ const DenyAppointment = () => {
           <ArrowBackIosNewIcon></ArrowBackIosNewIcon>
         </IconButton>
       </div>
-      <div className="mini-container">
+      <div className="mini-container2">
         <div className="title-div2">
           <h2>Odbijanje zahtjeva za terminom</h2>
         </div>

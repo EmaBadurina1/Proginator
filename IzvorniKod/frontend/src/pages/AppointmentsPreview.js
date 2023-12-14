@@ -19,13 +19,13 @@ const AppointmentsPreview = () => {
   const [appointments, setAppointments] = useState(null);
   const [patient, setPatient] = useState(null);
 
-  const cellStyle = {
+  const cellStyle3 = {
     textAlign: "center",
     border: "0.2em solid black",
     color: "white",
   };
 
-  const cellStyle2 = {
+  const cellStyle4 = {
     textAlign: "center",
     border: "0.1em solid black",
   };
@@ -59,29 +59,29 @@ const AppointmentsPreview = () => {
       <TableContainer>
         <Table>
           <TableHead>
-            <TableRow className="prviRed">
-              <TableCell style={cellStyle}>Datum i vrijeme</TableCell>
-              <TableCell style={cellStyle}>Terapija</TableCell>
-              <TableCell style={cellStyle}>Ishod</TableCell>
-              <TableCell style={cellStyle}>Akcija</TableCell>
+            <TableRow className="prviRed2">
+              <TableCell style={cellStyle3}>Datum i vrijeme</TableCell>
+              <TableCell style={cellStyle3}>Terapija</TableCell>
+              <TableCell style={cellStyle3}>Ishod</TableCell>
+              <TableCell style={cellStyle3}>Akcija</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {appointments &&
               appointments.map((appointment) => (
                 <TableRow key={appointment.appointment_id}>
-                  <TableCell style={cellStyle2}>
+                  <TableCell style={cellStyle4}>
                     {appointment.date_from}
                   </TableCell>
-                  <TableCell style={cellStyle2}>
+                  <TableCell style={cellStyle4}>
                     {appointment.therapy.therapy_type.therapy_type_name}
                   </TableCell>
 
-                  <TableCell style={cellStyle2}>
+                  <TableCell style={cellStyle4}>
                     {appointment.status.status_name}
                   </TableCell>
 
-                  <TableCell style={cellStyle2}>
+                  <TableCell style={cellStyle4}>
                     {appointment.status.status_name === "Na čekanju" && (
                       <Link to="/attendance">
                         <Button

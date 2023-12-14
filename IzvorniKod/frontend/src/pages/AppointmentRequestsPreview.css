@@ -3,10 +3,14 @@
     margin-left: 5em;
     margin-right: 5em;
 }
+.header2 {
+    margin-bottom: 2em;
+    display: grid;
+    grid-template-columns: 75% auto;
+}
 
-.title-div {
-    width: 20em;
-    margin-bottom: 3em;
+.title-div3 {
+    width: 30em;
 }
 
 .prviRed2 {
@@ -18,13 +22,3 @@
     text-align: center;
     vertical-align: middle;
 }
-
-.reg-btn {
-    height: 2.5em;
-    color: white;
-    background-color: purple;
-    border-radius: 0.5em;
-    width: 13em;
-
-}
-

@@ -22,6 +22,8 @@ import AttendanceRecord from "./pages/AttendanceRecord";
 import PatientPreview from "./pages/PatientPreview";
 import AppointmentsPreview from "./pages/AppointmentsPreview";
 import DenyAppointment from "./pages/DenyAppointment";
+import ChangeAppointment from "./pages/ChangeAppointment";
+import AppointmentRequestsPreview from "./pages/AppointmentRequestsPreview";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(true);
@@ -129,6 +131,18 @@ function App() {
           path="/deny-appointment"
           element={
             <DenyAppointment />
+          }
+        />
+        <Route
+          path="/change-appointment"
+          element={
+            <ChangeAppointment />
+          }
+        />
+        <Route
+          path="/appointment-requests-preview"
+          element={
+            <AppointmentRequestsPreview />
           }
         />
         <Route
