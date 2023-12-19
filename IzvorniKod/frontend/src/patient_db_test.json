@@ -1,0 +1,40 @@
+{
+    "patients": [
+        {
+            "id": 1, 
+            "name": "John", 
+            "surname": "Doe", 
+            "email": "john.doe@example.com", 
+            "phone_number": "091 555 4567", 
+            "date_of_birth": "1990-01-01", 
+            "MBO": "123456789"
+        },
+        {
+            "id": 2, 
+            "name": "Jack", 
+            "surname": "Sparrow", 
+            "email": "jack.sparrow@example.com", 
+            "phone_number": "091 555 5555", 
+            "date_of_birth": "1980-05-12", 
+            "MBO": "123123123"
+        },
+        {
+            "id": 3, 
+            "name": "Harry", 
+            "surname": "Potter", 
+            "email": "harry.potter@example.com", 
+            "phone_number": "091 555 1111", 
+            "date_of_birth": "1990-21-08", 
+            "MBO": "321321321"
+        },
+        {
+            "id": 4, 
+            "name": "Jack", 
+            "surname": "Doe", 
+            "email": "jack.doe@example.com", 
+            "phone_number": "091 555 2222", 
+            "date_of_birth": "1930-12-11", 
+            "MBO": "987987987"
+        }
+    ]
+}

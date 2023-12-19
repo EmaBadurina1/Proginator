@@ -14,9 +14,27 @@ class User(db.Model):
     date_of_birth = db.Column(db.Date)
     hashed_password = db.Column(db.String(300), nullable=False)
 
-    def __init__(self, password, **kwargs):
-        date_of_birth = kwargs.get('date_of_birth', None)
+    role = ""
 
+    patients = db.relationship(
+        'Patient',
+        backref=db.backref(
+            'user',
+            passive_deletes=True
+        ) 
+    )
+
+    employees = db.relationship(
+        'Employee',
+        backref=db.backref(
+            'user',
+            passive_deletes=True
+        ) 
+    )
+
+    def __init__(self, password, role, **kwargs):
+        date_of_birth = kwargs.get('date_of_birth', None)
+        self.role = role
         # test date format and convert to datetime
         try:
             date_of_birth = datetime.strptime(date_of_birth, '%Y-%m-%d')
@@ -30,7 +48,7 @@ class User(db.Model):
         self.set_password(password)
 
     def __repr__(self):
-        return f'<User {self.username}>'
+        return f'<User {self.name} {self.surname}>'
     
     def to_dict(self):
         return {
@@ -39,16 +57,36 @@ class User(db.Model):
             'surname': self.surname,
             'email': self.email,
             'phone_number': self.phone_number,
-            'date_of_birth': self.date_of_birth
+            'date_of_birth': self.date_of_birth,
         }
     
+    def update(self, **kwargs):
+        if 'name' in kwargs:
+            self.name = kwargs.get('name', None)
+        if 'surname' in kwargs:
+            self.surname = kwargs.get('surname', None)
+        if 'email' in kwargs:
+            self.email = kwargs.get('email', None)
+        if 'phone_number' in kwargs:
+            self.phone_number = kwargs.get('phone_number', None)
+        if 'date_of_birth' in kwargs:
+            self.date_of_birth = kwargs.get('date_of_birth', None)
+
     def set_password(self, password):
         res = password.encode('utf-8')
         self.hashed_password = bcrypt.hashpw(res, bcrypt.gensalt()).decode()
     
     def check_password(self, password):
         return bcrypt.checkpw(password.encode('utf-8'), self.hashed_password.encode('utf-8'))
+        
+    @staticmethod
+    def get_name_singular():
+        return "user"
     
+    @staticmethod
+    def get_name_plural():
+        return "users"
+
     def get_role(self):
         if hasattr(self, 'patient'):
             return 'patient'
@@ -63,11 +101,27 @@ class User(db.Model):
 
 # inheritance from User
 class Patient(User):
-    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), primary_key=True, nullable=False)
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey(
+            'user.user_id',
+            ondelete="CASCADE"
+        ),
+        primary_key=True,
+        nullable=False
+    )
     MBO = db.Column(db.String(80), unique=True, nullable=False)
 
+    therapies = db.relationship(
+        'Therapy',
+        backref=db.backref(
+            'patient',
+            passive_deletes=True
+        ) 
+    )
+
     def __init__(self, MBO, **kwargs):
-        super().__init__(**kwargs)
+        super().__init__(role="patient", **kwargs)
         self.MBO = MBO
 
     def to_dict(self):
@@ -75,15 +129,48 @@ class Patient(User):
         user_dict['MBO'] = self.MBO
 
         return user_dict
+    
+    def update(self, **kwargs):
+        if 'MBO' in kwargs:
+            self.MBO = kwargs.get('MBO', None)
+        super().update(**kwargs)
+
+    @staticmethod
+    def get_name_singular():
+        return "patient"
+    
+    @staticmethod
+    def get_name_plural():
+        return "patients"
+
 
 class Employee(User):
-    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), primary_key=True, nullable=False)
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey(
+            'user.user_id',
+            ondelete="CASCADE"
+        ),
+        primary_key=True,
+        nullable=False
+    )
     OIB = db.Column(db.String(11), unique=True, nullable=False)
     is_active = db.Column(db.Boolean, nullable=False)
     is_admin = db.Column(db.Boolean, nullable=False)
 
+    appointments = db.relationship(
+        'Appointment',
+        backref=db.backref(
+            'doctor',
+            passive_deletes=True
+        ) 
+    )
+
     def __init__(self, is_active, is_admin, OIB, **kwargs):
-        super().__init__(**kwargs)
+        role = "doctor"
+        if is_admin:
+            role = "admin"
+        super().__init__(role=role, **kwargs)
         self.is_active = is_active
         self.is_admin = is_admin
         self.OIB = OIB
@@ -96,3 +183,20 @@ class Employee(User):
         user_dict['OIB'] = self.OIB
 
         return user_dict
+    
+    def update(self, **kwargs):
+        if 'OIB' in kwargs:
+            self.OIB = kwargs.get('OIB', None)
+        if 'is_active' in kwargs:
+            self.is_active = kwargs.get('is_active', None)
+        if 'is_admin' in kwargs:
+            self.is_admin = kwargs.get('is_admin', None)
+        super().update(**kwargs)
+
+    @staticmethod
+    def get_name_singular():
+        return "employee"
+    
+    @staticmethod
+    def get_name_plural():
+        return "employees"

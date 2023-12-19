@@ -4,7 +4,7 @@ import dotenv
 
 dotenv.load_dotenv()
 url = os.getenv("EXTERNAL_DB_URL")
-print(url)  
+#print(url)  
 
 def MBO_exists(MBO):
     # open connection to externalDatabase/patientMBO
