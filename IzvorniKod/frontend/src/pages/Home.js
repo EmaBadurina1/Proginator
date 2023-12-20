@@ -1,21 +1,7 @@
 import "./Home.css";
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import { useNavigate } from "react-router-dom";
-import AuthService from "../services/authService";
 
-const Home = ({ onLogout }) => {
-  const nav = useNavigate();
-
-  const handleLogout = (e) => {
-    e.preventDefault();
-
-    AuthService.logout().then(() => {
-      onLogout();
-      nav("/login");
-    });
-  };
-
+const Home = () => {
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
@@ -37,19 +23,8 @@ const Home = ({ onLogout }) => {
       ) : (
         <p>Korisnički podaci nisu nađeni!</p>
       )}
-      <button
-        type="submit"
-        className="btn btn-primary w-auto"
-        onClick={async (event) => await handleLogout(event)}
-      >
-        Odjava
-      </button>
     </div>
   );
-};
-
-Home.propTypes = {
-  onLogout: PropTypes.func,
 };
 
 export default Home;
