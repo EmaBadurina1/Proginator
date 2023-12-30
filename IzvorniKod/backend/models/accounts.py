@@ -78,7 +78,7 @@ class User(db.Model):
         print(self.hashed_password.encode('utf-8'))
         print("'" + password + "'")
         return bcrypt.checkpw(password.encode('utf-8'), self.hashed_password.encode('utf-8'))
-    
+        
     @staticmethod
     def get_name_singular():
         return "user"
@@ -98,6 +98,18 @@ class User(db.Model):
             else:
                 return "doctor"
         return None    
+
+    def get_role(self):
+        if hasattr(self, 'patient'):
+            return 'patient'
+        elif hasattr(self, 'employee'):
+            # get is_admin from employee
+            if self.employee.is_admin:
+                return 'admin'
+            else:
+                return 'doctor'
+        else:
+            return 'user'
 
 # inheritance from User
 class Patient(User):
