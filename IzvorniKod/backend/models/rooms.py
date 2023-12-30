@@ -8,21 +8,26 @@ room_for_table = db.Table('room_for',
       db.String(10),
       db.ForeignKey(
          'room.room_num',
-         ondelete="CASCADE"
-      )
+         ondelete="CASCADE",
+         onupdate="CASCADE"
+      ),
+      nullable=False
    ),
    db.Column(
       'therapy_type_id',
       db.Integer,
       db.ForeignKey(
          'therapy_type.therapy_type_id',
-         ondelete="CASCADE"
-      )
+         ondelete="CASCADE",
+         onupdate="CASCADE"
+      ),
+      nullable=False
    ),
    db.PrimaryKeyConstraint('room_num', 'therapy_type_id')
 )
 
 class Room(db.Model):
+   __tablename__ = 'room'
    room_num = db.Column(db.String(10), primary_key=True, nullable=False)
    capacity = db.Column(db.Integer, nullable=False)
    in_use = db.Column(db.Boolean, default=True, nullable=False)
@@ -33,8 +38,7 @@ class Room(db.Model):
       backref=db.backref(
          'rooms',
          passive_deletes=True
-      ),
-      passive_deletes=True
+      )
    )
    
    appointments = db.relationship(
@@ -65,8 +69,15 @@ class Room(db.Model):
       return {
          'room_num': self.room_num,
          'capacity': self.capacity,
-         'in_use': self.in_use
+         'in_use': self.in_use,
+         'therapy_types': [therapy_type.to_dict() for therapy_type in self.therapy_types]
       }
+      """
+      return {
+         'room_num': self.room_num,
+         'capacity': self.capacity,
+         'in_use': self.in_use
+      }"""
    
    def update(self, **kwargs):
       if 'room_num' in kwargs:
