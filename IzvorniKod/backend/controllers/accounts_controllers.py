@@ -1,11 +1,11 @@
 from db import db
 from models import *
-from auth import auth_validation
+from auth import auth_validation, require_role
 from external_connector import get_patient_data
 from sqlalchemy.exc import IntegrityError, DataError
 from utils.utils import *
 from .crud_template import *
-
+ 
 # setup blueprint
 from flask import Blueprint
 accounts_bp = Blueprint('accounts_bp', __name__)
@@ -13,6 +13,7 @@ accounts_bp = Blueprint('accounts_bp', __name__)
 # get list of users by page
 @accounts_bp.route('/users', methods=['GET'])
 @auth_validation
+@require_role("admin")
 def get_users():
     """
     page = 1
