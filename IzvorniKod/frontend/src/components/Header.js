@@ -6,19 +6,23 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
+import LogoutIcon from "@mui/icons-material/Logout";
 import Container from "@mui/material/Container";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AccessibleForwardIcon from "@mui/icons-material/AccessibleForward";
+import { useNavigate } from "react-router-dom";
+import AuthService from "../services/authService";
+import PropTypes from 'prop-types';
 
 const pages = ["Početna", "Pacijenti", "Zahtjevi"];
-const settings = ["Korisnički račun", "Odjavi se"];
 
-const Header = () => {
+const Header = ({ onLogout }) => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const nav = useNavigate();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -34,6 +38,15 @@ const Header = () => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  const handleLogout = (e) => {
+    e.preventDefault();
+
+    AuthService.logout().then(() => {
+      onLogout();
+      nav("/login");
+    });
+  }
 
   return (
     <AppBar position="static">
@@ -160,11 +173,14 @@ const Header = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
+              <MenuItem key="userAccount" onClick={handleCloseUserMenu}>
+                <Typography textAlign="center">Korisnički račun</Typography>
+              </MenuItem>
+              <MenuItem key="logout" onClick={handleLogout}>
+                <Typography textAlign="center" color="red">
+                  Odjavi se <LogoutIcon sx={{ color: "red", mx: 2 }}></LogoutIcon>
+                </Typography>
+              </MenuItem>
             </Menu>
           </Box>
         </Toolbar>
@@ -172,4 +188,9 @@ const Header = () => {
     </AppBar>
   );
 };
+
+Header.propTypes = {
+  onLogout: PropTypes.func,
+};
+
 export default Header;

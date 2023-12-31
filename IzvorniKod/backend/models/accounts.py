@@ -6,15 +6,14 @@ import bcrypt
 
 # Define the User model
 class User(db.Model):
+    __tablename__ = '_user'
     user_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
-    name = db.Column(db.String(80), nullable=False)
-    surname = db.Column(db.String(80), nullable=False)
+    name = db.Column(db.String(50), nullable=False)
+    surname = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    phone_number = db.Column(db.String(80), unique=True, nullable=False)
+    phone_number = db.Column(db.String(30), unique=True, nullable=False)
     date_of_birth = db.Column(db.Date)
     hashed_password = db.Column(db.String(300), nullable=False)
-
-    role = ""
 
     patients = db.relationship(
         'Patient',
@@ -32,9 +31,8 @@ class User(db.Model):
         ) 
     )
 
-    def __init__(self, password, role, **kwargs):
+    def __init__(self, password, **kwargs):
         date_of_birth = kwargs.get('date_of_birth', None)
-        self.role = role
         # test date format and convert to datetime
         try:
             date_of_birth = datetime.strptime(date_of_birth, '%Y-%m-%d')
@@ -73,10 +71,12 @@ class User(db.Model):
             self.date_of_birth = kwargs.get('date_of_birth', None)
 
     def set_password(self, password):
-        res = password.encode('utf-8')
-        self.hashed_password = bcrypt.hashpw(res, bcrypt.gensalt()).decode()
+        self.hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode()
     
     def check_password(self, password):
+        print(self.hashed_password)
+        print(self.hashed_password.encode('utf-8'))
+        print("'" + password + "'")
         return bcrypt.checkpw(password.encode('utf-8'), self.hashed_password.encode('utf-8'))
         
     @staticmethod
@@ -86,6 +86,18 @@ class User(db.Model):
     @staticmethod
     def get_name_plural():
         return "users"
+    
+    def get_role(self):
+        existing_user = Patient.query.get(self.user_id)
+        if existing_user is not None:
+            return "patient"
+        existing_user = Employee.query.get(self.user_id)
+        if existing_user is not None:
+            if existing_user.is_admin == True:
+                return "admin"
+            else:
+                return "doctor"
+        return None    
 
     def get_role(self):
         if hasattr(self, 'patient'):
@@ -101,16 +113,18 @@ class User(db.Model):
 
 # inheritance from User
 class Patient(User):
+    __tablename__ = 'patient'
     user_id = db.Column(
         db.Integer,
         db.ForeignKey(
-            'user.user_id',
-            ondelete="CASCADE"
+            '_user.user_id',
+            ondelete="CASCADE",
+            onupdate="CASCADE"
         ),
         primary_key=True,
         nullable=False
     )
-    MBO = db.Column(db.String(80), unique=True, nullable=False)
+    MBO = db.Column(db.String(9), unique=True, nullable=False, name='mbo')
 
     therapies = db.relationship(
         'Therapy',
@@ -121,7 +135,7 @@ class Patient(User):
     )
 
     def __init__(self, MBO, **kwargs):
-        super().__init__(role="patient", **kwargs)
+        super().__init__(**kwargs)
         self.MBO = MBO
 
     def to_dict(self):
@@ -145,18 +159,20 @@ class Patient(User):
 
 
 class Employee(User):
+    __tablename__ = 'employee'
     user_id = db.Column(
         db.Integer,
         db.ForeignKey(
-            'user.user_id',
-            ondelete="CASCADE"
+            '_user.user_id',
+            ondelete="CASCADE",
+            onupdate="CASCADE"
         ),
         primary_key=True,
         nullable=False
     )
-    OIB = db.Column(db.String(11), unique=True, nullable=False)
-    is_active = db.Column(db.Boolean, nullable=False)
-    is_admin = db.Column(db.Boolean, nullable=False)
+    OIB = db.Column(db.String(11), unique=True, nullable=False, name='oib')
+    is_active = db.Column(db.Boolean, nullable=False, default=True)
+    is_admin = db.Column(db.Boolean, nullable=False, default=False)
 
     appointments = db.relationship(
         'Appointment',
@@ -167,10 +183,7 @@ class Employee(User):
     )
 
     def __init__(self, is_active, is_admin, OIB, **kwargs):
-        role = "doctor"
-        if is_admin:
-            role = "admin"
-        super().__init__(role=role, **kwargs)
+        super().__init__(**kwargs)
         self.is_active = is_active
         self.is_admin = is_admin
         self.OIB = OIB
