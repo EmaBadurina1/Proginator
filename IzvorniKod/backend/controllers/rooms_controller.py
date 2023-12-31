@@ -10,7 +10,7 @@ rooms_bp = Blueprint('rooms_bp', __name__)
 @rooms_bp.route('/rooms', methods=['GET'])
 @auth_validation
 def get_rooms():
-    return get_all(Model=Room)
+    return get_all(Model=Room, req=request.json if request.content_type == 'application/json' else {})
 
 # get room with id=room_num
 @rooms_bp.route('/rooms/<string:room_num>', methods=['GET'])

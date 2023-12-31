@@ -74,9 +74,6 @@ class User(db.Model):
         self.hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode()
     
     def check_password(self, password):
-        print(self.hashed_password)
-        print(self.hashed_password.encode('utf-8'))
-        print("'" + password + "'")
         return bcrypt.checkpw(password.encode('utf-8'), self.hashed_password.encode('utf-8'))
         
     @staticmethod
@@ -86,30 +83,6 @@ class User(db.Model):
     @staticmethod
     def get_name_plural():
         return "users"
-    
-    def get_role(self):
-        existing_user = Patient.query.get(self.user_id)
-        if existing_user is not None:
-            return "patient"
-        existing_user = Employee.query.get(self.user_id)
-        if existing_user is not None:
-            if existing_user.is_admin == True:
-                return "admin"
-            else:
-                return "doctor"
-        return None    
-
-    def get_role(self):
-        if hasattr(self, 'patient'):
-            return 'patient'
-        elif hasattr(self, 'employee'):
-            # get is_admin from employee
-            if self.employee.is_admin:
-                return 'admin'
-            else:
-                return 'doctor'
-        else:
-            return 'user'
 
 # inheritance from User
 class Patient(User):
@@ -143,7 +116,7 @@ class Patient(User):
         user_dict['MBO'] = self.MBO
 
         return user_dict
-    
+
     def update(self, **kwargs):
         if 'MBO' in kwargs:
             self.MBO = kwargs.get('MBO', None)
@@ -196,7 +169,7 @@ class Employee(User):
         user_dict['OIB'] = self.OIB
 
         return user_dict
-    
+
     def update(self, **kwargs):
         if 'OIB' in kwargs:
             self.OIB = kwargs.get('OIB', None)

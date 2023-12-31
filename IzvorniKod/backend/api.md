@@ -2,53 +2,6 @@
 
 ## Accounts
 
-### Get all users
-
-#### Request
-
-- **Endpoint:** `/users`
-- **Method:** `GET`
-- **Require authorization**
-
-#### Response
-
-- **Success Code:** `200 OK`
-- **Content:**
-
-   ```json
-   {
-      "data": {
-         "employees": [
-            {
-               "OIB": "12345678901",
-               "date_of_birth": "Fri, 02 Feb 1990 00:00:00 GMT",
-               "email": "john.smith@example.com",
-               "is_active": false,
-               "is_admin": true,
-               "name": "John",
-               "phone_number": "0910000000",
-               "surname": "Smith",
-               "user_id": 1
-            },
-            ...
-         ],
-         "patients": [
-            {
-               "MBO": "123456789",
-               "date_of_birth": "Mon, 01 Jan 1990 00:00:00 GMT",
-               "email": "jane.smith@fer.hr",
-               "name": "Jane",
-               "phone_number": "0910000001",
-               "surname": "Smith",
-               "user_id": 2
-            },
-            ...
-         ]
-      },
-      "status": 200
-   }
-   ```
-
 ### Get all patients
 
 #### Request
@@ -56,6 +9,11 @@
 - **Endpoint:** `/patients`
 - **Method:** `GET`
 - **Require authorization**
+- **Body:**
+   - `page` (integer): Page number you want to get (default 1).
+   - `page_size` (integer): Number of elements per page, max 20 (default 20).
+- **Notes:**
+   - All request parameters are optional.
 
 #### Response
 
@@ -78,11 +36,29 @@
             ...
          ]
       },
+      "page": <page>,
+      "page_size": <page_size>,
+      "pages": 1,
       "status": 200
    }
    ```
 
-### Get one patient
+- **Error Codes:**
+   - `400 Bad Request`
+      - If `page` or `page_size` are not integers.
+      - If `page_size` is not between 1 and 20.
+   - `404 Not Found`
+      - If page does not exist.
+
+- **Error:**
+   ```json
+   {
+      "error": "Error message",
+      "status": 400
+   }
+   ```
+
+### Get patient
 
 #### Request
 
@@ -279,6 +255,11 @@
 - **Endpoint:** `/employees`
 - **Method:** `GET`
 - **Require authorization**
+- **Body:**
+   - `page` (integer): Page number you want to get (default 1).
+   - `page_size` (integer): Number of elements per page, max 20 (default 20).
+- **Notes:**
+   - All request parameters are optional.
 
 #### Response
 
@@ -303,11 +284,29 @@
             ...
          ]
       },
+      "page": <page>,
+      "page_size": <page_size>,
+      "pages": 1,
       "status": 200
    }
    ```
 
-### Get one employee
+- **Error Codes:**
+   - `400 Bad Request`
+      - If `page` or `page_size` are not integers.
+      - If `page_size` is not between 1 and 20.
+   - `404 Not Found`
+      - If page does not exist.
+
+- **Error:**
+   ```json
+   {
+      "error": "Error message",
+      "status": 400
+   }
+   ```
+
+### Get employee
 
 #### Request
 
@@ -570,6 +569,7 @@
       "status": 200
    }
    ```
+
 ### Change password
 
 #### Request
@@ -619,6 +619,11 @@
 - **Endpoint:** `/appointments`
 - **Method:** `GET`
 - **Require authorization**
+- **Body:**
+   - `page` (integer): Page number you want to get (default 1).
+   - `page_size` (integer): Number of elements per page, max 20 (default 20).
+- **Notes:**
+   - All request parameters are optional.
 
 #### Response
 
@@ -680,7 +685,25 @@
             ...
          ]
       },
+      "page": <page>,
+      "page_size": <page_size>,
+      "pages": 1,
       "status": 200
+   }
+   ```
+
+- **Error Codes:**
+   - `400 Bad Request`
+      - If `page` or `page_size` are not integers.
+      - If `page_size` is not between 1 and 20.
+   - `404 Not Found`
+      - If page does not exist.
+
+- **Error:**
+   ```json
+   {
+      "error": "Error message",
+      "status": 400
    }
    ```
 
@@ -1002,6 +1025,11 @@
 - **Endpoint:** `/appointments/by-therapy/<therapy_id>`
 - **Method:** `GET`
 - **Require authorization**
+- **Body:**
+   - `page` (integer): Page number you want to get (default 1).
+   - `page_size` (integer): Number of elements per page, max 20 (default 20).
+- **Notes:**
+   - All request parameters are optional.
 
 #### Response
 
@@ -1063,7 +1091,25 @@
             ...
          ]
       },
+      "page": <page>,
+      "page_size": <page_size>,
+      "pages": 1,
       "status": 200
+   }
+   ```
+
+- **Error Codes:**
+   - `400 Bad Request`
+      - If `page` or `page_size` are not integers.
+      - If `page_size` is not between 1 and 20.
+   - `404 Not Found`
+      - If page does not exist.
+
+- **Error:**
+   ```json
+   {
+      "error": "Error message",
+      "status": 400
    }
    ```
 
@@ -1074,6 +1120,11 @@
 - **Endpoint:** `/appointments/by-employee/<user_id>`
 - **Method:** `GET`
 - **Require authorization**
+- **Body:**
+   - `page` (integer): Page number you want to get (default 1).
+   - `page_size` (integer): Number of elements per page, max 20 (default 20).
+- **Notes:**
+   - All request parameters are optional.
 
 #### Response
 
@@ -1135,7 +1186,25 @@
             ...
          ]
       },
+      "page": <page>,
+      "page_size": <page_size>,
+      "pages": 1,
       "status": 200
+   }
+   ```
+
+- **Error Codes:**
+   - `400 Bad Request`
+      - If `page` or `page_size` are not integers.
+      - If `page_size` is not between 1 and 20.
+   - `404 Not Found`
+      - If page does not exist.
+
+- **Error:**
+   ```json
+   {
+      "error": "Error message",
+      "status": 400
    }
    ```
 
@@ -1146,6 +1215,11 @@
 - **Endpoint:** `/statuses`
 - **Method:** `GET`
 - **Require authorization**
+- **Body:**
+   - `page` (integer): Page number you want to get (default 1).
+   - `page_size` (integer): Number of elements per page, max 20 (default 20).
+- **Notes:**
+   - All request parameters are optional.
 
 #### Response
 
@@ -1163,7 +1237,25 @@
             ...
          ]
       },
+      "page": <page>,
+      "page_size": <page_size>,
+      "pages": 1,
       "status": 200
+   }
+   ```
+
+- **Error Codes:**
+   - `400 Bad Request`
+      - If `page` or `page_size` are not integers.
+      - If `page_size` is not between 1 and 20.
+   - `404 Not Found`
+      - If page does not exist.
+
+- **Error:**
+   ```json
+   {
+      "error": "Error message",
+      "status": 400
    }
    ```
 
@@ -1345,6 +1437,11 @@
 - **Endpoint:** `/devices`
 - **Method:** `GET`
 - **Require authorization**
+- **Body:**
+   - `page` (integer): Page number you want to get (default 1).
+   - `page_size` (integer): Number of elements per page, max 20 (default 20).
+- **Notes:**
+   - All request parameters are optional.
 
 #### Response
 
@@ -1371,7 +1468,25 @@
             ...
          ]
       },
+      "page": <page>,
+      "page_size": <page_size>,
+      "pages": 1,
       "status": 200
+   }
+   ```
+
+- **Error Codes:**
+   - `400 Bad Request`
+      - If `page` or `page_size` are not integers.
+      - If `page_size` is not between 1 and 20.
+   - `404 Not Found`
+      - If page does not exist.
+
+- **Error:**
+   ```json
+   {
+      "error": "Error message",
+      "status": 400
    }
    ```
 
@@ -1580,6 +1695,11 @@
 - **Endpoint:** `/devices/by-type/<device_type_id>`
 - **Method:** `GET`
 - **Require authorization**
+- **Body:**
+   - `page` (integer): Page number you want to get (default 1).
+   - `page_size` (integer): Number of elements per page, max 20 (default 20).
+- **Notes:**
+   - All request parameters are optional.
 
 #### Response
 
@@ -1606,7 +1726,25 @@
             ...
          ]
       },
+      "page": <page>,
+      "page_size": <page_size>,
+      "pages": 1,
       "status": 200
+   }
+   ```
+
+- **Error Codes:**
+   - `400 Bad Request`
+      - If `page` or `page_size` are not integers.
+      - If `page_size` is not between 1 and 20.
+   - `404 Not Found`
+      - If page does not exist.
+
+- **Error:**
+   ```json
+   {
+      "error": "Error message",
+      "status": 400
    }
    ```
 
@@ -1617,6 +1755,11 @@
 - **Endpoint:** `/device-types`
 - **Method:** `GET`
 - **Require authorization**
+- **Body:**
+   - `page` (integer): Page number you want to get (default 1).
+   - `page_size` (integer): Number of elements per page, max 20 (default 20).
+- **Notes:**
+   - All request parameters are optional.
 
 #### Response
 
@@ -1635,7 +1778,25 @@
             ... 
          ]
       },
+      "page": <page>,
+      "page_size": <page_size>,
+      "pages": 1,
       "status": 200
+   }
+   ```
+
+- **Error Codes:**
+   - `400 Bad Request`
+      - If `page` or `page_size` are not integers.
+      - If `page_size` is not between 1 and 20.
+   - `404 Not Found`
+      - If page does not exist.
+
+- **Error:**
+   ```json
+   {
+      "error": "Error message",
+      "status": 400
    }
    ```
 
@@ -1836,6 +1997,11 @@
 - **Endpoint:** `/rooms`
 - **Method:** `GET`
 - **Require authorization**
+- **Body:**
+   - `page` (integer): Page number you want to get (default 1).
+   - `page_size` (integer): Number of elements per page, max 20 (default 20).
+- **Notes:**
+   - All request parameters are optional.
 
 #### Response
 
@@ -1849,12 +2015,49 @@
             {
                "capacity": 3,
                "in_use": true,
-               "room_num": "A001"
+               "room_num": "A001",
+               "devices": [
+                  {
+                     "device_id": 1,
+                     "device_type": {
+                        "device_type_descr": "Device for something.",
+                        "device_type_id": 1,
+                        "device_type_name": "Device name"
+                     }
+                  },
+                  ...
+               ],
+               "therapy_types": [
+                  {
+                     "therapy_type_descr": "Therapy for something.",
+                     "therapy_type_id": 1,
+                     "therapy_type_name": "Therapy type name"
+                  },
+                  ...
+               ]
             },
             ...
          ]
       },
+      "page": <page>,
+      "page_size": <page_size>,
+      "pages": 1,
       "status": 200
+   }
+   ```
+
+- **Error Codes:**
+   - `400 Bad Request`
+      - If `page` or `page_size` are not integers.
+      - If `page_size` is not between 1 and 20.
+   - `404 Not Found`
+      - If page does not exist.
+
+- **Error:**
+   ```json
+   {
+      "error": "Error message",
+      "status": 400
    }
    ```
 
@@ -1877,7 +2080,26 @@
          "room": {
             "capacity": 3,
             "in_use": true,
-            "room_num": <room_num>
+            "room_num": "A001",
+            "devices": [
+               {
+                  "device_id": 1,
+                  "device_type": {
+                     "device_type_descr": "Device for something.",
+                     "device_type_id": 1,
+                     "device_type_name": "Device name"
+                  }
+               },
+               ...
+            ],
+            "therapy_types": [
+               {
+                  "therapy_type_descr": "Therapy for something.",
+                  "therapy_type_id": 1,
+                  "therapy_type_name": "Therapy type name"
+               },
+               ...
+            ]
          }
       },
       "status": 200
@@ -1921,7 +2143,26 @@
          "room": {
             "capacity": 3,
             "in_use": true,
-            "room_num": "A001"
+            "room_num": "A001",
+            "devices": [
+               {
+                  "device_id": 1,
+                  "device_type": {
+                     "device_type_descr": "Device for something.",
+                     "device_type_id": 1,
+                     "device_type_name": "Device name"
+                  }
+               },
+               ...
+            ],
+            "therapy_types": [
+               {
+                  "therapy_type_descr": "Therapy for something.",
+                  "therapy_type_id": 1,
+                  "therapy_type_name": "Therapy type name"
+               },
+               ...
+            ]
          }
       },
       "status": 201
@@ -1974,7 +2215,26 @@
          "room": {
             "capacity": 3,
             "in_use": true,
-            "room_num": "A001"
+            "room_num": "A001",
+            "devices": [
+               {
+                  "device_id": 1,
+                  "device_type": {
+                     "device_type_descr": "Device for something.",
+                     "device_type_id": 1,
+                     "device_type_name": "Device name"
+                  }
+               },
+               ...
+            ],
+            "therapy_types": [
+               {
+                  "therapy_type_descr": "Therapy for something.",
+                  "therapy_type_id": 1,
+                  "therapy_type_name": "Therapy type name"
+               },
+               ...
+            ]
          }
       },
       "status": 200
@@ -2043,6 +2303,11 @@
 - **Endpoint:** `/therapies`
 - **Method:** `GET`
 - **Require authorization**
+- **Body:**
+   - `page` (integer): Page number you want to get (default 1).
+   - `page_size` (integer): Number of elements per page, max 20 (default 20).
+- **Notes:**
+   - All request parameters are optional.
 
 #### Response
 
@@ -2054,6 +2319,35 @@
       "data": {
          "therapies": [
             {
+               "appointments": [
+                  {
+                     "appointment_id": 1,
+                     "comment": "Some comment.",
+                     "date_from": "Sat, 23 Mar 2019 10:00:00 GMT",
+                     "date_to": "Sat, 23 Mar 2019 12:00:00 GMT",
+                     "employee": {
+                        "OIB": "12345678901",
+                        "date_of_birth": "Mon, 01 Jan 1990 00:00:00 GMT",
+                        "email": "jane.smith@fer.hr",
+                        "is_active": false,
+                        "is_admin": true,
+                        "name": "Jane",
+                        "phone_number": "0910000001",
+                        "surname": "Smith",
+                        "user_id": 1
+                     },
+                     "room": {
+                        "capacity": 3,
+                        "in_use": true,
+                        "room_num": "A001"
+                     },
+                     "status": {
+                        "status_id": 1,
+                        "status_name": "Waiting"
+                     }
+                  },
+                  ...
+               ],
                "date_from": "Tue, 12 Dec 2023 00:00:00 GMT",
                "date_to": "Sun, 24 Dec 2023 00:00:00 GMT",
                "disease_descr": "Broken leg.",
@@ -2078,7 +2372,25 @@
             ...
          ]
       },
+      "page": <page>,
+      "page_size": <page_size>,
+      "pages": 1,
       "status": 200
+   }
+   ```
+
+- **Error Codes:**
+   - `400 Bad Request`
+      - If `page` or `page_size` are not integers.
+      - If `page_size` is not between 1 and 20.
+   - `404 Not Found`
+      - If page does not exist.
+
+- **Error:**
+   ```json
+   {
+      "error": "Error message",
+      "status": 400
    }
    ```
 
@@ -2099,6 +2411,35 @@
    {
       "data": {
          "therapy": {
+            "appointments": [
+               {
+                  "appointment_id": 1,
+                  "comment": "Some comment.",
+                  "date_from": "Sat, 23 Mar 2019 10:00:00 GMT",
+                  "date_to": "Sat, 23 Mar 2019 12:00:00 GMT",
+                  "employee": {
+                     "OIB": "12345678901",
+                     "date_of_birth": "Mon, 01 Jan 1990 00:00:00 GMT",
+                     "email": "jane.smith@fer.hr",
+                     "is_active": false,
+                     "is_admin": true,
+                     "name": "Jane",
+                     "phone_number": "0910000001",
+                     "surname": "Smith",
+                     "user_id": 1
+                  },
+                  "room": {
+                     "capacity": 3,
+                     "in_use": true,
+                     "room_num": "A001"
+                  },
+                  "status": {
+                     "status_id": 1,
+                     "status_name": "Waiting"
+                  }
+               },
+               ...
+            ],
             "date_from": "Tue, 12 Dec 2023 00:00:00 GMT",
             "date_to": "Sun, 24 Dec 2023 00:00:00 GMT",
             "disease_descr": "Broken leg.",
@@ -2164,6 +2505,35 @@
    {
       "data": {
          "therapy": {
+            "appointments": [
+               {
+                  "appointment_id": 1,
+                  "comment": "Some comment.",
+                  "date_from": "Sat, 23 Mar 2019 10:00:00 GMT",
+                  "date_to": "Sat, 23 Mar 2019 12:00:00 GMT",
+                  "employee": {
+                     "OIB": "12345678901",
+                     "date_of_birth": "Mon, 01 Jan 1990 00:00:00 GMT",
+                     "email": "jane.smith@fer.hr",
+                     "is_active": false,
+                     "is_admin": true,
+                     "name": "Jane",
+                     "phone_number": "0910000001",
+                     "surname": "Smith",
+                     "user_id": 1
+                  },
+                  "room": {
+                     "capacity": 3,
+                     "in_use": true,
+                     "room_num": "A001"
+                  },
+                  "status": {
+                     "status_id": 1,
+                     "status_name": "Waiting"
+                  }
+               },
+               ...
+            ],
             "date_from": "Tue, 12 Dec 2023 00:00:00 GMT",
             "date_to": "Sun, 24 Dec 2023 00:00:00 GMT",
             "disease_descr": "Broken leg.",
@@ -2238,6 +2608,35 @@
    {
       "data": {
          "therapy": {
+            "appointments": [
+               {
+                  "appointment_id": 1,
+                  "comment": "Some comment.",
+                  "date_from": "Sat, 23 Mar 2019 10:00:00 GMT",
+                  "date_to": "Sat, 23 Mar 2019 12:00:00 GMT",
+                  "employee": {
+                     "OIB": "12345678901",
+                     "date_of_birth": "Mon, 01 Jan 1990 00:00:00 GMT",
+                     "email": "jane.smith@fer.hr",
+                     "is_active": false,
+                     "is_admin": true,
+                     "name": "Jane",
+                     "phone_number": "0910000001",
+                     "surname": "Smith",
+                     "user_id": 1
+                  },
+                  "room": {
+                     "capacity": 3,
+                     "in_use": true,
+                     "room_num": "A001"
+                  },
+                  "status": {
+                     "status_id": 1,
+                     "status_name": "Waiting"
+                  }
+               },
+               ...
+            ],
             "date_from": "Tue, 12 Dec 2023 00:00:00 GMT",
             "date_to": "Sun, 24 Dec 2023 00:00:00 GMT",
             "disease_descr": "Broken leg.",
@@ -2326,6 +2725,11 @@
 - **Endpoint:** `/therapies/by-patient/<user_id>`
 - **Method:** `GET`
 - **Require authorization**
+- **Body:**
+   - `page` (integer): Page number you want to get (default 1).
+   - `page_size` (integer): Number of elements per page, max 20 (default 20).
+- **Notes:**
+   - All request parameters are optional.
 
 #### Response
 
@@ -2337,52 +2741,35 @@
       "data": {
          "therapies": [
             {
-               "date_from": "Tue, 12 Dec 2023 00:00:00 GMT",
-               "date_to": "Sun, 24 Dec 2023 00:00:00 GMT",
-               "disease_descr": "Broken leg.",
-               "doctor_id": 1,
-               "patient": {
-                  "MBO": "123123123",
-                  "date_of_birth": "Mon, 01 Jan 1990 00:00:00 GMT",
-                  "email": "john.smith@fer.hr",
-                  "name": "John",
-                  "phone_number": "0911231231",
-                  "surname": "Smith",
-                  "user_id": <user_id>
-               },
-               "req_treatment": "Vježbanje uz povećanje napora.",
-               "therapy_id": 1,
-               "therapy_type": {
-                  "therapy_type_descr": "Therapy type description.",
-                  "therapy_type_id": 1,
-                  "therapy_type_name": "Phisical therapy"
-               }
-            },
-            ...
-         ]
-      },
-      "status": 200
-   }
-   ```
-
-### Get all therapies by therapy type
-
-#### Request
-
-- **Endpoint:** `/therapies/by-type/<therapy_type_id>`
-- **Method:** `GET`
-- **Require authorization**
-
-#### Response
-
-- **Success Code:** `200 OK`
-- **Content:**
-
-   ```json
-   {
-      "data": {
-         "therapies": [
-            {
+               "appointments": [
+                  {
+                     "appointment_id": 1,
+                     "comment": "Some comment.",
+                     "date_from": "Sat, 23 Mar 2019 10:00:00 GMT",
+                     "date_to": "Sat, 23 Mar 2019 12:00:00 GMT",
+                     "employee": {
+                        "OIB": "12345678901",
+                        "date_of_birth": "Mon, 01 Jan 1990 00:00:00 GMT",
+                        "email": "jane.smith@fer.hr",
+                        "is_active": false,
+                        "is_admin": true,
+                        "name": "Jane",
+                        "phone_number": "0910000001",
+                        "surname": "Smith",
+                        "user_id": 1
+                     },
+                     "room": {
+                        "capacity": 3,
+                        "in_use": true,
+                        "room_num": "A001"
+                     },
+                     "status": {
+                        "status_id": 1,
+                        "status_name": "Waiting"
+                     }
+                  },
+                  ...
+               ],
                "date_from": "Tue, 12 Dec 2023 00:00:00 GMT",
                "date_to": "Sun, 24 Dec 2023 00:00:00 GMT",
                "disease_descr": "Broken leg.",
@@ -2400,14 +2787,130 @@
                "therapy_id": 1,
                "therapy_type": {
                   "therapy_type_descr": "Therapy type description.",
-                  "therapy_type_id": <therapy_type_id>,
+                  "therapy_type_id": 1,
                   "therapy_type_name": "Phisical therapy"
                }
             },
             ...
          ]
       },
+      "page": <page>,
+      "page_size": <page_size>,
+      "pages": 1,
       "status": 200
+   }
+   ```
+
+- **Error Codes:**
+   - `400 Bad Request`
+      - If `page` or `page_size` are not integers.
+      - If `page_size` is not between 1 and 20.
+   - `404 Not Found`
+      - If page does not exist.
+
+- **Error:**
+   ```json
+   {
+      "error": "Error message",
+      "status": 400
+   }
+   ```
+
+### Get all therapies by therapy type
+
+#### Request
+
+- **Endpoint:** `/therapies/by-type/<therapy_type_id>`
+- **Method:** `GET`
+- **Require authorization**
+- **Body:**
+   - `page` (integer): Page number you want to get (default 1).
+   - `page_size` (integer): Number of elements per page, max 20 (default 20).
+- **Notes:**
+   - All request parameters are optional.
+
+#### Response
+
+- **Success Code:** `200 OK`
+- **Content:**
+
+   ```json
+   {
+      "data": {
+         "therapies": [
+            {
+               "appointments": [
+                  {
+                     "appointment_id": 1,
+                     "comment": "Some comment.",
+                     "date_from": "Sat, 23 Mar 2019 10:00:00 GMT",
+                     "date_to": "Sat, 23 Mar 2019 12:00:00 GMT",
+                     "employee": {
+                        "OIB": "12345678901",
+                        "date_of_birth": "Mon, 01 Jan 1990 00:00:00 GMT",
+                        "email": "jane.smith@fer.hr",
+                        "is_active": false,
+                        "is_admin": true,
+                        "name": "Jane",
+                        "phone_number": "0910000001",
+                        "surname": "Smith",
+                        "user_id": 1
+                     },
+                     "room": {
+                        "capacity": 3,
+                        "in_use": true,
+                        "room_num": "A001"
+                     },
+                     "status": {
+                        "status_id": 1,
+                        "status_name": "Waiting"
+                     }
+                  },
+                  ...
+               ],
+               "date_from": "Tue, 12 Dec 2023 00:00:00 GMT",
+               "date_to": "Sun, 24 Dec 2023 00:00:00 GMT",
+               "disease_descr": "Broken leg.",
+               "doctor_id": 1,
+               "patient": {
+                  "MBO": "123123123",
+                  "date_of_birth": "Mon, 01 Jan 1990 00:00:00 GMT",
+                  "email": "john.smith@fer.hr",
+                  "name": "John",
+                  "phone_number": "0911231231",
+                  "surname": "Smith",
+                  "user_id": 1
+               },
+               "req_treatment": "Vježbanje uz povećanje napora.",
+               "therapy_id": 1,
+               "therapy_type": {
+                  "therapy_type_descr": "Therapy type description.",
+                  "therapy_type_id": 1,
+                  "therapy_type_name": "Phisical therapy"
+               }
+            },
+            ...
+         ]
+      },
+      "page": <page>,
+      "page_size": <page_size>,
+      "pages": 1,
+      "status": 200
+   }
+   ```
+
+- **Error Codes:**
+   - `400 Bad Request`
+      - If `page` or `page_size` are not integers.
+      - If `page_size` is not between 1 and 20.
+   - `404 Not Found`
+      - If page does not exist.
+
+- **Error:**
+   ```json
+   {
+      "error": "Error message",
+      "status": 400
    }
    ```
 
@@ -2418,6 +2921,11 @@
 - **Endpoint:** `/therapy-types`
 - **Method:** `GET`
 - **Require authorization**
+- **Body:**
+   - `page` (integer): Page number you want to get (default 1).
+   - `page_size` (integer): Number of elements per page, max 20 (default 20).
+- **Notes:**
+   - All request parameters are optional.
 
 #### Response
 
@@ -2436,7 +2944,25 @@
             ...
          ]
       },
+      "page": <page>,
+      "page_size": <page_size>,
+      "pages": 1,
       "status": 200
+   }
+   ```
+
+- **Error Codes:**
+   - `400 Bad Request`
+      - If `page` or `page_size` are not integers.
+      - If `page_size` is not between 1 and 20.
+   - `404 Not Found`
+      - If page does not exist.
+
+- **Error:**
+   ```json
+   {
+      "error": "Error message",
+      "status": 400
    }
    ```
 
@@ -2457,9 +2983,9 @@
    {
       "data": {
          "therapy_type": {
-               "therapy_type_descr": "Therapy for something.",
-               "therapy_type_id": 1,
-               "therapy_type_name": "Therapy type name"
+            "therapy_type_descr": "Therapy for something.",
+            "therapy_type_id": 1,
+            "therapy_type_name": "Therapy type name"
          }
       },
       "status": 200
@@ -2500,9 +3026,9 @@
    {
       "data": {
          "therapy_type": {
-               "therapy_type_descr": "Therapy for something.",
-               "therapy_type_id": 1,
-               "therapy_type_name": "Therapy type name"
+            "therapy_type_descr": "Therapy for something.",
+            "therapy_type_id": 1,
+            "therapy_type_name": "Therapy type name"
          }
       },
       "status": 201
@@ -2552,9 +3078,9 @@
    {
       "data": {
          "therapy_type": {
-               "therapy_type_descr": "Therapy for something.",
-               "therapy_type_id": 1,
-               "therapy_type_name": "Therapy type name"
+            "therapy_type_descr": "Therapy for something.",
+            "therapy_type_id": 1,
+            "therapy_type_name": "Therapy type name"
          }
       },
       "status": 200
