@@ -5,7 +5,8 @@ from models.rooms import Room
 from models.therapies import Therapy
 
 class Appointment(db.Model):
-   appointment_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
+   __tablename__ = 'appointment'
+   appointment_id = db.Column(db.Integer, autoincrement=True, nullable=False)
    date_from = db.Column(db.DateTime, nullable=False)
    date_to = db.Column(db.DateTime)
    comment = db.Column(db.String(300))
@@ -13,7 +14,8 @@ class Appointment(db.Model):
       db.Integer,
       db.ForeignKey(
          'therapy.therapy_id',
-         ondelete="CASCADE"
+         ondelete="CASCADE",
+         onupdate="CASCADE"
       ),
       nullable=False
    )
@@ -22,25 +24,28 @@ class Appointment(db.Model):
       db.Integer,
       db.ForeignKey(
          'status.status_id',
-         ondelete="SET NULL"
-      ),
-      nullable=True, # if status is deleted we do not want to delete appointment also
-      default=1
+         ondelete="SET NULL",
+         onupdate="CASCADE"
+      )
    )
    room_num = db.Column(
       db.String(10),
       db.ForeignKey(
          'room.room_num',
-         ondelete="SET NULL"
+         ondelete="SET NULL",
+         onupdate="CASCADE"
       )
    )
    employee_id = db.Column(
       db.Integer,
       db.ForeignKey(
          'employee.user_id',
-         ondelete="SET NULL"
+         ondelete="SET NULL",
+         onupdate="CASCADE"
       )
    )
+
+   db.PrimaryKeyConstraint(appointment_id, therapy_id)
 
    def __init__(self, date_from, therapy_id, **kwargs):
       self.therapy_id = therapy_id
@@ -107,6 +112,7 @@ class Appointment(db.Model):
       return "appointments"
 
 class Status(db.Model):
+   __tablename__ = 'status'
    status_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
    status_name = db.Column(db.String(50), nullable=False)
 

@@ -2,15 +2,23 @@ from db import db
 from models import *
 
 class Device(db.Model):
+   __tablename__ = 'device'
    device_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
-   room_num = db.Column(db.String(10), db.ForeignKey('room.room_num'))
+   room_num = db.Column(
+      db.String(10),
+      db.ForeignKey(
+         'room.room_num',
+         ondelete="SET NULL",
+         onupdate="CASCADE"
+      )
+   )
    device_type_id = db.Column(
       db.Integer,
       db.ForeignKey(
          'device_type.device_type_id',
-         ondelete="SET NULL"
-      ),
-      nullable=True # If device_type is deleted we don't want to delete device also so we only set foregin key to null
+         ondelete="SET NULL",
+         onupdate="CASCADE"
+      )
    )
 
    def __init__(self, device_type_id, **kwargs):
@@ -50,6 +58,7 @@ class Device(db.Model):
       return "devices"
 
 class DeviceType(db.Model):
+   __tablename__ = 'device_type'
    device_type_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
    device_type_name = db.Column(db.String(50), nullable=False)
    device_type_descr = db.Column(db.String(300))

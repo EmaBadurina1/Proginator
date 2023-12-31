@@ -3,25 +3,27 @@ from models import *
 from db import db
 
 class Therapy(db.Model):
+   __tablename__ = 'therapy'
    therapy_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
    doctor_id = db.Column(db.Integer, nullable=False)
    disease_descr = db.Column(db.String(300), nullable=False)
    req_treatment = db.Column(db.String(300))
-   date_from = db.Column(db.Date, nullable=False)
+   date_from = db.Column(db.Date, nullable=False, default=datetime.now().date())
    date_to = db.Column(db.Date)
    patient_id = db.Column(
       db.Integer,
       db.ForeignKey(
          'patient.user_id',
-         ondelete="CASCADE"
-      ),
-      nullable=False
+         ondelete="SET NULL",
+         onupdate="CASCADE"
+      )
    )
    therapy_type_id = db.Column(
       db.Integer,
       db.ForeignKey(
          'therapy_type.therapy_type_id',
-         ondelete="SET NULL"
+         ondelete="SET NULL",
+         onupdate="CASCADE"
       )
    )
 
@@ -93,6 +95,7 @@ class Therapy(db.Model):
       return "therapies"
 
 class TherapyType(db.Model):
+   __tablename__ = 'therapy_type'
    therapy_type_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
    therapy_type_name = db.Column(db.String(50), nullable=False)
    therapy_type_descr = db.Column(db.String(300))

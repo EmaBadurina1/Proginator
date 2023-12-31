@@ -64,7 +64,7 @@ function App() {
   const ProtectedRoute = ({ children }) => {
     const isLoggedIn = isAuthenticated;
     return isLoggedIn ? (
-      <Layout>
+      <Layout onLogout={logout}>
         {children}
       </Layout>
     ) : <Navigate replace to="/login" />;
@@ -150,7 +150,7 @@ function App() {
           path="/home"
           element={
             <ProtectedRoute>
-              <Home onLogout={logout} />
+              <Home/>
             </ProtectedRoute>
           }
         />
