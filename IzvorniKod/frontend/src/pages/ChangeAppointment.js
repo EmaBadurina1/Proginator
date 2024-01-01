@@ -35,7 +35,7 @@ const ChangeAppointment = () => {
       </div>
       <div className="mini-container3">
         <div className="title-div3">
-          <h2>Odbijanje zahtjeva za terminom</h2>
+          <h2>Promjena termina</h2>
         </div>
         <div className="border-container2">
           <div className="big-div1">

@@ -144,13 +144,13 @@ function App() {
           }
         />
         <Route
-          path="/deny-appointment"
+          path="/deny-appointment/:appointmentId"
           element={
             <DenyAppointment />
           }
         />
         <Route
-          path="/change-appointment"
+          path="/change-appointment/:appointmentId"
           element={
             <ChangeAppointment />
           }

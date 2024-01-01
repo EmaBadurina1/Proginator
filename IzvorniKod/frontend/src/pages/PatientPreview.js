@@ -110,7 +110,7 @@ const PatientPreview = () => {
           <TableBody>
             {patients &&
               patients.map((patient) => (
-                <TableRow key={patient.id}>
+                <TableRow key={patient.user_id}>
                   <TableCell style={cellStyle2}>{patient.name}</TableCell>
                   <TableCell style={cellStyle2}>{patient.surname}</TableCell>
                   <TableCell style={cellStyle2}>{patient.MBO}</TableCell>

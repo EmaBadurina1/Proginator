@@ -6,6 +6,8 @@ import Button from "@mui/material/Button";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { IconButton } from "@mui/material";
 import AppointmentInfo from "../components/AppointmentInfo";
+import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const komentarStyle = {
   width: "100%",
@@ -40,6 +42,8 @@ const iconButtonStyle = {
 };
 
 const DenyAppointment = () => {
+  const { appointmentId } = useParams();
+
   return (
     <div className="container-div">
       <div className="iconButtonDiv">
@@ -71,14 +75,16 @@ const DenyAppointment = () => {
           </div>
           <div className="button-div-container">
             <div className="button-div1">
-              <Button
-                variant="contained"
-                size="medium"
-                className="reg-btn"
-                style={buttonStyle1}
-              >
-                Premjesti ovaj termin
-              </Button>
+              <Link to={`/change-appointment/${appointmentId}`}>
+                <Button
+                  variant="contained"
+                  size="medium"
+                  className="reg-btn"
+                  style={buttonStyle1}
+                >
+                  Premjesti ovaj termin
+                </Button>
+              </Link>
             </div>
             <div className="button-div2">
               <Button
