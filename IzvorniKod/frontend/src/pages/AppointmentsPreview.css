@@ -27,4 +27,14 @@
     width: 13em;
 
 }
+.reg-btn2 {
+    height: 2.5em;
+    color: white;
+    background-color: rgb(80, 49, 100);
+    border-radius: 0.5em;
+    width: 13em;
+}
+.ev1 {
+    margin-bottom: 0.5em;
+}
 

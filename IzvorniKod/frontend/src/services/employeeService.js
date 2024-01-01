@@ -8,6 +8,7 @@ class EmployeeService {
     } catch (error) {
       return { success: false, message: "Error" };
     }
+    return {success: true, message: "Success!"};
   }
 
   async appointmentsPreview() {
@@ -17,6 +18,7 @@ class EmployeeService {
     } catch (error) {
       return { success: false, message: "Error" };
     }
+    return {success: true, message: "Success!"};
   }
 
   async getPatientById(patientId) {
@@ -26,6 +28,17 @@ class EmployeeService {
     } catch (error) {
       return { success: false, message: "Error" };
     }
+    return {success: true, message: "Success!"};
+  }
+
+  async getAppointmentById(appointmentId) {
+    try {
+      const res4 = await axiosInstance.get("/appointments/" + appointmentId);
+      localStorage.setItem("appointment", JSON.stringify(res4.data));
+    } catch (error) {
+      return { success: false, message: "Error" };
+    }
+    return {success: true, message: "Success!"};
   }
 
   getCurrentPatientData() {
@@ -38,6 +51,10 @@ class EmployeeService {
 
   getCurrentPatient() {
     return JSON.parse(localStorage.getItem("patient"));
+  }
+
+  getCurrentAppointment() {
+    return JSON.parse(localStorage.getItem("appointment"));
   }
 }
 

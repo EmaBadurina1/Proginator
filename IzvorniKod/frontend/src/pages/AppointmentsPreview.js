@@ -34,18 +34,33 @@ const AppointmentsPreview = () => {
     backgroundColor: "purple",
   };
 
+  const buttonStyle2 = {
+    backgroundColor: "rgb(80, 49, 100)",
+  };
+
   useEffect(() => {
-    EmployeeService.appointmentsPreview();
+
     const appointmentData = EmployeeService.getCurrentAppointmentData();
     const pom = appointmentData.data.appointments;
     const filtered = pom.filter((appointment) => {
-      return appointment && appointment.therapy.patient.user_id == patientId;
+      return (
+        appointment && appointment.therapy.patient.user_id == patientId
+      );
     });
     setAppointments(filtered);
 
-    EmployeeService.getPatientById(patientId);
-    const pom2 = EmployeeService.getCurrentPatient();
-    setPatient(pom2.data.patient);
+    const fetchPatient = async () => {
+      await EmployeeService.getPatientById(patientId).then((resp) => {
+        if (resp.success) {
+          const pom2 = EmployeeService.getCurrentPatient();
+          setPatient(pom2.data.patient);
+        } else {
+          console.log("greska");
+        }
+      });
+    };
+
+    fetchPatient();
   }, [patientId]);
 
   return (
@@ -83,7 +98,7 @@ const AppointmentsPreview = () => {
 
                   <TableCell style={cellStyle4}>
                     {appointment.status.status_name === "Na čekanju" && (
-                      <Link to="/attendance">
+                      <Link to={`/attendance/${appointment.appointment_id}`}>
                         <Button
                           variant="contained"
                           size="medium"
@@ -93,6 +108,25 @@ const AppointmentsPreview = () => {
                           Evidentiraj
                         </Button>
                       </Link>
+                    )}
+                    {appointment.status.status_name !== "Na čekanju" && (
+                      <div>
+                        <div className="ev1">EVIDENTIRANO</div>
+                        <div>
+                          <Link
+                            to={`/attendance-display/${appointment.appointment_id}`}
+                          >
+                            <Button
+                              variant="contained"
+                              size="medium"
+                              className="reg-btn2"
+                              style={buttonStyle2}
+                            >
+                              Prikaži evidenciju
+                            </Button>
+                          </Link>
+                        </div>
+                      </div>
                     )}
                   </TableCell>
                 </TableRow>
