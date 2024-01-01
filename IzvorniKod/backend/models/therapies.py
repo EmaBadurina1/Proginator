@@ -52,24 +52,30 @@ class Therapy(db.Model):
       return f'<Therapy ID {self.therapy_id}>'
    
    def to_dict(self):
-      dict = {
+      return {
          'therapy_id': self.therapy_id,
          'doctor_id': self.doctor_id, # spojiti s doktorom iz eksterne baze
          'disease_descr': self.disease_descr,
          'req_treatment': self.req_treatment,
          'date_from': self.date_from,
          'date_to': self.date_to,
-         'patient': None,
-         'therapy_type': None,
+         'patient': self.patient.to_dict() if self.patient else None,
+         'therapy_type': self.therapy_type.to_dict() if self.therapy_type else None,
+         'appointments': [appointment.to_dict_simple() for appointment in self.appointments]
       }
-      patient = Patient.query.get(self.patient_id)
-      if patient:
-         dict['patient'] = patient.to_dict()
-      therapy_type = TherapyType.query.get(self.therapy_type_id)
-      if therapy_type:
-         dict['therapy_type'] = therapy_type.to_dict()
-      return dict
-   
+
+   def to_dict_simple(self):
+      return {
+         'therapy_id': self.therapy_id,
+         'doctor_id': self.doctor_id, # spojiti s doktorom iz eksterne baze
+         'disease_descr': self.disease_descr,
+         'req_treatment': self.req_treatment,
+         'date_from': self.date_from,
+         'date_to': self.date_to,
+         'patient': self.patient.to_dict() if self.patient else None,
+         'therapy_type': self.therapy_type.to_dict() if self.therapy_type else None
+      }
+
    def update(self, **kwargs):
       if 'doctor_id' in kwargs:
          self.doctor_id = kwargs.get('doctor_id', None)

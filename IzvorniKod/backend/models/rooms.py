@@ -70,15 +70,17 @@ class Room(db.Model):
          'room_num': self.room_num,
          'capacity': self.capacity,
          'in_use': self.in_use,
-         'therapy_types': [therapy_type.to_dict() for therapy_type in self.therapy_types]
+         'therapy_types': [therapy_type.to_dict() for therapy_type in self.therapy_types],
+         'devices': [device.to_dict_simple() for device in self.devices]
       }
-      """
+
+   def to_dict_simple(self):
       return {
          'room_num': self.room_num,
          'capacity': self.capacity,
          'in_use': self.in_use
-      }"""
-   
+      }
+
    def update(self, **kwargs):
       if 'room_num' in kwargs:
          self.room_num = kwargs.get('room_num', None)

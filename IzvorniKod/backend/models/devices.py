@@ -30,19 +30,18 @@ class Device(db.Model):
       return f'<Device ID {self.device_id}>'
    
    def to_dict(self):
-      dict = {
+      return {
          'device_id': self.device_id,
-         'room': None,
-         'device_type': None
+         'room': self.room.to_dict_simple() if self.room else None,
+         'device_type': self.device_type.to_dict() if self.device_type else None
       }
-      room = Room.query.get(self.room_num)
-      if room:
-         dict['room'] = room.to_dict()
-      device_type = DeviceType.query.get(self.device_type_id)
-      if device_type:
-         dict['device_type'] = device_type.to_dict()
-      return dict
-   
+
+   def to_dict_simple(self):
+      return {
+         'device_id': self.device_id,
+         'device_type': self.device_type.to_dict() if self.device_type else None
+      }
+
    def update(self, **kwargs):
       if 'device_type_id' in kwargs:
          self.device_type_id = kwargs.get('device_type_id', None)

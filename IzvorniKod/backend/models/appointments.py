@@ -63,30 +63,28 @@ class Appointment(db.Model):
       return f'<Appointment ID {self.appointment_id}>'
    
    def to_dict(self):
-      dict = {
+      return {
          'appointment_id': self.appointment_id,
-         'room': None,
+         'room': self.room.to_dict_simple() if self.room else None,
          'date_from': self.date_from,
          'date_to': self.date_to,
-         'therapy': None,
+         'therapy': self.therapy.to_dict_simple() if self.therapy else None,
          'comment': self.comment,
-         'status': None,
-         'employee': None
+         'status': self.status.to_dict() if self.status else None,
+         'employee': self.doctor.to_dict() if self.doctor else None
       }
-      room = Room.query.get(self.room_num)
-      if room:
-         dict['room'] = room.to_dict()
-      therapy = Therapy.query.get(self.therapy_id)
-      if therapy:
-         dict['therapy'] = therapy.to_dict()
-      status = Status.query.get(self.status_id)
-      if status:
-         dict['status'] = status.to_dict()
-      employee = Employee.query.get(self.employee_id)
-      if employee:
-         dict['employee'] = employee.to_dict()
-      return dict
-   
+
+   def to_dict_simple(self):
+      return {
+         'appointment_id': self.appointment_id,
+         'room': self.room.to_dict_simple() if self.room else None,
+         'date_from': self.date_from,
+         'date_to': self.date_to,
+         'comment': self.comment,
+         'status': self.status.to_dict() if self.status else None,
+         'employee': self.doctor.to_dict() if self.doctor else None
+      }
+
    def update(self, **kwargs):
       if 'date_from' in kwargs:
          self.date_from = datetime.strptime(kwargs.get('date_from', None), '%Y-%m-%d %H:%M')
