@@ -2,15 +2,23 @@ from db import db
 from models import *
 
 class Device(db.Model):
+   __tablename__ = 'device'
    device_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
-   room_num = db.Column(db.String(10), db.ForeignKey('room.room_num'))
+   room_num = db.Column(
+      db.String(10),
+      db.ForeignKey(
+         'room.room_num',
+         ondelete="SET NULL",
+         onupdate="CASCADE"
+      )
+   )
    device_type_id = db.Column(
       db.Integer,
       db.ForeignKey(
          'device_type.device_type_id',
-         ondelete="SET NULL"
-      ),
-      nullable=True # If device_type is deleted we don't want to delete device also so we only set foregin key to null
+         ondelete="SET NULL",
+         onupdate="CASCADE"
+      )
    )
 
    def __init__(self, device_type_id, **kwargs):
@@ -22,19 +30,18 @@ class Device(db.Model):
       return f'<Device ID {self.device_id}>'
    
    def to_dict(self):
-      dict = {
+      return {
          'device_id': self.device_id,
-         'room': None,
-         'device_type': None
+         'room': self.room.to_dict_simple() if self.room else None,
+         'device_type': self.device_type.to_dict() if self.device_type else None
       }
-      room = Room.query.get(self.room_num)
-      if room:
-         dict['room'] = room.to_dict()
-      device_type = DeviceType.query.get(self.device_type_id)
-      if device_type:
-         dict['device_type'] = device_type.to_dict()
-      return dict
-   
+
+   def to_dict_simple(self):
+      return {
+         'device_id': self.device_id,
+         'device_type': self.device_type.to_dict() if self.device_type else None
+      }
+
    def update(self, **kwargs):
       if 'device_type_id' in kwargs:
          self.device_type_id = kwargs.get('device_type_id', None)
@@ -50,6 +57,7 @@ class Device(db.Model):
       return "devices"
 
 class DeviceType(db.Model):
+   __tablename__ = 'device_type'
    device_type_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
    device_type_name = db.Column(db.String(50), nullable=False)
    device_type_descr = db.Column(db.String(300))

@@ -200,7 +200,7 @@ def register_patient():
 @accounts_bp.route('/patients', methods=['GET'])
 @auth_validation
 def get_patients():
-    return get_all(Model=Patient)
+    return get_all(Model=Patient, req=request.json if request.content_type == 'application/json' else {})
 
 # get patient with id=user_id
 @accounts_bp.route('/patients/<int:user_id>', methods=['GET'])
@@ -388,7 +388,7 @@ def register_employee():
 @accounts_bp.route('/employees', methods=['GET'])
 @auth_validation
 def get_employees():
-    return get_all(Model=Employee)
+    return get_all(Model=Employee, req=request.json if request.content_type == 'application/json' else {})
 
 # get employee with id=user_id
 @accounts_bp.route('/employees/<int:user_id>', methods=['GET'])

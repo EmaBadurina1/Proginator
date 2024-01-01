@@ -10,7 +10,7 @@ devices_bp = Blueprint('devices_bp', __name__)
 @devices_bp.route('/devices', methods=['GET'])
 @auth_validation
 def get_devices():
-   return get_all(Model=Device)
+   return get_all(Model=Device, req=request.json if request.content_type == 'application/json' else {})
 
 # get device with id=device_id
 @devices_bp.route('/devices/<int:device_id>', methods=['GET'])
@@ -41,20 +41,69 @@ def delete_device(device_id):
 @devices_bp.route('/devices/by-type/<int:device_type_id>', methods=['GET'])
 @auth_validation
 def get_by_device_type(device_type_id):
-    devices = Device.query.filter_by(device_type_id=device_type_id).all()
-    list = [device.to_dict() for device in devices]
-    return jsonify({
-        "data": {
-            "devices": list
-        },
-        "status": 200
-    }), 200
+   try:
+      page = 1
+      page_size = 20
+
+      if request.content_type == 'application/json':
+         req = request.json
+      else:
+         req = {}
+
+      if 'page' in req:
+         page = req.get('page')
+      if 'page_size' in req:
+         page_size = req.get('page_size')
+      if page_size > 20 or page_size < 1:
+         return jsonify({
+         "error": "Page size must be between 1 and 20",
+         "status": 400
+         }), 400
+
+      devices = (
+         Device
+         .query
+         .filter_by(device_type_id=device_type_id)
+         .paginate(page=page, per_page=page_size, error_out=False)
+      )
+
+      if devices.pages == 0:
+         return jsonify({
+         "data": {
+            "devices": []
+         },
+         "page": 0,
+         "page_size": page_size,
+         "pages": devices.pages,
+         "status": 200
+      }), 200
+
+      if page > devices.pages or page < 1:
+         return jsonify({
+            'error': 'Requested page does not exist',
+            'status': 404
+         }), 404
+
+      return jsonify({
+         "data": {
+            "devices": [device.to_dict() for device in devices.items]
+         },
+         "page": page,
+         "page_size": page_size,
+         "pages": devices.pages,
+         "status": 200
+      }), 200
+   except Exception as e:
+      return jsonify({
+         "error": "Page and page size must be integers",
+         "status": 400
+      }), 400
 
 # get list of device types
 @devices_bp.route('/device-types', methods=['GET'])
 @auth_validation
 def get_device_types():
-   return get_all(Model=DeviceType)
+   return get_all(Model=DeviceType, req=request.json if request.content_type == 'application/json' else {})
 
 # get device types with id=device_type_id
 @devices_bp.route('/device-types/<int:device_type_id>', methods=['GET'])

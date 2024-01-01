@@ -2,10 +2,10 @@ import React from "react";
 import PropTypes from "prop-types";
 import Header from "./Header";
 
-const Layout = ({ children }) => {
+const Layout = ({ children, onLogout }) => {
   return (
     <div>
-      <Header></Header>
+      <Header onLogout={onLogout}></Header>
       {children}
       
     </div>
@@ -14,6 +14,7 @@ const Layout = ({ children }) => {
 
 Layout.propTypes = {
   children: PropTypes.node.isRequired,
+  onLogout: PropTypes.func.isRequired,
 };
 
 export default Layout;

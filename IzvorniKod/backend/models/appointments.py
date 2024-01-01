@@ -5,7 +5,8 @@ from models.rooms import Room
 from models.therapies import Therapy
 
 class Appointment(db.Model):
-   appointment_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
+   __tablename__ = 'appointment'
+   appointment_id = db.Column(db.Integer, autoincrement=True, nullable=False)
    date_from = db.Column(db.DateTime, nullable=False)
    date_to = db.Column(db.DateTime)
    comment = db.Column(db.String(300))
@@ -13,7 +14,8 @@ class Appointment(db.Model):
       db.Integer,
       db.ForeignKey(
          'therapy.therapy_id',
-         ondelete="CASCADE"
+         ondelete="CASCADE",
+         onupdate="CASCADE"
       ),
       nullable=False
    )
@@ -22,25 +24,28 @@ class Appointment(db.Model):
       db.Integer,
       db.ForeignKey(
          'status.status_id',
-         ondelete="SET NULL"
-      ),
-      nullable=True, # if status is deleted we do not want to delete appointment also
-      default=1
+         ondelete="SET NULL",
+         onupdate="CASCADE"
+      )
    )
    room_num = db.Column(
       db.String(10),
       db.ForeignKey(
          'room.room_num',
-         ondelete="SET NULL"
+         ondelete="SET NULL",
+         onupdate="CASCADE"
       )
    )
    employee_id = db.Column(
       db.Integer,
       db.ForeignKey(
          'employee.user_id',
-         ondelete="SET NULL"
+         ondelete="SET NULL",
+         onupdate="CASCADE"
       )
    )
+
+   db.PrimaryKeyConstraint(appointment_id, therapy_id)
 
    def __init__(self, date_from, therapy_id, **kwargs):
       self.therapy_id = therapy_id
@@ -58,30 +63,28 @@ class Appointment(db.Model):
       return f'<Appointment ID {self.appointment_id}>'
    
    def to_dict(self):
-      dict = {
+      return {
          'appointment_id': self.appointment_id,
-         'room': None,
+         'room': self.room.to_dict_simple() if self.room else None,
          'date_from': self.date_from,
          'date_to': self.date_to,
-         'therapy': None,
+         'therapy': self.therapy.to_dict_simple() if self.therapy else None,
          'comment': self.comment,
-         'status': None,
-         'employee': None
+         'status': self.status.to_dict() if self.status else None,
+         'employee': self.doctor.to_dict() if self.doctor else None
       }
-      room = Room.query.get(self.room_num)
-      if room:
-         dict['room'] = room.to_dict()
-      therapy = Therapy.query.get(self.therapy_id)
-      if therapy:
-         dict['therapy'] = therapy.to_dict()
-      status = Status.query.get(self.status_id)
-      if status:
-         dict['status'] = status.to_dict()
-      employee = Employee.query.get(self.employee_id)
-      if employee:
-         dict['employee'] = employee.to_dict()
-      return dict
-   
+
+   def to_dict_simple(self):
+      return {
+         'appointment_id': self.appointment_id,
+         'room': self.room.to_dict_simple() if self.room else None,
+         'date_from': self.date_from,
+         'date_to': self.date_to,
+         'comment': self.comment,
+         'status': self.status.to_dict() if self.status else None,
+         'employee': self.doctor.to_dict() if self.doctor else None
+      }
+
    def update(self, **kwargs):
       if 'date_from' in kwargs:
          self.date_from = datetime.strptime(kwargs.get('date_from', None), '%Y-%m-%d %H:%M')
@@ -107,6 +110,7 @@ class Appointment(db.Model):
       return "appointments"
 
 class Status(db.Model):
+   __tablename__ = 'status'
    status_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
    status_name = db.Column(db.String(50), nullable=False)
 
