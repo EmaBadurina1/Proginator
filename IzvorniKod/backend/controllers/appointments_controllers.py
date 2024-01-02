@@ -1,6 +1,6 @@
 from controllers.crud_template import *
 from models import *
-from auth import auth_validation
+from auth import auth_validation, require_any_role
 from datetime import datetime, timedelta
 from sqlalchemy.orm import joinedload
 
@@ -11,18 +11,21 @@ appointments_bp = Blueprint('appointments_bp', __name__)
 # get list of appointments
 @appointments_bp.route('/appointments', methods=['GET'])
 @auth_validation
+@require_any_role('admin')
 def get_appointments():
     return get_all(Model=Appointment, req=request.json if request.content_type == 'application/json' else {})
 
 # get appointment with id=appointment_id
 @appointments_bp.route('/appointments/<int:appointment_id>', methods=['GET'])
 @auth_validation
+@require_any_role('admin', 'employee', 'patient')
 def get_appointment(appointment_id):
     return get_one(id=appointment_id, Model=Appointment)
 
 # create new appointment
 @appointments_bp.route('/appointments', methods=['POST'])
 @auth_validation
+@require_any_role('patient')
 def create_appointment():
     required_fields = ['date_from', 'therapy_id']
     return create(required_fields=required_fields, Model=Appointment)
@@ -30,18 +33,21 @@ def create_appointment():
 # update appointment with id=appointment_id
 @appointments_bp.route('/appointments/<int:appointment_id>', methods=['PATCH'])
 @auth_validation
+@require_any_role('admin', 'patient')
 def update_appointment(appointment_id):
     return update(id=appointment_id, Model=Appointment)
     
 # delete appointment with id=appointment_id
 @appointments_bp.route('/appointments/<int:appointment_id>', methods=['DELETE'])
 @auth_validation
+@require_any_role('admin', 'patient')
 def delete_appointment(appointment_id):
     return delete(id=appointment_id, Model=Appointment)
 
 # get list of appointments by therapy_id
 @appointments_bp.route('/appointments/by-therapy/<int:therapy_id>', methods=['GET'])
 @auth_validation
+@require_any_role('admin', 'patient')
 def get_by_therapy(therapy_id):
     try:
         page = 1
@@ -104,6 +110,7 @@ def get_by_therapy(therapy_id):
 # get list of appointments by patient
 @appointments_bp.route('/appointments/by-patient/<int:user_id>', methods=['GET'])
 @auth_validation
+@require_any_role('admin', 'patient')
 def get_by_patient(user_id):
     try:
         page = 1
@@ -169,6 +176,7 @@ def get_by_patient(user_id):
 # get list of appointments by employee
 @appointments_bp.route('/appointments/by-employee/<int:user_id>', methods=['GET'])
 @auth_validation
+@require_any_role('employee')
 def get_by_employee(user_id):
     try:
         page = 1
@@ -231,18 +239,21 @@ def get_by_employee(user_id):
 # get list of statuses
 @appointments_bp.route('/statuses', methods=['GET'])
 @auth_validation
+@require_any_role('admin')
 def get_statuses():
     return get_all(Model=Status, req=request.json if request.content_type == 'application/json' else {})
 
 # get status with id=status_id
 @appointments_bp.route('/statuses/<int:status_id>', methods=['GET'])
 @auth_validation
+@require_any_role('admin')
 def get_status(status_id):
     return get_one(id=status_id, Model=Status)
 
 # create new status
 @appointments_bp.route('/statuses', methods=['POST'])
 @auth_validation
+@require_any_role('admin')
 def create_status():
     required_fields = ['status_name']
     return create(required_fields=required_fields, Model=Status)
@@ -250,11 +261,13 @@ def create_status():
 # update status with id=status_id
 @appointments_bp.route('/statuses/<int:status_id>', methods=['PATCH'])
 @auth_validation
+@require_any_role('admin')
 def update_status(status_id):
     return update(id=status_id, Model=Status)
     
 # delete status with id=status_id
 @appointments_bp.route('/statuses/<int:status_id>', methods=['DELETE'])
 @auth_validation
+@require_any_role('admin')
 def delete_status(status_id):
     return delete(id=status_id, Model=Status)

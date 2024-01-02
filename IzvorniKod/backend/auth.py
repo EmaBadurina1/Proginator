@@ -15,15 +15,15 @@ def auth_validation(f):
         return f(*args, **kwargs)
     return wrapper
 
-def require_role(role):
+def require_any_role(*roles):
     '''
-    Decorator that checks if the user has the required role.
+    Decorator that checks if the user has any of the required roles. Takes a list of arguments as roles.
     '''
     def decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
-            if "role" not in session or session["role"] != role:
-                response = jsonify({"message": "Missing authorization"})
+            if session["role"] not in roles:
+                response = jsonify({"message": "You don't have any of the required roles: " + ", ".join(roles)})
                 response.status_code = 401
                 abort(response)
             return f(*args, **kwargs)
