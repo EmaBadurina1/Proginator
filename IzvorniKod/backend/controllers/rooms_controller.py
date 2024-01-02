@@ -1,6 +1,6 @@
 from controllers.crud_template import *
 from models import *
-from auth import auth_validation
+from auth import auth_validation, require_any_role
 
 # setup blueprint
 from flask import Blueprint
@@ -9,12 +9,14 @@ rooms_bp = Blueprint('rooms_bp', __name__)
 # get list of rooms
 @rooms_bp.route('/rooms', methods=['GET'])
 @auth_validation
+@require_any_role('admin')
 def get_rooms():
     return get_all(Model=Room, req=request.json if request.content_type == 'application/json' else {})
 
 # get room with id=room_num
 @rooms_bp.route('/rooms/<string:room_num>', methods=['GET'])
 @auth_validation
+@require_any_role('admin', 'doctor', 'patient')
 def get_room(room_num):
     room = Room.query.get(room_num);
     if room:
@@ -33,6 +35,7 @@ def get_room(room_num):
 # create new room
 @rooms_bp.route('/rooms', methods=['POST'])
 @auth_validation
+@require_any_role('admin')
 def create_room():
     required_fields = ['room_num', 'capacity', 'in_use']
     return create(required_fields=required_fields, Model=Room)
@@ -40,6 +43,7 @@ def create_room():
 # update room with id=room_num
 @rooms_bp.route('/rooms/<string:room_num>', methods=['PATCH'])
 @auth_validation
+@require_any_role('admin')
 def update_room(room_num):
     room = Room.query.get(room_num)
     if room:
@@ -73,6 +77,7 @@ def update_room(room_num):
 # delete room with id=room_num
 @rooms_bp.route('/rooms/<string:room_num>', methods=['DELETE'])
 @auth_validation
+@require_any_role('admin')
 def delete_room(room_num):
     room = Room.query.get(room_num)
 

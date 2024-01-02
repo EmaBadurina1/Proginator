@@ -1,15 +1,16 @@
 from db import db
 from models import *
-from auth import auth_validation
+from auth import auth_validation, require_any_role
 from external_connector import get_patient_data
 from sqlalchemy.exc import IntegrityError, DataError
 from utils.utils import *
 from .crud_template import *
+from flask import request, jsonify, session
 
 # setup blueprint
 from flask import Blueprint
 accounts_bp = Blueprint('accounts_bp', __name__)
-    
+
 # create new patient
 @accounts_bp.route('/patients', methods=['POST'])
 def register_patient():
@@ -40,7 +41,7 @@ def register_patient():
             "status": 400
         }), 400
 
-    # check is MBO is in right format
+    # check if is MBO is in right format
     if not validate_number(request.json['MBO'], 9):
         return jsonify({
             "error": "MBO must be 9 characters long",
@@ -130,6 +131,7 @@ def register_patient():
 # get list of all patients
 @accounts_bp.route('/patients', methods=['GET'])
 @auth_validation
+@require_any_role("admin", "doctor")
 def get_patients():
     return get_all(Model=Patient, req=request.json if request.content_type == 'application/json' else {})
 
@@ -137,11 +139,19 @@ def get_patients():
 @accounts_bp.route('/patients/<int:user_id>', methods=['GET'])
 @auth_validation
 def get_patient(user_id):
+    # patient can only get his own data
+    if session['role'] == 'patient' and session['user_id'] != user_id:
+        return jsonify({
+            "error": "You don't have permission to access this data",
+            "status": 403
+        }), 403
+    
     return get_one(id=user_id, Model=Patient)
 
 # update patient with id=user_id
 @accounts_bp.route('/patients/<int:user_id>', methods=['PATCH'])
 @auth_validation
+@require_any_role("admin", "patient")
 def update_patient(user_id):
     patient = Patient.query.get(user_id)
     if patient:
@@ -199,6 +209,7 @@ def update_patient(user_id):
 # delete patient with id=user_id
 @accounts_bp.route('/patients/<int:user_id>', methods=['DELETE'])
 @auth_validation
+@require_any_role("admin")
 def delete_patient(user_id):
     patient = Patient.query.get(user_id)
 
@@ -218,6 +229,7 @@ def delete_patient(user_id):
 # create new employee
 @accounts_bp.route('/employees', methods=['POST'])
 @auth_validation
+@require_any_role("admin")
 def register_employee():
     required_fields = [
         'name',
@@ -318,24 +330,28 @@ def register_employee():
 # get list of all employees
 @accounts_bp.route('/employees', methods=['GET'])
 @auth_validation
+@require_any_role("admin")
 def get_employees():
     return get_all(Model=Employee, req=request.json if request.content_type == 'application/json' else {})
 
 # get employee with id=user_id
 @accounts_bp.route('/employees/<int:user_id>', methods=['GET'])
 @auth_validation
+@require_any_role("admin", "doctor")
 def get_employee(user_id):
     return get_one(id=user_id, Model=Employee)
 
 # update employee with id=user_id
 @accounts_bp.route('/employees/<int:user_id>', methods=['PATCH'])
 @auth_validation
+@require_any_role("admin", "doctor")
 def update_employee(user_id):
     return update(id=user_id, Model=Employee)
 
 # delete employee with id=user_id
 @accounts_bp.route('/employees/<int:user_id>', methods=['DELETE'])
 @auth_validation
+@require_any_role("admin")
 def delete_employee(user_id):
     employee = Employee.query.get(user_id)
 
