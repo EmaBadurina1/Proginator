@@ -56,6 +56,7 @@ def login():
 @auth_validation
 def logout():
    session.pop('user_id', None)
+   session.pop('role', None)
    return jsonify({
       "message": "Logout successful",
       "status": 200
