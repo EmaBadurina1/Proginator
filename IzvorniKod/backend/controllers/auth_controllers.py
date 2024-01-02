@@ -35,6 +35,9 @@ def login():
       else:
          dict["role"] = None
 
+      # set role in session, so that it can be used in require_any_role decorator
+      session["role"] = dict["role"]
+
       return jsonify({
          "data": {
             "user": dict

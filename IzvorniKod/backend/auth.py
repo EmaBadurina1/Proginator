@@ -22,7 +22,9 @@ def require_any_role(*roles):
     def decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
-            if session["role"] not in roles:
+
+            if "role" not in session or session["role"] not in roles:
+                print(session)
                 response = jsonify({"message": "You don't have any of the required roles: " + ", ".join(roles)})
                 response.status_code = 401
                 abort(response)

@@ -5,7 +5,8 @@ from external_connector import get_patient_data
 from sqlalchemy.exc import IntegrityError, DataError
 from utils.utils import *
 from .crud_template import *
- 
+from flask import request, jsonify, session
+
 # setup blueprint
 from flask import Blueprint
 accounts_bp = Blueprint('accounts_bp', __name__)
@@ -199,7 +200,7 @@ def register_patient():
 # get list of all patients
 @accounts_bp.route('/patients', methods=['GET'])
 @auth_validation
-@require_any_role("admin", "employee")
+@require_any_role("admin", "doctor")
 def get_patients():
     return get_all(Model=Patient, req=request.json if request.content_type == 'application/json' else {})
 
@@ -208,7 +209,7 @@ def get_patients():
 @auth_validation
 def get_patient(user_id):
     # patient can only get his own data
-    if db.session['role'] == 'patient' and db.session['user_id'] != user_id:
+    if session['role'] == 'patient' and session['user_id'] != user_id:
         return jsonify({
             "error": "You don't have permission to access this data",
             "status": 403
@@ -405,14 +406,14 @@ def get_employees():
 # get employee with id=user_id
 @accounts_bp.route('/employees/<int:user_id>', methods=['GET'])
 @auth_validation
-@require_any_role("admin", "employee")
+@require_any_role("admin", "doctor")
 def get_employee(user_id):
     return get_one(id=user_id, Model=Employee)
 
 # update employee with id=user_id
 @accounts_bp.route('/employees/<int:user_id>', methods=['PATCH'])
 @auth_validation
-@require_any_role("admin", "employee")
+@require_any_role("admin", "doctor")
 def update_employee(user_id):
     return update(id=user_id, Model=Employee)
 

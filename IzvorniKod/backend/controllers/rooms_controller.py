@@ -16,7 +16,7 @@ def get_rooms():
 # get room with id=room_num
 @rooms_bp.route('/rooms/<string:room_num>', methods=['GET'])
 @auth_validation
-@require_any_role('admin', 'employee', 'patient')
+@require_any_role('admin', 'doctor', 'patient')
 def get_room(room_num):
     room = Room.query.get(room_num);
     if room:

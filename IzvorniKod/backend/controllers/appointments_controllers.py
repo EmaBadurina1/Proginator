@@ -18,7 +18,7 @@ def get_appointments():
 # get appointment with id=appointment_id
 @appointments_bp.route('/appointments/<int:appointment_id>', methods=['GET'])
 @auth_validation
-@require_any_role('admin', 'employee', 'patient')
+@require_any_role('admin', 'doctor', 'patient')
 def get_appointment(appointment_id):
     return get_one(id=appointment_id, Model=Appointment)
 
@@ -176,7 +176,7 @@ def get_by_patient(user_id):
 # get list of appointments by employee
 @appointments_bp.route('/appointments/by-employee/<int:user_id>', methods=['GET'])
 @auth_validation
-@require_any_role('employee')
+@require_any_role('doctor')
 def get_by_employee(user_id):
     try:
         page = 1

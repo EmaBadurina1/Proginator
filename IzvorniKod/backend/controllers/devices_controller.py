@@ -16,7 +16,7 @@ def get_devices():
 # get device with id=device_id
 @devices_bp.route('/devices/<int:device_id>', methods=['GET'])
 @auth_validation
-@require_any_role('admin', 'employee', 'patient')
+@require_any_role('admin', 'doctor', 'patient')
 def get_device(device_id):
    return get_one(id=device_id, Model=Device)
 

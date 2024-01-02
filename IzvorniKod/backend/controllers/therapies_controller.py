@@ -16,7 +16,7 @@ def get_therapies():
 # get therapy with id=therapy_id
 @therapies_bp.route('/therapies/<int:therapy_id>', methods=['GET'])
 @auth_validation
-@require_any_role('admin', 'employee', 'patient')
+@require_any_role('admin', 'doctor', 'patient')
 def get_therapy(therapy_id):
    return get_one(id=therapy_id, Model=Therapy)
 
@@ -31,7 +31,7 @@ def create_therapy():
 # update therapy with id=therapy_id
 @therapies_bp.route('/therapies/<int:therapy_id>', methods=['PATCH'])
 @auth_validation
-@require_any_role('admin', 'employee', 'patient')
+@require_any_role('admin', 'doctor', 'patient')
 def update_therapy(therapy_id):
    return update(id=therapy_id, Model=Therapy)
     
