@@ -88,7 +88,7 @@ def get_table_and_columns(table_name):
     return columns
 
 # get list of doctors from external database in dict format
-def get_doctors():
+def get_doctors_from_external_db():
     conn = psycopg2.connect(url)
     c = conn.cursor()
     c.execute("SELECT * FROM doctor")
@@ -103,5 +103,5 @@ def get_doctors():
 
 
 if __name__ == '__main__':
-    print(get_doctors())
-    # pass
+    #print(get_doctors_from_external_db())
+    pass

@@ -506,6 +506,48 @@
    }
    ```
 
+### Get doctors from external database
+
+#### Request
+
+- **Endpoint:** `/doctors`
+- **Method:** `GET`
+- **Require authorization**
+
+#### Response
+
+- **Success Code:** `200 OK`
+- **Content:**
+
+   ```json
+   {
+      "data": {
+         "doctors": [
+            {
+               "doctor_id": 1,
+               "name": "John",
+               "surname": "Doe",
+               "oib": "45000000000"
+            },
+            ...
+         ]
+      },
+      "status": 200
+   }
+   ```
+
+- **Error Codes:**
+   - `500 Internal Server Error`
+      - If there was a problem fatching your data from external database.
+
+- **Error:**
+   ```json
+   {
+      "error": "Error message",
+      "status": 500
+   }
+   ```
+
 ## Authorization
 
 ### Login
