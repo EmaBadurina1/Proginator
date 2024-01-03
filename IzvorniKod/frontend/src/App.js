@@ -20,11 +20,13 @@ import Unauthorized from "./pages/Unauthorized";
 import UserAdd from "./pages/UserAdd";
 import AttendanceRecord from "./pages/AttendanceRecord";
 import PatientPreview from "./pages/PatientPreview";
+import { LoginContext } from "./contexts/LoginContext";
+import UserAccount from "./pages/UserAccount"; 
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(true);
   const [userRole, setUserRole] = React.useState(null);
-  const [, setUserData] = React.useState(null);
+  const [userData, setUserData] = React.useState(null);
 
   useEffect(() => {
     let userDataLS = localStorage.getItem("user_data");
@@ -60,9 +62,11 @@ function App() {
   const ProtectedRoute = ({ children }) => {
     const isLoggedIn = isAuthenticated;
     return isLoggedIn ? (
-      <Layout onLogout={logout}>
-        {children}
-      </Layout>
+      <LoginContext.Provider value={{userData, setUserData, userRole, setUserRole}}>
+        <Layout onLogout={logout}>
+          {children}
+        </Layout>
+      </LoginContext.Provider>
     ) : <Navigate replace to="/login" />;
   };
 
@@ -106,6 +110,14 @@ function App() {
         />
         <Route path="/login" element={<Login onLogin={login} />} />
         <Route path="/registration" element={<Registration />} />
+        <Route
+          path="/user-account"
+          element={
+            <ProtectedRoute>
+              <UserAccount />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/attendance"
           element={
