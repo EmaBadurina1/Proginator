@@ -87,8 +87,21 @@ def get_table_and_columns(table_name):
     conn.close()
     return columns
 
+# get list of doctors from external database in dict format
+def get_doctors():
+    conn = psycopg2.connect(url)
+    c = conn.cursor()
+    c.execute("SELECT * FROM doctor")
+    result = c.fetchall()
+    conn.close()
+    doctors = []
+    for row in result:
+        columns = [desc[0] for desc in c.description]
+        doctor_dict = dict(zip(columns, row))
+        doctors.append(doctor_dict)
+    return doctors
+
 
 if __name__ == '__main__':
-    insert_patient_data('444444444', 'Ivan', 'Ivic', '1990-01-01')
-    print(get_patient_data('444444444'))
+    print(get_doctors())
     # pass
