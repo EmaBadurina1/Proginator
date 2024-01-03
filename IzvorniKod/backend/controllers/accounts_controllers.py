@@ -1,7 +1,7 @@
 from db import db
 from models import *
 from auth import auth_validation, require_any_role
-from external_connector import get_patient_data
+from external_connector import get_patient_data, get_doctors_from_external_db
 from sqlalchemy.exc import IntegrityError, DataError
 from utils.utils import *
 from .crud_template import *
@@ -367,3 +367,21 @@ def delete_employee(user_id):
             "error": f"No ID: {user_id}",
             "status": 404
         }), 404
+    
+@accounts_bp.route('/doctors', methods=['GET'])
+@auth_validation
+@require_any_role("admin", "doctor", "patient")
+def get_doctors():
+    try:
+        doctors = get_doctors_from_external_db()
+        return jsonify({
+            "data": {
+                "doctors": doctors
+            },
+            "status": 200
+        }), 200
+    except Exception as e:
+        return jsonify({
+            "error": "There was a problem fetching your data",
+            "status": 500
+        }), 500
