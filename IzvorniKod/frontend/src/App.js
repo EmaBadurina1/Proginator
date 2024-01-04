@@ -20,6 +20,9 @@ import Unauthorized from "./pages/Unauthorized";
 import UserAdd from "./pages/UserAdd";
 import AttendanceRecord from "./pages/AttendanceRecord";
 import PatientPreview from "./pages/PatientPreview";
+import MyTherapies from "./pages/MyTherapies";
+import CreateTherapy from "./pages/CreateTherapy";
+
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(true);
@@ -44,11 +47,11 @@ function App() {
   function login() {
     let userDataLS = localStorage.getItem("user_data");
     let userRoleLS = localStorage.getItem("user_role");
-      userDataLS = JSON.parse(userDataLS);
-      userRoleLS = JSON.parse(userRoleLS);
-      setIsAuthenticated(true);
-      setUserData(userDataLS);
-      setUserRole(userRoleLS);
+    userDataLS = JSON.parse(userDataLS);
+    userRoleLS = JSON.parse(userRoleLS);
+    setIsAuthenticated(true);
+    setUserData(userDataLS);
+    setUserRole(userRoleLS);
   }
 
   function logout() {
@@ -130,7 +133,7 @@ function App() {
           path="/home"
           element={
             <ProtectedRoute>
-              <Home/>
+              <Home />
             </ProtectedRoute>
           }
         />
@@ -144,8 +147,21 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/my-therapies"
+          element={
+            <MyTherapies></MyTherapies>
+          }
+        />
+        <Route
+          path="/create"
+          element={
+            <CreateTherapy></CreateTherapy>
+          }
+        />
         <Route path="*" element={<NotFound />} />
       </Route>
+
     )
   );
 
