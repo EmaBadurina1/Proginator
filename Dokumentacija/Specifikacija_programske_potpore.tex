@@ -232,7 +232,7 @@
 					
 					\item[] \begin{packed_enum}
 						
-						\item Pacijent odabite opciju "Kreiraj terapiju"
+						\item Pacijent odabire opciju "Kreiraj terapiju"
 						\item Otvara se stranica za prijavljivanje terapije
 						\item Pacijent unosi ime i prezime liječnika, opis oboljenja i zahtijevani postupak liječenja, te odabire vrstu terapije
 						\item Pacijent odabire opciju "Pošalji"
@@ -260,21 +260,22 @@
 					\item \textbf{Glavni sudionik: }Pacijent
 					\item  \textbf{Cilj: }Poslati zahtjev za željenim terminom
 					\item  \textbf{Sudionici: }Baza podataka
-					\item  \textbf{Preduvjet: }Korisnik je prijavljen u sustav
+					\item  \textbf{Preduvjet: }Pacijent je prijavljen u sustav
 					\item  \textbf{Opis osnovnog tijeka: }
 					
 					\item[] \begin{packed_enum}
 						
 						\item Pacijent odabire terapiju za koju se prijavljuje na termin
-						\item Pacijent unosi datum i na temelju njega bira ponuđene termine
+						\item Pacijent unosi datum i na temelju njega bira ponuđene slobodne termine
 						\item Pacijent opcionalno dodaje napomenu za liječnika
-						\item Pacijent šalje zahtjev klikom na "Pošalji" 
+						\item Pacijent šalje zahtjev klikom na "Pošalji"
+						\item Spremanje podataka u bazu i slanje maila s podatcima o terminu
+						
 					\end{packed_enum}
 					
 					\item  \textbf{Opis mogućih odstupanja:}
 					
 					\item[] \begin{packed_item}
-						
 						\item[2.a] Pacijentu ne odgovara niti jedan termin
 						\item[] \begin{packed_enum}
 							
@@ -382,51 +383,9 @@
 					\end{packed_item}
 				\end{packed_item}
 				
-				\noindent \underbar{\textbf{UC11 - Prihvaćanje zahtjeva za terminom (\ref{fig:sekvencijski_dijagram_3})}}
-				\begin{packed_item}
 					
-					\item \textbf{Glavni sudionik: }Djelatnik
-					\item  \textbf{Cilj: }Prihvatiti/odbiti zahtjev za terminom na temelju raspoloživosti opreme i soba
-					\item  \textbf{Sudionici: }Baza podataka
-					\item  \textbf{Preduvjet: }
-					\item[] \begin{packed_enum}
-						
-						\item[-] Djelatnik je prijavljen u sustav
-						\item[-] Moraju postojati ne evidentirani zahtjevi
-					\end{packed_enum}
-					\item  \textbf{Opis osnovnog tijeka: }
-					
-					\item[] \begin{packed_enum}
-						\item Djelatnik odabire opciju "Zahtjevi"
-						\item Prikaz stranice sa zahtjevima
-						\item Djelatnik odabire opciju evidentiraj pored zahtjeva 
-						\item Djelatniku se prikazuju moguće vrste opreme 
-						\item Djelatnik odabire vrstu opreme
-						\item Prikaz slobodnih prostorija s odabranom vrstom opreme
-						\item Djelatnik odabire prostoriju i opcionalno piše komentar za pacijenta
-						\item Djelatnik potvrđuje termin
-						\item Sustav šalje e-mail pacijentu čiji je termin potvrđen sa svim potrebnim informacijama
-						\item Prikazuje se popis zahtjeva za terminom
-					\end{packed_enum}
-					
-					\item  \textbf{Opis mogućih odstupanja:}
-					
-					\item[] \begin{packed_enum}
-						\item[5.a] Nema slobodnih soba za tu vrstu opreme
-						\item[] \begin{packed_enum}
-							\item Djelatnik odbija zahtjev za terminom
-							\item Otvara se prozor za dodjeljivanje novog termina s podacima o odabranom pacijentu, vrsti opreme i sljedećim slobodnim terminima
-							\item Djelatnik odabire slijedeći slobodni termin
-							\item Djelatnik dodaje komentar
-							\item Djelatnik potvrđuje novi termin
-							\item Sustav šalje pacijentu e-mail o dodjeljenom terminu
-							\item Prikazuje se popis zahtjeva za terminom
-							
-						\end{packed_enum}
-					\end{packed_enum}
-				\end{packed_item}
 				
-				\noindent \underbar{\textbf{UC12 - Registracija djelatnika}}
+				\noindent \underbar{\textbf{UC11 - Registracija djelatnika}}
 				\begin{packed_item}
 					
 					\item \textbf{Glavni sudionik: }Administrator
@@ -460,7 +419,7 @@
 					\end{packed_item}
 				\end{packed_item}
 				
-				\noindent \underbar{\textbf{UC13 - Uređivanje podataka djelatnika}}
+				\noindent \underbar{\textbf{UC12 - Uređivanje podataka djelatnika}}
 				\begin{packed_item}
 					
 					\item \textbf{Glavni sudionik: }Administrator
@@ -504,7 +463,7 @@
 				\end{packed_item}
 				
 				
-				\noindent \underbar{\textbf{UC14 - Promjena ovlasti djelatnika}}
+				\noindent \underbar{\textbf{UC13 - Promjena ovlasti djelatnika}}
 				\begin{packed_item}
 					
 					\item \textbf{Glavni sudionik: }Administrator
@@ -545,7 +504,7 @@
 				\end{packed_item}
 			\end{packed_item}
 				
-				\noindent \underbar{\textbf{UC15 - Uklanjanje djelatnika}}
+				\noindent \underbar{\textbf{UC14 - Uklanjanje djelatnika}}
 				\begin{packed_item}
 					
 					\item \textbf{Glavni sudionik: }Administrator
@@ -583,7 +542,7 @@
 				\end{packed_item}
 					
 					
-					\noindent \underbar{\textbf{UC16 - Unos opreme}}
+					\noindent \underbar{\textbf{UC15 - Unos opreme}}
 					\begin{packed_item}
 						
 						\item \textbf{Glavni sudionik: }Administrator
@@ -621,7 +580,7 @@
 						\end{packed_item}
 				
 				
-				\noindent \underbar{\textbf{UC17 - Promjena dostupnosti opreme}}
+				\noindent \underbar{\textbf{UC16 - Promjena dostupnosti opreme}}
 				\begin{packed_item}
 					
 					\item \textbf{Glavni sudionik: }Administrator
@@ -645,7 +604,7 @@
 					
 				\end{packed_item}
 				
-				\noindent \underbar{\textbf{UC18 - Unos prostorija}}
+				\noindent \underbar{\textbf{UC17 - Unos prostorija}}
 				\begin{packed_item}
 					
 					\item \textbf{Glavni sudionik: }Administrator
@@ -681,7 +640,7 @@
 					\end{packed_item}
 				\end{packed_item}
 				
-				\noindent \underbar{\textbf{UC19 - Promjena dostupnosti prostorije}}
+				\noindent \underbar{\textbf{UC18 - Promjena dostupnosti prostorije}}
 				\begin{packed_item}
 					
 					\item \textbf{Glavni sudionik: }Administrator
@@ -705,7 +664,7 @@
 					
 				\end{packed_item}
 				
-				\noindent \underbar{\textbf{UC20 - Obavijest o promjeni termina}}
+				\noindent \underbar{\textbf{UC19 - Obavijest o promjeni termina}}
 				\begin{packed_item}
 					
 					\item \textbf{Glavni sudionik: }Administrator
@@ -776,7 +735,7 @@
 				
 				\textbf{\underbar{UC6 - Kreiranje terapije}}
 				
-				Pacijent šalje zahtjev poslužitelju za naručivanje na terapiju. Web aplikacija mu prikazuje obrazac koji mora ispuniti kako i se naručio na terapiju. Pacijent unosi potrebne podatke(ime i prezime liječnika koji ga je uputio na rehabilitaciju, vrstu terapije, opis oboljenja i zahtjevani postupak liječenja). Pacijent šalje popunjeni obrazac. Web aplikacija na temelju primljenih podataka provjerava krebilitet liječnika u imeniku liječnika. Ovisno o rezultatu promjene web aplikacija će učiniti jednu od dvije stvari. Ako liječnik postoji u imeniku liječnika web-aplikacija sprema sve podatke u bazu podataka i prikazuje stranicu za odabir termina. U slučaju da liječnik ne postoji u imeniku liječnika aplikacija ispisuje poruku "Liječnik ne postoji", pacijent u tom slučaju mijenja podatke u slučaju da je krivo unio liječnika ili odustaje od prijavljivanja terapije.
+				Pacijent šalje zahtjev poslužitelju za naručivanje na terapiju. Web aplikacija mu prikazuje obrazac koji mora ispuniti kako i se naručio na terapiju. Pacijent unosi potrebne podatke(ime i prezime liječnika koji ga je uputio na rehabilitaciju, vrstu terapije, opis oboljenja i zahtijevani postupak liječenja). Pacijent šalje popunjeni obrazac. Web aplikacija na temelju primljenih podataka provjerava kredibilitet liječnika u imeniku liječnika. Ovisno o rezultatu promjene web aplikacija, ako liječnik postoji u imeniku liječnika, sprema sve podatke u bazu podataka i prikazje stranicu za odabir termina. U slučaju da liječnik ne postoji u imeniku liječnika aplikacija ispisuje poruku "Liječnik ne postoji", pacijent u tom slučaju ponovno unosi to jest mijenja podatke i ponovno šalje obrazac. Pacijent može odustati od kreiranja terapije, pri čemu će mu se prikazati početna stranica.
 				
 				
 				\begin{figure}[H]
@@ -788,7 +747,7 @@
 				
 				\textbf{\underbar{UC10 - Evidencija dolaska}}
 				
-				Djelatnik odabire opciju evidentiraj pored termina odabranog pacijenta. Web aplikacija iz baze podataka dohvaća podatke o terapiji kojoj pripada odabrani termin, te nakon toga prikazuje obrazac za evidenciju s dohvaćenim podacima i prostorom za označavanje dolaska i unosom komentara. Djelatnik odabire status(odrađeno/ nije odrađeno) i piše komentar, nakon toga potvrđuje evidenciju, web aplikacija potom unesene podatke sprema u bazu podataka izmjenjujući tako podatke o odabranom terminu. Nakon što su podaci uspješno uneseni web aplikacija traži od baze termine evidentiranog pacijenta i prikazuje stranicu s popisom termina odabranog pacijenta. U slučaju da je djelatnik odabrao krivi termin za evidenciju može odustati od evidentiranja, web aplikacija će dohvatiti podatke o terminima i prikazati stranicu s popisom termina odabranog pacijenta.
+				Djelatnik odabire opciju evidentiraj pored termina odabranog pacijenta. Web aplikacija iz baze podataka dohvaća podatke o terapiji kojoj pripada odabrani termin, te nakon toga prikazuje obrazac za evidenciju s dohvaćenim podacima i prostorom za označavanje dolaska i unosom komentara. Djelatnik odabire status(odrađeno/ nije odrađeno) i piše komentar, nakon toga potvrđuje evidenciju i šalje popunjeni obrazac, web aplikacija potom unesene podatke sprema u bazu podataka izmjenjujući tako podatke o odabranom terminu. Nakon što su podaci uspješno uneseni web aplikacija traži od baze termine odabranog pacijenta i prikazuje stranicu s popisom termina tog pacijenta. U slučaju da je djelatnik odabrao krivi termin za evidenciju može odustati od evidentiranja, web aplikacija će dohvatiti podatke o terminima i prikazati stranicu s popisom termina odabranog pacijenta.
 				
 				\begin{figure}[H]
 					\includegraphics[scale=0.4]{slike/UC10_Evidencija_dolaska.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
@@ -797,30 +756,19 @@
 					\label{fig:sekvencijski_dijagram_2}
 				\end{figure}
 				
-				\textbf{\underbar{UC11 - Prihvaćanje zahtjeva za terminom}}
 				
-				Djelatnik zatražuje najnovije zahtjeva za terminom, web aplikacija ih dohvaća iz baze podataka, web aplikacija prikazuje zahtjeve i podatke o njima: datum slanja zahtjeva, pacijenta, opis terapije i vrijeme željenog termina. Djelatnik odabire zahtjev koji će evidentirati klikom opcije "evidentiraj" pored zahtjeva, web aplikacija nakon toga dohvaća sve vrste opreme iz baze podataka i prikazuje ih. Djelatnik na temelju opisa terapije odabire potrebnu vrstu opreme na temelju čega će web aplikacija iz baze podataka dohvatiti slobodne sobe u željenom terminu s odabranom vrstom opreme, te ih prikazati djelatniku. Ako ima slobodnih soba u navedenom terminu djelatnik bira jednu od njih i dodaje komentar za pacijenta. Kada djelatnik odabere opciju "Potvrdi" web aplikacija u bazi podataka zauzima odabranu sobu i opremu za željeni termin, te šalje e-mail pacijentu s informacijama o terminu. Aplikacija potom dohvaća zahtjeve i prikazuje ih djelatniku. 
+				\textbf{\underbar{UC19 - Obavijest o promjeni termina}}
 				
-				U slučaju da nema slobodnih soba s tom vrstom opreme u željenom terminu djelatnik odbija zahtjev. Web aplikacija potom dohvaća prve slobodne termine za odabranu vrstu opreme nakon zatraženog termina, te prikazuje djelatniku obrazac za dodjelu termina. Djelatnik bira termin i dodaje komentar. Nakon potvrde zahtjev se modificira i postaje termin. Nakon što su podatci uspješno spremljeni u bazu podataka šalje se mail pacijentu s informacijama o dodjeljenom terminu. Aplikacija potom dohvaća zahtjeve i prikazuje ih djelatniku.
+				Administrator na svojoj stranici odabire opciju "Promjeni termin" te mu nakon toga web aplikacija otvara stranicu za promjenu termina. Administrator unosi pacijenta i pretražuje. Web aplikacija prima podatak i provjerava u bazi podataka ako pacijent postoji. Ako postoji web aplikacija odmah dohvaća neevidentirane termine odabranog pacijenta, te ih prikazuje administratoru. Administrator potom odabire termin koji želi promijeniti i web aplikacija mu pokazuje obrazac za dodjelu novog termina. Administrator unosi podatke o novom terminu (datum/soba/oprema) i aplikacija na temelju toga dohvaća moguće termine iz baze podataka. Administrator odabire neki od mogućih termina i opcionalno dodaje komentar. Nakon što administrator potvrdi odabrani termin web aplikacija dodaje termin u bazu podataka i šalje e-mail pacijentu s informacijama o promjeni termina, a administratoru se ponovno prikazuje stranica za promjenu termina. 
 				
-				\begin{figure}[H]
-					\includegraphics[scale=0.4]{slike/UC11_Prihvaćanje_zahtjeva_za_termin.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
-					\centering
-					\caption{Sekvencijski dijagram za UC11}
-					\label{fig:sekvencijski_dijagram_3}
-				\end{figure}
-				\eject
+				U slučaju da pacijent kojeg je administrator unio ne postoji u bazi podataka aplikacija će ga obavijestiti o nepostojanju pacijenta. Administrator može ponovno unijeti pacijenta i ponoviti pretragu. 
 				
-				\textbf{\underbar{UC20 - Obavijest o promjeni termina}}
-				
-				Administrator na svojoj stranicu odabire opciju "Promjeni termin" te mu nakon toga web aplikacija otvara stranicu za promjenu termina. Administrator unosi pacijenta i pretražuje. Web aplikacija prima podatak i provjerava u bazi podataka ako pacijent postoji. Ako postoji web aplikacija odmah dohvaća neevidentirane termine odabranog pacijenta, te ih prikazuje administratoru. Administrator potom odabire termin koji želi promijeniti i web aplikacija mu pokazuje obrazac za dodjelu novog termina. Administrator unosi podatke o novom terminu (datum/soba/oprema) i aplikacija na temelju toga dohvaća moguće termine iz baze podataka. Administrator odabire neki od mogućih termina i opcionalno dodaje komentar. Nakon što administrator potvrdi odabrani termin web aplikacija dodaje termin u bazu podataka i šalje e-mail pacijentu s informacijama o promjeni termina, a administratoru se ponovno prikazuje stranica za promjenu termina. 
-				
-				U slučaju da pacijent kojeg je administrator unio ne postoji u bazi podataka aplikacija će ga obavijestiti o nepostojanju pacijenta. Nakon toga administrator ima dvije opcije: ponovno unijeti pacijenta ili odustati od promjene termina nakon čega mu se prikazuje početna stranica.
+				Administrator može odustati od promjene termina nakon čega mu se prikazuje početna stranica.
 				
 				\begin{figure}[H]
-					\includegraphics[scale=0.4]{slike/UC20_Obavijest_o_promjeni_termina.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
+					\includegraphics[scale=0.4]{slike/UC19_Obavijest_o_promjeni_termina.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
 					\centering
-					\caption{Sekvencijski dijagram za UC20}
+					\caption{Sekvencijski dijagram za UC19}
 					\label{fig:sekvencijski_dijagram_4}
 				\end{figure}
 				\eject
@@ -830,7 +778,7 @@
 			 \begin{packed_item}
 			 	\item Sustav mora omogućiti istovremeni pristup više korisnika (100 korisnika istovremeno) uz očuvanje performansi.
 			 	\item Poslužitelj mora vratiti odgovor na korisnički zahtjev unutar 5 sekundi.
-			 	\item Sustav mora biti dostupan korisnicima barem 90\% vremena unutar jedne godine.
+			 	\item Sustav mora biti dostupan korisnicima barem 99,99\% vremena unutar jedne godine.
 			 	\item Lozinka prije spremanja u bazu podataka mora biti kriptirana.
 			 	\item Veza s bazom podataka mora biti brza i otporna na greške.
 			 	\item Mora biti omogućen pristup sustavu iz javne mreže uz određenu razinu sigurnosti (HTTPS).
