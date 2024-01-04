@@ -1,46 +1,73 @@
-.create {
-    max-width: 400px;
-    margin: 0 auto;
-    text-align: center;
+.create-therapy {
+    display: flex;
+    justify-content: center;
 }
 
-.create label {
-    text-align: left;
-    display: block;
-}
-
-.create h2 {
-    font-size: 20px;
-    color: pink;
-    margin-bottom: 30px;
-}
-
-/*
-.create textarea,
-.create select {
-    width: 100%;
-    padding: 6px 10px;
-    margin: 10px 0;
-    border: 1px solid #ddd;
-    box-sizing: border-box;
-    display: block;
-}*/
-
-.create button {
-    background: #f1356d;
-    color: #fff;
-    border: 0;
-    padding: 8px;
+.create-therapy .form {
+    display: flex;
+    flex-direction: column;
+    border: 3px solid #3498db;
     border-radius: 8px;
-    cursor: pointer;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+    padding: 40px;
 }
 
-.postupak-lijecenja {
-    flex: 1;
-    width: 500px;
+.create-therapy .form h3 {
+    text-align: center;
+    padding-bottom: 20px;
+}
+
+.create-therapy .form .form-row {
+    display: flex;
+    flex-direction: column;
+}
+
+.create-therapy .form .submit-btn {
+    margin: 15px !important;
+}
+
+.create-therapy .form .form-row.submit {
     display: flex;
     flex-direction: row;
-    align-items: center;
     justify-content: center;
-    width: 100%;
+}
+
+.create-therapy .form .form-row .autocomplete {
+    width: 263px;
+    margin: 15px !important;
+    padding: 0;
+}
+
+.create-therapy .form .form-row.date-picker {
+    margin-top: 7px !important;
+    margin: 15px;
+    width: 263px;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.create-therapy .form .form-row .text-area {
+    width: 263px;
+    margin: 15px
+}
+
+@media (min-width: 768px) {
+    .create-therapy .form .form-row {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .create-therapy .form .form-row .text-area {
+        width: 100%;
+    }
+
+    .create-therapy .form .form-row .autocomplete {
+        width: 223px;
+    }
+
+    .create-therapy .form .form-row.date-picker {
+        width: 223px;
+    }
 }

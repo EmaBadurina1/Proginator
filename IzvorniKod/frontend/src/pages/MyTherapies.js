@@ -17,14 +17,23 @@ const MyTherapies = () => {
             <div className="my-therapies">
                 <div className='therapy' key={''}>
                     <Link to={`/my-therapies/`}>
-                        <h2>moja_terapija</h2>
-                        <p>Lijecnik ili sta vec: lijecnik</p>
+                        {/* <h2>moja_terapija</h2> */}
+                        {/* <p>Lijecnik ili sta vec: lijecnik</p> */}
                     </Link>
                 </div>
             </div>
 
             <div style={{ height: 400, width: '100%' }}>
                 <DataGrid
+                    columns={[
+                        { field: 'date_from', headerName: 'Datum početka' },
+                        { field: 'date_to', headerName: 'Datum završetka' },
+                        { field: 'date_to', headerName: 'Vrsta terapije' },
+                        { field: 'name', headerName: 'Liječnik koji vas je uputio' },
+                        // { field: 'date_to', headerName: 'Zahtjev za postupkom liječenja' },
+                        // { field: 'therapy_type_descr', headerName: 'Opis oboljenja' },
+                        // { field: 'date_to', headerName: 'Akcija' }
+                    ]}
                     {...data}
                     initialState={{
                         ...data.initialState,
@@ -34,14 +43,19 @@ const MyTherapies = () => {
                 />
             </div>
 
-            <div className="links">
+            <div className="links" style={{ marginTop: '20px', border: '2px solid blue', display: 'inline-block', padding: '10px', borderRadius: '10px' }}>
                 {/* <a href="/">Home</a> */}
-                <a href="/create" style={{
+                <a href="/create-therapy" style={{
                     color: "white",
-                    backgroundColor: '#f1356d',
-                    borderRadius: '8px'
-                }}>Nova terapija</a>
+                    backgroundColor: 'blue',
+                    padding: '10px 25px',
+                    fontSize: '20px',
+                    display: 'block',
+                    fontFamily: 'Arial, sans-serif',
+                    textDecoration: 'none'
+                }}>NOVA TERAPIJA</a>
             </div>
+
         </div>
     );
 };

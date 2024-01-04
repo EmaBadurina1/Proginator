@@ -162,13 +162,17 @@ function App() {
         <Route
           path="/my-therapies"
           element={
-            <MyTherapies></MyTherapies>
+            <ProtectedRoute>
+              <MyTherapies />
+            </ProtectedRoute>
           }
         />
         <Route
-          path="/create"
+          path="/create-therapy"
           element={
-            <CreateTherapy></CreateTherapy>
+            <ProtectedRoute>
+              <CreateTherapy />
+            </ProtectedRoute>
           }
         />
         <Route path="*" element={<NotFound />} />
