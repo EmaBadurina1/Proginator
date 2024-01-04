@@ -1,6 +1,7 @@
 from datetime import datetime
 from models import *
 from db import db
+from external_connector import get_doctor_from_external_db
 
 class Therapy(db.Model):
    __tablename__ = 'therapy'
@@ -52,9 +53,10 @@ class Therapy(db.Model):
       return f'<Therapy ID {self.therapy_id}>'
    
    def to_dict(self):
+      doctor = get_doctor_from_external_db(self.doctor_id)
       return {
          'therapy_id': self.therapy_id,
-         'doctor_id': self.doctor_id, # spojiti s doktorom iz eksterne baze
+         'doctor': doctor,
          'disease_descr': self.disease_descr,
          'req_treatment': self.req_treatment,
          'date_from': self.date_from,
@@ -65,9 +67,10 @@ class Therapy(db.Model):
       }
 
    def to_dict_simple(self):
+      doctor = get_doctor_from_external_db(self.doctor_id)
       return {
          'therapy_id': self.therapy_id,
-         'doctor_id': self.doctor_id, # spojiti s doktorom iz eksterne baze
+         'doctor': doctor,
          'disease_descr': self.disease_descr,
          'req_treatment': self.req_treatment,
          'date_from': self.date_from,

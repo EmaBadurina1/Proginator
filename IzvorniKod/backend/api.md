@@ -2488,7 +2488,12 @@
                "date_from": "Tue, 12 Dec 2023 00:00:00 GMT",
                "date_to": "Sun, 24 Dec 2023 00:00:00 GMT",
                "disease_descr": "Broken leg.",
-               "doctor_id": 1,
+               "doctor": {
+                  "doctor_id": 1,
+                  "name": "Alan",
+                  "surname": "Smith",
+                  "oib": "12345678900"
+               },
                "patient": {
                   "MBO": "123123123",
                   "date_of_birth": "Mon, 01 Jan 1990 00:00:00 GMT",
@@ -2580,7 +2585,12 @@
             "date_from": "Tue, 12 Dec 2023 00:00:00 GMT",
             "date_to": "Sun, 24 Dec 2023 00:00:00 GMT",
             "disease_descr": "Broken leg.",
-            "doctor_id": 1,
+            "doctor": {
+               "doctor_id": 1,
+               "name": "Alan",
+               "surname": "Smith",
+               "oib": "12345678900"
+            },
             "patient": {
                "MBO": "123123123",
                "date_of_birth": "Mon, 01 Jan 1990 00:00:00 GMT",
@@ -2674,7 +2684,12 @@
             "date_from": "Tue, 12 Dec 2023 00:00:00 GMT",
             "date_to": "Sun, 24 Dec 2023 00:00:00 GMT",
             "disease_descr": "Broken leg.",
-            "doctor_id": 1,
+            "doctor": {
+               "doctor_id": 1,
+               "name": "Alan",
+               "surname": "Smith",
+               "oib": "12345678900"
+            },
             "patient": {
                "MBO": "123123123",
                "date_of_birth": "Mon, 01 Jan 1990 00:00:00 GMT",
@@ -2777,7 +2792,12 @@
             "date_from": "Tue, 12 Dec 2023 00:00:00 GMT",
             "date_to": "Sun, 24 Dec 2023 00:00:00 GMT",
             "disease_descr": "Broken leg.",
-            "doctor_id": 1,
+            "doctor": {
+               "doctor_id": 1,
+               "name": "Alan",
+               "surname": "Smith",
+               "oib": "12345678900"
+            },
             "patient": {
                "MBO": "123123123",
                "date_of_birth": "Mon, 01 Jan 1990 00:00:00 GMT",
@@ -2910,7 +2930,12 @@
                "date_from": "Tue, 12 Dec 2023 00:00:00 GMT",
                "date_to": "Sun, 24 Dec 2023 00:00:00 GMT",
                "disease_descr": "Broken leg.",
-               "doctor_id": 1,
+               "doctor": {
+                  "doctor_id": 1,
+                  "name": "Alan",
+                  "surname": "Smith",
+                  "oib": "12345678900"
+               },
                "patient": {
                   "MBO": "123123123",
                   "date_of_birth": "Mon, 01 Jan 1990 00:00:00 GMT",
@@ -3008,7 +3033,12 @@
                "date_from": "Tue, 12 Dec 2023 00:00:00 GMT",
                "date_to": "Sun, 24 Dec 2023 00:00:00 GMT",
                "disease_descr": "Broken leg.",
-               "doctor_id": 1,
+               "doctor": {
+                  "doctor_id": 1,
+                  "name": "Alan",
+                  "surname": "Smith",
+                  "oib": "12345678900"
+               },
                "patient": {
                   "MBO": "123123123",
                   "date_of_birth": "Mon, 01 Jan 1990 00:00:00 GMT",
