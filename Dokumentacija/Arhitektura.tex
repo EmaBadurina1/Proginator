@@ -46,6 +46,7 @@ Zbog potreba naše aplikacije, baza podataka sadrži entitete:
         \item 	\textnormal{Soba}	
         \item 	\textnormal{Uredaj}
         \item 	\textnormal{VrstaUredaja}
+        \item    SobaZa
                    				
 	 \end{packed_item}
 
@@ -143,7 +144,7 @@ Entitet Terapija sadrži sve bitne informacije o terapiji na koju je pacijent na
 
 \textbf{VrstaTerapije:}
 
-Entitet VrstaTerapije sadrži sve bitne informacije o vrsti terapije na koju je pacijent naručen. Entitet sadrži atribute: idVrste, imeVrste, opisVrste. Atribut idVrste je primarni ključ. Atribut opisVrste je opcionalan.
+Entitet VrstaTerapije sadrži sve bitne informacije o vrsti terapije na koju je pacijent naručen. Entitet sadrži atribute: idVrste, imeVrste, opisVrste. Atribut idVrste je primarni ključ. Atribut opisVrste je opcionalan. Entitet VrstaTerapije povezan je binarnom N:N vezom s entitetom Soba.
 
 \begin{longtblr}[
 					label=none,
@@ -187,7 +188,7 @@ Entitet Termin sadrži sve bitne informacije o terminu terapije na koji je pacij
 
 \textbf{Soba:}
 
-Entitet Soba sadrži sve bitne informacije o sobi u kojoj se provodi neka terapija. Entitet sadrži atribute: brSobe, kapacitet, uUporabi. Atribut brSobe je primarni ključ.
+Entitet Soba sadrži sve bitne informacije o sobi u kojoj se provodi neka terapija. Entitet sadrži atribute: brSobe, kapacitet, uUporabi. Atribut brSobe je primarni ključ. Entitet Soba povezan je binarnom N:N vezom s entitetom VrstaTerapije.
 
 \begin{longtblr}[
 					label=none,
@@ -201,6 +202,25 @@ Entitet Soba sadrži sve bitne informacije o sobi u kojoj se provodi neka terapi
 					\SetCell{LightGreen}brSobe & VARCHAR(10) & jedinstveni identifikator sobe \\ \hline
                      kapacitet & INT & kapacitet sobe, broj pacijenata koji istovremeno mogu biti na terapiji u nekoj sobi	\\ \hline
                      uUporabi & BOOLEAN & označava je li soba popunjena (true = popunjena, false = nije popunjena)	\\ \hline
+				\end{longtblr}
+				
+\textbf{SobaZa:}
+
+Entitet SobaZa sadrži sve bitne informacije o sobi u kojoj se odvija točno određena vrsta terapije. Entitet SobaZa sadrži atribute brSobe i idVrste. Atributi brSobe i idVrste su strani ključevi. 
+
+				\begin{longtblr}[
+					label=none,
+					entry=none
+					]{
+						width = \textwidth,
+						colspec={|X[6,l]|X[7, l]|X[20, l]|}, 
+						rowhead = 1,
+					} %definicija širine tablice, širine stupaca, poravnanje i broja redaka naslova tablice
+					\hline \SetCell[c=3]{c}{\textbf{SobaZa}}	 \\ \hline[3pt]
+					\SetCell{LightBlue}brSobe & INT & jedinstveni identifikator sobe (soba.brSobe)	\\ \hline
+					\SetCell{LightBlue}idVrste & INT & jedinstveni identifikator vrste terapije (vrstaTerapije.idVrste)	\\ \hline 
+
+					 
 				\end{longtblr}
 
 \textbf{Uredaj:}
@@ -261,9 +281,15 @@ Entitet Status sadrži sve bitne informacije o statusu termina terapije koji je 
 			
 			\subsection{Dijagram baze podataka}
 		\begin{figure}[H]
-			\includegraphics[width=\textwidth]{slike/Relacijska_shema.PNG} %veličina u odnosu na širinu linije
+			\includegraphics[width=\textwidth]{slike/Relacijska_shema.JPG} %veličina u odnosu na širinu linije
 			\caption{Relacijska shema baze podataka}
 			\label{fig:relacijska_shema1} %label mora biti drugaciji za svaku sliku
+		\end{figure}
+		
+		\begin{figure}[H]
+			\includegraphics[width=\textwidth]{slike/ER_model_BP.JPG} %veličina u odnosu na širinu linije
+			\caption{ER model baze podataka}
+			\label{fig:er_model} %label mora biti drugaciji za svaku sliku
 		\end{figure}
 			
 		\section{Dijagram razreda}
