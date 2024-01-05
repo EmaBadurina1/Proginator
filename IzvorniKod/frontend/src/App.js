@@ -22,6 +22,7 @@ import AttendanceRecord from "./pages/AttendanceRecord";
 import PatientPreview from "./pages/PatientPreview";
 import { LoginContext } from "./contexts/LoginContext";
 import UserAccount from "./pages/UserAccount"; 
+import AlreadyLoggedIn from "./pages/AlreadyLoggedIn";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(true);
@@ -108,7 +109,9 @@ function App() {
           path="/"
           element={<Navigate to={isAuthenticated ? "/home" : "/login"} replace />}
         />
-        <Route path="/login" element={<Login onLogin={login} />} />
+        <Route path="/login" element={
+          isAuthenticated? <ProtectedRoute><AlreadyLoggedIn/></ProtectedRoute> : <Login onLogin={login} />
+        } />
         <Route path="/registration" element={<Registration />} />
         <Route
           path="/user-account"
