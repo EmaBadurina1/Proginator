@@ -12,6 +12,13 @@ auth_bp = Blueprint('auth_bp', __name__)
 # login to system
 @auth_bp.route('/login', methods=['POST'])
 def login():
+   # check if user is already logged in
+   if 'user_id' in session:
+      return jsonify({
+         "error": "User is already logged in",
+         "status": 400
+      }), 400
+   
    user: User = User.query.filter_by(email=request.json['email']).first()
    if user and user.check_password(request.json['password']):
       session['user_id'] = user.user_id
@@ -27,6 +34,9 @@ def login():
             dict["role"] = "doctor"
       else:
          dict["role"] = None
+
+      # set role in session, so that it can be used in require_any_role decorator
+      session["role"] = dict["role"]
 
       return jsonify({
          "data": {
@@ -46,6 +56,7 @@ def login():
 @auth_validation
 def logout():
    session.pop('user_id', None)
+   session.pop('role', None)
    return jsonify({
       "message": "Logout successful",
       "status": 200
@@ -75,7 +86,7 @@ def change_password(user_id):
          "status": 400
       }), 400
    
-   user = User.query.get(user_id);
+   user = User.query.get(user_id)
 
    if not user.check_password(request.json["old_password"]):
       return jsonify({

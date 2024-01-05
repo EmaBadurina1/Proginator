@@ -506,6 +506,48 @@
    }
    ```
 
+### Get doctors from external database
+
+#### Request
+
+- **Endpoint:** `/doctors`
+- **Method:** `GET`
+- **Require authorization**
+
+#### Response
+
+- **Success Code:** `200 OK`
+- **Content:**
+
+   ```json
+   {
+      "data": {
+         "doctors": [
+            {
+               "doctor_id": 1,
+               "name": "John",
+               "surname": "Doe",
+               "oib": "45000000000"
+            },
+            ...
+         ]
+      },
+      "status": 200
+   }
+   ```
+
+- **Error Codes:**
+   - `500 Internal Server Error`
+      - If there was a problem fatching your data from external database.
+
+- **Error:**
+   ```json
+   {
+      "error": "Error message",
+      "status": 500
+   }
+   ```
+
 ## Authorization
 
 ### Login
@@ -1173,6 +1215,101 @@
                      "phone_number": "0911231231",
                      "surname": "Smith",
                      "user_id": 1
+                  },
+                  "req_treatment": "Vježbanje uz povećanje napora.",
+                  "therapy_id": 1,
+                  "therapy_type": {
+                     "therapy_type_descr": "Therapy type description.",
+                     "therapy_type_id": 1,
+                     "therapy_type_name": "Phisical therapy"
+                  }
+               }
+            },
+            ...
+         ]
+      },
+      "page": <page>,
+      "page_size": <page_size>,
+      "pages": 1,
+      "status": 200
+   }
+   ```
+
+- **Error Codes:**
+   - `400 Bad Request`
+      - If `page` or `page_size` are not integers.
+      - If `page_size` is not between 1 and 20.
+   - `404 Not Found`
+      - If page does not exist.
+
+- **Error:**
+   ```json
+   {
+      "error": "Error message",
+      "status": 400
+   }
+   ```
+
+### Get all appointments by patient
+
+#### Request
+
+- **Endpoint:** `/appointments/by-patient/<user_id>`
+- **Method:** `GET`
+- **Require authorization**
+- **Body:**
+   - `page` (integer): Page number you want to get (default 1).
+   - `page_size` (integer): Number of elements per page, max 20 (default 20).
+- **Notes:**
+   - All request parameters are optional.
+
+#### Response
+
+- **Success Code:** `200 OK`
+- **Content:**
+
+   ```json
+   {
+      "data": {
+         "appointments": [
+            {
+               "appointment_id": 1,
+               "comment": "Some comment.",
+               "date_from": "Sun, 10 Dec 2023 15:30:00 GMT",
+               "date_to": "Sun, 10 Dec 2024 15:30:00 GMT",
+               "employee": {
+                  "OIB": "00000000001",
+                  "date_of_birth": "Thu, 22 Aug 1990 00:00:00 GMT",
+                  "email": "john.doe@fer.hr",
+                  "is_active": true,
+                  "is_admin": false,
+                  "name": "John",
+                  "phone_number": "0996531908",
+                  "surname": "Doe",
+                  "user_id": 1
+               },
+               "room": {
+                  "capacity": 3,
+                  "in_use": true,
+                  "room_num": "A001"
+               },
+               "status": {
+                  "status_id": 1,
+                  "status_name": "Waiting"
+               },
+               "therapy": {
+                  "date_from": "Tue, 12 Dec 2023 00:00:00 GMT",
+                  "date_to": "Sun, 24 Dec 2023 00:00:00 GMT",
+                  "disease_descr": "Broken leg.",
+                  "doctor_id": 1,
+                  "patient": {
+                     "MBO": "123123123",
+                     "date_of_birth": "Mon, 01 Jan 1990 00:00:00 GMT",
+                     "email": "john.smith@fer.hr",
+                     "name": "John",
+                     "phone_number": "0911231231",
+                     "surname": "Smith",
+                     "user_id": <user_id>
                   },
                   "req_treatment": "Vježbanje uz povećanje napora.",
                   "therapy_id": 1,
@@ -2351,7 +2488,12 @@
                "date_from": "Tue, 12 Dec 2023 00:00:00 GMT",
                "date_to": "Sun, 24 Dec 2023 00:00:00 GMT",
                "disease_descr": "Broken leg.",
-               "doctor_id": 1,
+               "doctor": {
+                  "doctor_id": 1,
+                  "name": "Alan",
+                  "surname": "Smith",
+                  "oib": "12345678900"
+               },
                "patient": {
                   "MBO": "123123123",
                   "date_of_birth": "Mon, 01 Jan 1990 00:00:00 GMT",
@@ -2443,7 +2585,12 @@
             "date_from": "Tue, 12 Dec 2023 00:00:00 GMT",
             "date_to": "Sun, 24 Dec 2023 00:00:00 GMT",
             "disease_descr": "Broken leg.",
-            "doctor_id": 1,
+            "doctor": {
+               "doctor_id": 1,
+               "name": "Alan",
+               "surname": "Smith",
+               "oib": "12345678900"
+            },
             "patient": {
                "MBO": "123123123",
                "date_of_birth": "Mon, 01 Jan 1990 00:00:00 GMT",
@@ -2537,7 +2684,12 @@
             "date_from": "Tue, 12 Dec 2023 00:00:00 GMT",
             "date_to": "Sun, 24 Dec 2023 00:00:00 GMT",
             "disease_descr": "Broken leg.",
-            "doctor_id": 1,
+            "doctor": {
+               "doctor_id": 1,
+               "name": "Alan",
+               "surname": "Smith",
+               "oib": "12345678900"
+            },
             "patient": {
                "MBO": "123123123",
                "date_of_birth": "Mon, 01 Jan 1990 00:00:00 GMT",
@@ -2640,7 +2792,12 @@
             "date_from": "Tue, 12 Dec 2023 00:00:00 GMT",
             "date_to": "Sun, 24 Dec 2023 00:00:00 GMT",
             "disease_descr": "Broken leg.",
-            "doctor_id": 1,
+            "doctor": {
+               "doctor_id": 1,
+               "name": "Alan",
+               "surname": "Smith",
+               "oib": "12345678900"
+            },
             "patient": {
                "MBO": "123123123",
                "date_of_birth": "Mon, 01 Jan 1990 00:00:00 GMT",
@@ -2773,7 +2930,12 @@
                "date_from": "Tue, 12 Dec 2023 00:00:00 GMT",
                "date_to": "Sun, 24 Dec 2023 00:00:00 GMT",
                "disease_descr": "Broken leg.",
-               "doctor_id": 1,
+               "doctor": {
+                  "doctor_id": 1,
+                  "name": "Alan",
+                  "surname": "Smith",
+                  "oib": "12345678900"
+               },
                "patient": {
                   "MBO": "123123123",
                   "date_of_birth": "Mon, 01 Jan 1990 00:00:00 GMT",
@@ -2871,7 +3033,12 @@
                "date_from": "Tue, 12 Dec 2023 00:00:00 GMT",
                "date_to": "Sun, 24 Dec 2023 00:00:00 GMT",
                "disease_descr": "Broken leg.",
-               "doctor_id": 1,
+               "doctor": {
+                  "doctor_id": 1,
+                  "name": "Alan",
+                  "surname": "Smith",
+                  "oib": "12345678900"
+               },
                "patient": {
                   "MBO": "123123123",
                   "date_of_birth": "Mon, 01 Jan 1990 00:00:00 GMT",

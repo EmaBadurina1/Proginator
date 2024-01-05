@@ -25,11 +25,16 @@ import DenyAppointment from "./pages/DenyAppointment";
 import ChangeAppointment from "./pages/ChangeAppointment";
 import AppointmentRequestsPreview from "./pages/AppointmentRequestsPreview";
 import AttendanceDisplay from "./pages/AttendanceDisplay";
+import { LoginContext } from "./contexts/LoginContext";
+import UserAccount from "./pages/UserAccount";
+import MyTherapies from "./pages/MyTherapies";
+import CreateTherapy from "./pages/CreateTherapy";
+
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(true);
   const [userRole, setUserRole] = React.useState(null);
-  const [, setUserData] = React.useState(null);
+  const [userData, setUserData] = React.useState(null);
 
   useEffect(() => {
     let userDataLS = localStorage.getItem("user_data");
@@ -49,11 +54,11 @@ function App() {
   function login() {
     let userDataLS = localStorage.getItem("user_data");
     let userRoleLS = localStorage.getItem("user_role");
-      userDataLS = JSON.parse(userDataLS);
-      userRoleLS = JSON.parse(userRoleLS);
-      setIsAuthenticated(true);
-      setUserData(userDataLS);
-      setUserRole(userRoleLS);
+    userDataLS = JSON.parse(userDataLS);
+    userRoleLS = JSON.parse(userRoleLS);
+    setIsAuthenticated(true);
+    setUserData(userDataLS);
+    setUserRole(userRoleLS);
   }
 
   function logout() {
@@ -65,9 +70,11 @@ function App() {
   const ProtectedRoute = ({ children }) => {
     const isLoggedIn = isAuthenticated;
     return isLoggedIn ? (
-      <Layout onLogout={logout}>
-        {children}
-      </Layout>
+      <LoginContext.Provider value={{ userData, setUserData, userRole, setUserRole }}>
+        <Layout onLogout={logout}>
+          {children}
+        </Layout>
+      </LoginContext.Provider>
     ) : <Navigate replace to="/login" />;
   };
 
@@ -111,6 +118,14 @@ function App() {
         />
         <Route path="/login" element={<Login onLogin={login} />} />
         <Route path="/registration" element={<Registration />} />
+        <Route
+          path="/user-account"
+          element={
+            <ProtectedRoute>
+              <UserAccount />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/attendance/:appointmentId"
           element={
@@ -165,7 +180,7 @@ function App() {
           path="/home"
           element={
             <ProtectedRoute>
-              <Home/>
+              <Home />
             </ProtectedRoute>
           }
         />
@@ -179,8 +194,25 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/my-therapies"
+          element={
+            <ProtectedRoute>
+              <MyTherapies />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/create-therapy"
+          element={
+            <ProtectedRoute>
+              <CreateTherapy />
+            </ProtectedRoute>
+          }
+        />
         <Route path="*" element={<NotFound />} />
       </Route>
+
     )
   );
 
