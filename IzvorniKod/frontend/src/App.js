@@ -21,7 +21,11 @@ import UserAdd from "./pages/UserAdd";
 import AttendanceRecord from "./pages/AttendanceRecord";
 import PatientPreview from "./pages/PatientPreview";
 import { LoginContext } from "./contexts/LoginContext";
-import UserAccount from "./pages/UserAccount"; 
+import UserAccount from "./pages/UserAccount";
+import MyTherapies from "./pages/MyTherapies";
+import CreateTherapy from "./pages/CreateTherapy";
+import DataDisplay from "./components/DataDisplay";
+
 import AlreadyLoggedIn from "./pages/AlreadyLoggedIn";
 
 function App() {
@@ -47,11 +51,11 @@ function App() {
   function login() {
     let userDataLS = localStorage.getItem("user_data");
     let userRoleLS = localStorage.getItem("user_role");
-      userDataLS = JSON.parse(userDataLS);
-      userRoleLS = JSON.parse(userRoleLS);
-      setIsAuthenticated(true);
-      setUserData(userDataLS);
-      setUserRole(userRoleLS);
+    userDataLS = JSON.parse(userDataLS);
+    userRoleLS = JSON.parse(userRoleLS);
+    setIsAuthenticated(true);
+    setUserData(userDataLS);
+    setUserRole(userRoleLS);
   }
 
   function logout() {
@@ -63,7 +67,7 @@ function App() {
   const ProtectedRoute = ({ children }) => {
     const isLoggedIn = isAuthenticated;
     return isLoggedIn ? (
-      <LoginContext.Provider value={{userData, setUserData, userRole, setUserRole}}>
+      <LoginContext.Provider value={{ userData, setUserData, userRole, setUserRole }}>
         <Layout onLogout={logout}>
           {children}
         </Layout>
@@ -145,7 +149,7 @@ function App() {
           path="/home"
           element={
             <ProtectedRoute>
-              <Home/>
+              <Home />
             </ProtectedRoute>
           }
         />
@@ -159,8 +163,37 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/my-therapies"
+          element={
+            <ProtectedRoute>
+              <MyTherapies />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/create-therapy"
+          element={
+            <ProtectedRoute>
+              <CreateTherapy />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/data-display"
+          element={
+            <DataDisplay
+              url={"/therapy-types"}
+              columns={["Terapija", "Opis"]}
+              options={["therapy_type_name", "therapy_type_descr"]}
+              identificator={"therapy_type_id"}
+              dataName="therapy_types"
+            />
+          }
+        />
         <Route path="*" element={<NotFound />} />
       </Route>
+
     )
   );
 

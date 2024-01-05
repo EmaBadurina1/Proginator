@@ -1,7 +1,7 @@
 from db import db
 from models import *
 from auth import auth_validation, require_any_role
-from external_connector import get_patient_data, get_doctors_from_external_db
+from external_connector import get_doctor_from_external_db, get_patient_data, get_doctors_from_external_db
 from sqlalchemy.exc import IntegrityError, DataError
 from utils.utils import *
 from .crud_template import *
@@ -11,7 +11,26 @@ from flask import request, jsonify, session
 from flask import Blueprint
 accounts_bp = Blueprint('accounts_bp', __name__)
 
-# create new patient
+# get list of all patients
+@accounts_bp.route('/patients', methods=['GET'])
+@auth_validation
+@require_any_role("admin", "doctor")
+def get_patients():
+    return get_all(Model=Patient, request=request)
+
+# get patient with id=user_id
+@accounts_bp.route('/patients/<int:user_id>', methods=['GET'])
+@auth_validation
+def get_patient(user_id):
+    # patient can only get his own data
+    if session['role'] == 'patient' and session['user_id'] != user_id:
+        return jsonify({
+            "error": "You don't have permission to access this data",
+            "status": 403
+        }), 403
+    
+    return get_one(id=user_id, Model=Patient)
+
 @accounts_bp.route('/patients', methods=['POST'])
 def register_patient():
     required_fields = [
@@ -128,26 +147,6 @@ def register_patient():
     finally:
         db.session.close()
 
-# get list of all patients
-@accounts_bp.route('/patients', methods=['GET'])
-@auth_validation
-@require_any_role("admin", "doctor")
-def get_patients():
-    return get_all(Model=Patient, req=request.json if request.content_type == 'application/json' else {})
-
-# get patient with id=user_id
-@accounts_bp.route('/patients/<int:user_id>', methods=['GET'])
-@auth_validation
-def get_patient(user_id):
-    # patient can only get his own data
-    if session['role'] == 'patient' and session['user_id'] != user_id:
-        return jsonify({
-            "error": "You don't have permission to access this data",
-            "status": 403
-        }), 403
-    
-    return get_one(id=user_id, Model=Patient)
-
 # update patient with id=user_id
 @accounts_bp.route('/patients/<int:user_id>', methods=['PATCH'])
 @auth_validation
@@ -225,6 +224,20 @@ def delete_patient(user_id):
             "error": f"No ID: {user_id}",
             "status": 404
         }), 404
+
+# get list of all employees
+@accounts_bp.route('/employees', methods=['GET'])
+@auth_validation
+@require_any_role("admin")
+def get_employees():
+    return get_all(Model=Employee, request=request)
+
+# get employee with id=user_id
+@accounts_bp.route('/employees/<int:user_id>', methods=['GET'])
+@auth_validation
+@require_any_role("admin", "doctor")
+def get_employee(user_id):
+    return get_one(id=user_id, Model=Employee)
 
 # create new employee
 @accounts_bp.route('/employees', methods=['POST'])
@@ -327,20 +340,6 @@ def register_employee():
     finally:
         db.session.close()
 
-# get list of all employees
-@accounts_bp.route('/employees', methods=['GET'])
-@auth_validation
-@require_any_role("admin")
-def get_employees():
-    return get_all(Model=Employee, req=request.json if request.content_type == 'application/json' else {})
-
-# get employee with id=user_id
-@accounts_bp.route('/employees/<int:user_id>', methods=['GET'])
-@auth_validation
-@require_any_role("admin", "doctor")
-def get_employee(user_id):
-    return get_one(id=user_id, Model=Employee)
-
 # update employee with id=user_id
 @accounts_bp.route('/employees/<int:user_id>', methods=['PATCH'])
 @auth_validation
@@ -377,6 +376,24 @@ def get_doctors():
         return jsonify({
             "data": {
                 "doctors": doctors
+            },
+            "status": 200
+        }), 200
+    except Exception as e:
+        return jsonify({
+            "error": "There was a problem fetching your data",
+            "status": 500
+        }), 500
+
+@accounts_bp.route('/doctors/<int:doctor_id>', methods=['GET'])
+@auth_validation
+@require_any_role("admin", "doctor", "patient")
+def get_doctor(doctor_id):
+    try:
+        doctor = get_doctor_from_external_db(doctor_id)
+        return jsonify({
+            "data": {
+                "doctor": doctor
             },
             "status": 200
         }), 200

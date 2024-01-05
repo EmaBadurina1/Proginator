@@ -6,7 +6,7 @@ from models.therapies import Therapy
 
 class Appointment(db.Model):
    __tablename__ = 'appointment'
-   appointment_id = db.Column(db.Integer, autoincrement=True, nullable=False)
+   appointment_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
    date_from = db.Column(db.DateTime, nullable=False)
    date_to = db.Column(db.DateTime)
    comment = db.Column(db.String(300))
@@ -44,8 +44,6 @@ class Appointment(db.Model):
          onupdate="CASCADE"
       )
    )
-
-   db.PrimaryKeyConstraint(appointment_id, therapy_id)
 
    def __init__(self, date_from, therapy_id, **kwargs):
       self.therapy_id = therapy_id

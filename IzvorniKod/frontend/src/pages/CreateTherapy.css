@@ -1,0 +1,73 @@
+.create-therapy {
+    display: flex;
+    justify-content: center;
+}
+
+.create-therapy .form {
+    display: flex;
+    flex-direction: column;
+    border: 3px solid #3498db;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+    padding: 40px;
+}
+
+.create-therapy .form h3 {
+    text-align: center;
+    padding-bottom: 20px;
+}
+
+.create-therapy .form .form-row {
+    display: flex;
+    flex-direction: column;
+}
+
+.create-therapy .form .submit-btn {
+    margin: 15px !important;
+}
+
+.create-therapy .form .form-row.submit {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.create-therapy .form .form-row .autocomplete {
+    width: 263px;
+    margin: 15px !important;
+    padding: 0;
+}
+
+.create-therapy .form .form-row.date-picker {
+    margin-top: 7px !important;
+    margin: 15px;
+    width: 263px;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.create-therapy .form .form-row .text-area {
+    width: 263px;
+    margin: 15px
+}
+
+@media (min-width: 768px) {
+    .create-therapy .form .form-row {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .create-therapy .form .form-row .text-area {
+        width: 100%;
+    }
+
+    .create-therapy .form .form-row .autocomplete {
+        width: 223px;
+    }
+
+    .create-therapy .form .form-row.date-picker {
+        width: 223px;
+    }
+}
