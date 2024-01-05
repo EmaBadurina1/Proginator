@@ -6,10 +6,10 @@
 
 #### Request
 
-- **Endpoint:** `/patients`
+- **Endpoint:** `/patients?page=<page>&page_size=<page_size>`
 - **Method:** `GET`
 - **Require authorization**
-- **Body:**
+- **Params:**
    - `page` (integer): Page number you want to get (default 1).
    - `page_size` (integer): Number of elements per page, max 20 (default 20).
 - **Notes:**
@@ -39,7 +39,8 @@
       "page": <page>,
       "page_size": <page_size>,
       "pages": 1,
-      "status": 200
+      "status": 200,
+      "elements": 5
    }
    ```
 
@@ -252,10 +253,10 @@
 
 #### Request
 
-- **Endpoint:** `/employees`
+- **Endpoint:** `/employees?page=<page>&page_size=<page_size>`
 - **Method:** `GET`
 - **Require authorization**
-- **Body:**
+- **Params:**
    - `page` (integer): Page number you want to get (default 1).
    - `page_size` (integer): Number of elements per page, max 20 (default 20).
 - **Notes:**
@@ -287,7 +288,8 @@
       "page": <page>,
       "page_size": <page_size>,
       "pages": 1,
-      "status": 200
+      "status": 200,
+      "elements": 5
    }
    ```
 
@@ -658,10 +660,10 @@
 
 #### Request
 
-- **Endpoint:** `/appointments`
+- **Endpoint:** `/appointments?page=<page>&page_size=<page_size>`
 - **Method:** `GET`
 - **Require authorization**
-- **Body:**
+- **Params:**
    - `page` (integer): Page number you want to get (default 1).
    - `page_size` (integer): Number of elements per page, max 20 (default 20).
 - **Notes:**
@@ -730,7 +732,8 @@
       "page": <page>,
       "page_size": <page_size>,
       "pages": 1,
-      "status": 200
+      "status": 200,
+      "elements": 5
    }
    ```
 
@@ -1064,10 +1067,10 @@
 
 #### Request
 
-- **Endpoint:** `/appointments/by-therapy/<therapy_id>`
+- **Endpoint:** `/appointments/by-therapy/<therapy_id>?page=<page>&page_size=<page_size>`
 - **Method:** `GET`
 - **Require authorization**
-- **Body:**
+- **Params:**
    - `page` (integer): Page number you want to get (default 1).
    - `page_size` (integer): Number of elements per page, max 20 (default 20).
 - **Notes:**
@@ -1136,7 +1139,8 @@
       "page": <page>,
       "page_size": <page_size>,
       "pages": 1,
-      "status": 200
+      "status": 200,
+      "elements": 5
    }
    ```
 
@@ -1159,10 +1163,10 @@
 
 #### Request
 
-- **Endpoint:** `/appointments/by-employee/<user_id>`
+- **Endpoint:** `/appointments/by-employee/<user_id>?page=<page>&page_size=<page_size>`
 - **Method:** `GET`
 - **Require authorization**
-- **Body:**
+- **Params:**
    - `page` (integer): Page number you want to get (default 1).
    - `page_size` (integer): Number of elements per page, max 20 (default 20).
 - **Notes:**
@@ -1231,7 +1235,8 @@
       "page": <page>,
       "page_size": <page_size>,
       "pages": 1,
-      "status": 200
+      "status": 200,
+      "elements": 5
    }
    ```
 
@@ -1254,10 +1259,10 @@
 
 #### Request
 
-- **Endpoint:** `/appointments/by-patient/<user_id>`
+- **Endpoint:** `/appointments/by-patient/<user_id>?page=<page>&page_size=<page_size>`
 - **Method:** `GET`
 - **Require authorization**
-- **Body:**
+- **Params:**
    - `page` (integer): Page number you want to get (default 1).
    - `page_size` (integer): Number of elements per page, max 20 (default 20).
 - **Notes:**
@@ -1326,7 +1331,8 @@
       "page": <page>,
       "page_size": <page_size>,
       "pages": 1,
-      "status": 200
+      "status": 200,
+      "elements": 5
    }
    ```
 
@@ -1349,10 +1355,10 @@
 
 #### Request
 
-- **Endpoint:** `/statuses`
+- **Endpoint:** `/statuses?page=<page>&page_size=<page_size>`
 - **Method:** `GET`
 - **Require authorization**
-- **Body:**
+- **Params:**
    - `page` (integer): Page number you want to get (default 1).
    - `page_size` (integer): Number of elements per page, max 20 (default 20).
 - **Notes:**
@@ -1377,7 +1383,8 @@
       "page": <page>,
       "page_size": <page_size>,
       "pages": 1,
-      "status": 200
+      "status": 200,
+      "elements": 5
    }
    ```
 
@@ -1571,10 +1578,10 @@
 
 #### Request
 
-- **Endpoint:** `/devices`
+- **Endpoint:** `/devices?page=<page>&page_size=<page_size>`
 - **Method:** `GET`
 - **Require authorization**
-- **Body:**
+- **Params:**
    - `page` (integer): Page number you want to get (default 1).
    - `page_size` (integer): Number of elements per page, max 20 (default 20).
 - **Notes:**
@@ -1608,7 +1615,8 @@
       "page": <page>,
       "page_size": <page_size>,
       "pages": 1,
-      "status": 200
+      "status": 200,
+      "elements": 5
    }
    ```
 
@@ -1829,10 +1837,10 @@
 
 #### Request
 
-- **Endpoint:** `/devices/by-type/<device_type_id>`
+- **Endpoint:** `/devices/by-type/<device_type_id>?page=<page>&page_size=<page_size>`
 - **Method:** `GET`
 - **Require authorization**
-- **Body:**
+- **Params:**
    - `page` (integer): Page number you want to get (default 1).
    - `page_size` (integer): Number of elements per page, max 20 (default 20).
 - **Notes:**
@@ -1866,7 +1874,8 @@
       "page": <page>,
       "page_size": <page_size>,
       "pages": 1,
-      "status": 200
+      "status": 200,
+      "elements": 5
    }
    ```
 
@@ -1889,10 +1898,10 @@
 
 #### Request
 
-- **Endpoint:** `/device-types`
+- **Endpoint:** `/device-types?page=<page>&page_size=<page_size>`
 - **Method:** `GET`
 - **Require authorization**
-- **Body:**
+- **Params:**
    - `page` (integer): Page number you want to get (default 1).
    - `page_size` (integer): Number of elements per page, max 20 (default 20).
 - **Notes:**
@@ -1918,7 +1927,8 @@
       "page": <page>,
       "page_size": <page_size>,
       "pages": 1,
-      "status": 200
+      "status": 200,
+      "elements": 5
    }
    ```
 
@@ -2131,10 +2141,10 @@
 
 #### Request
 
-- **Endpoint:** `/rooms`
+- **Endpoint:** `/rooms?page=<page>&page_size=<page_size>`
 - **Method:** `GET`
 - **Require authorization**
-- **Body:**
+- **Params:**
    - `page` (integer): Page number you want to get (default 1).
    - `page_size` (integer): Number of elements per page, max 20 (default 20).
 - **Notes:**
@@ -2179,7 +2189,8 @@
       "page": <page>,
       "page_size": <page_size>,
       "pages": 1,
-      "status": 200
+      "status": 200,
+      "elements": 5
    }
    ```
 
@@ -2437,10 +2448,10 @@
 
 #### Request
 
-- **Endpoint:** `/therapies`
+- **Endpoint:** `/therapies?page=<page>&page_size=<page_size>`
 - **Method:** `GET`
 - **Require authorization**
-- **Body:**
+- **Params:**
    - `page` (integer): Page number you want to get (default 1).
    - `page_size` (integer): Number of elements per page, max 20 (default 20).
 - **Notes:**
@@ -2488,12 +2499,7 @@
                "date_from": "Tue, 12 Dec 2023 00:00:00 GMT",
                "date_to": "Sun, 24 Dec 2023 00:00:00 GMT",
                "disease_descr": "Broken leg.",
-               "doctor": {
-                  "doctor_id": 1,
-                  "name": "Alan",
-                  "surname": "Smith",
-                  "oib": "12345678900"
-               },
+               "doctor_id": 1,
                "patient": {
                   "MBO": "123123123",
                   "date_of_birth": "Mon, 01 Jan 1990 00:00:00 GMT",
@@ -2517,7 +2523,8 @@
       "page": <page>,
       "page_size": <page_size>,
       "pages": 1,
-      "status": 200
+      "status": 200,
+      "elements": 5
    }
    ```
 
@@ -2879,10 +2886,10 @@
 
 #### Request
 
-- **Endpoint:** `/therapies/by-patient/<user_id>`
+- **Endpoint:** `/therapies/by-patient/<user_id>?page=<page>&page_size=<page_size>`
 - **Method:** `GET`
 - **Require authorization**
-- **Body:**
+- **Params:**
    - `page` (integer): Page number you want to get (default 1).
    - `page_size` (integer): Number of elements per page, max 20 (default 20).
 - **Notes:**
@@ -2959,7 +2966,8 @@
       "page": <page>,
       "page_size": <page_size>,
       "pages": 1,
-      "status": 200
+      "status": 200,
+      "elements": 5
    }
    ```
 
@@ -2982,10 +2990,10 @@
 
 #### Request
 
-- **Endpoint:** `/therapies/by-type/<therapy_type_id>`
+- **Endpoint:** `/therapies/by-type/<therapy_type_id>?page=<page>&page_size=<page_size>`
 - **Method:** `GET`
 - **Require authorization**
-- **Body:**
+- **Params:**
    - `page` (integer): Page number you want to get (default 1).
    - `page_size` (integer): Number of elements per page, max 20 (default 20).
 - **Notes:**
@@ -3062,7 +3070,8 @@
       "page": <page>,
       "page_size": <page_size>,
       "pages": 1,
-      "status": 200
+      "status": 200,
+      "elements": 5
    }
    ```
 
@@ -3085,10 +3094,10 @@
 
 #### Request
 
-- **Endpoint:** `/therapy-types`
+- **Endpoint:** `/therapy-types?page=<page>&page_size=<page_size>`
 - **Method:** `GET`
 - **Require authorization**
-- **Body:**
+- **Params:**
    - `page` (integer): Page number you want to get (default 1).
    - `page_size` (integer): Number of elements per page, max 20 (default 20).
 - **Notes:**
@@ -3114,7 +3123,8 @@
       "page": <page>,
       "page_size": <page_size>,
       "pages": 1,
-      "status": 200
+      "status": 200,
+      "elements": 5
    }
    ```
 

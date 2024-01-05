@@ -67,10 +67,9 @@ class Therapy(db.Model):
       }
 
    def to_dict_simple(self):
-      doctor = get_doctor_from_external_db(self.doctor_id)
       return {
          'therapy_id': self.therapy_id,
-         'doctor': doctor,
+         'doctor_id': self.doctor_id,
          'disease_descr': self.disease_descr,
          'req_treatment': self.req_treatment,
          'date_from': self.date_from,

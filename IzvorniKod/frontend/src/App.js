@@ -24,6 +24,7 @@ import { LoginContext } from "./contexts/LoginContext";
 import UserAccount from "./pages/UserAccount";
 import MyTherapies from "./pages/MyTherapies";
 import CreateTherapy from "./pages/CreateTherapy";
+import DataDisplay from "./components/DataDisplay";
 
 
 function App() {
@@ -173,6 +174,18 @@ function App() {
             <ProtectedRoute>
               <CreateTherapy />
             </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/data-display"
+          element={
+            <DataDisplay
+              url={"/therapy-types"}
+              columns={["Terapija", "Opis"]}
+              options={["therapy_type_name", "therapy_type_descr"]}
+              identificator={"therapy_type_id"}
+              dataName="therapy_types"
+            />
           }
         />
         <Route path="*" element={<NotFound />} />

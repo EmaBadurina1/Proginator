@@ -5,15 +5,11 @@ from utils.utils import validate_required_fields
 
 # get page of entities
 # methods=['GET']
-def get_all(Model, req):
+def get_all(Model, request):
    try:
-      page = 1
-      page_size = 20
+      page = request.args.get('page', default = 1, type = int)
+      page_size = request.args.get('page_size', default = 20, type = int)
 
-      if 'page' in req:
-         page = req.get('page')
-      if 'page_size' in req:
-         page_size = req.get('page_size')
       if page_size > 20 or page_size < 1:
          return jsonify({
             "error": "Page size must be between 1 and 20",
@@ -30,7 +26,8 @@ def get_all(Model, req):
             "page": 0,
             "page_size": page_size,
             "pages": values.pages,
-            "status": 200
+            "status": 200,
+            "elements": values.total
          }), 200
 
       if page > values.pages or page < 1:
@@ -46,7 +43,8 @@ def get_all(Model, req):
          "page": page,
          "page_size": page_size,
          "pages": values.pages,
-         "status": 200
+         "status": 200,
+         "elements": values.total
       }), 200
 
    except Exception as e:
@@ -54,18 +52,6 @@ def get_all(Model, req):
          "error": "Page and page size must be integers",
          "status": 400
       }), 400
-   
-"""
-def get_all(Model, request):
-   rows = Model.query.all()
-   list = [row.to_dict() for row in rows]
-   return jsonify({
-      "data": {
-         f"{Model.get_name_plural()}": list
-      },
-      "status": 200
-   }), 200
-"""
    
 # get a row by id
 # methods=['GET']
