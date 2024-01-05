@@ -1,5 +1,5 @@
 import { React } from "react";
-import "./AttendanceRecord.css";
+import "./AttendanceDisplay.css";
 import {
   FormControl,
   FormControlLabel,
@@ -32,8 +32,7 @@ const komentarStyle = {
   width: "70%",
 };
 
-const AttendanceRecord = () => {
-
+const AttendanceDisplay = () => {
   const { appointmentId } = useParams();
   const [appointment, setAppointment] = useState(null);
 
@@ -44,6 +43,7 @@ const AttendanceRecord = () => {
           EmployeeService.getAppointmentById(appointmentId);
           const pom = EmployeeService.getCurrentAppointment();
           setAppointment(pom.data.appointment);
+          
         } else {
           console.log("greska");
         }
@@ -54,7 +54,10 @@ const AttendanceRecord = () => {
 
   return (
     <div className="container">
-      <h2>Pacijent {appointment && appointment.therapy.patient.name} - evidencija dolaska na terapiju</h2>
+      <h2>
+        Pacijent {appointment && appointment.comment} - evidencija
+        dolaska na terapiju
+      </h2>
       <div className="mini-container">
         <div className="big-div1">
           <div className="mid-div1">
@@ -132,4 +135,4 @@ const AttendanceRecord = () => {
   );
 };
 
-export default AttendanceRecord;
+export default AttendanceDisplay;

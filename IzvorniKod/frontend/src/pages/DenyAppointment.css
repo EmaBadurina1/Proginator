@@ -1,0 +1,47 @@
+.container-div {
+    margin-top: 3em;
+}
+.mini-container2 {
+    margin-top: 2em;
+    margin-left: 5em;
+    margin-right: 5em;
+    margin-bottom: 2em;
+}
+.border-container {
+    margin-top: 1em;
+    border: 0.1em solid black;
+}
+.title-div2 {
+    margin-left: 3em;
+}
+
+.big-div1 {
+    margin-bottom: 4em;
+}
+.mid-div1 {
+    margin-top: 2em;
+    line-height: 2em;
+    margin-left: 2em;
+}
+.reg-btn {
+    height: 2.5em;
+    border-radius: 0.5em;
+    width: 13em;
+    margin-top: 1em;
+}
+.button-div-container {
+    margin-bottom: 6em;
+}
+.button-div1 {
+    width: 40%;
+    margin-right: 5em;
+    float: left;
+}
+.button-div2 {
+    width: 40%;
+    margin-left: 5em;
+    float: right;
+}
+.iconButtonDiv {
+    margin-left: 3em;
+}

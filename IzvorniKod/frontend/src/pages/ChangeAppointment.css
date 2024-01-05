@@ -1,0 +1,38 @@
+.container-div2 {
+    margin-top: 3em;
+}
+.mini-container3 {
+    margin-top: 2em;
+    margin-left: 5em;
+    margin-right: 5em;
+    margin-bottom: 2em;
+}
+.border-container2 {
+    margin-top: 1em;
+    border: 0.1em solid black;
+}
+.title-div3 {
+    margin-left: 3em;
+}
+
+.big-div1 {
+    margin-bottom: 4em;
+}
+.mid-div1 {
+    margin-top: 2em;
+    line-height: 2em;
+    margin-left: 2em;
+}
+.iconButtonDiv2 {
+    margin-left: 3em;
+}
+.reg-btn {
+    height: 2.5em;
+    color: black;
+    background-color: orange;
+    border-radius: 0.5em;
+    width: 13em;
+}
+.button-div {
+    margin-bottom: 6em;
+}
