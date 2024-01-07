@@ -48,6 +48,12 @@ const Header = ({ onLogout }) => {
     });
   }
 
+  const handleUserAccount = (e) => {
+    e.preventDefault();
+
+    nav("/user-account");
+  }
+
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -173,7 +179,7 @@ const Header = ({ onLogout }) => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              <MenuItem key="userAccount" onClick={handleCloseUserMenu}>
+              <MenuItem key="userAccount" onClick={handleUserAccount}>
                 <Typography textAlign="center">Korisnički račun</Typography>
               </MenuItem>
               <MenuItem key="logout" onClick={handleLogout}>
