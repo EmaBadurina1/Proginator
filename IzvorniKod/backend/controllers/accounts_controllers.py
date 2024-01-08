@@ -154,27 +154,26 @@ def register_patient():
 def update_patient(user_id):
     patient = Patient.query.get(user_id)
     if patient:
-        MBO = patient.MBO
-        if 'MBO' in request.json:
-            MBO = request.json['MBO']
- 
-        patient_external = get_patient_data(MBO)
+        # patient can only update his own data || BILO BI DOBRO DA SE OVO RIJEŠI U AUTH VALIDATION
+        if session['role'] == 'patient' and session['user_id'] != user_id:
+            return jsonify({
+                "error": "Nemate pravo pristupa ovim podacima",
+                "status": 403
+            }), 403
         
-        # test if patient data matches external database
-        all_fields = ['name', 'surname', 'MBO', 'date_of_birth']
-        updated_fields = []
+        update_fields = {}
 
-        for field in all_fields:
-            if field in request.json:
-                updated_fields.append(field)
+        if 'email' in request.json:
+            update_fields['email'] = request.json['email']
+        if 'phone_number' in request.json:
+            update_fields['phone_number'] = request.json['phone_number']
+
+        if not update_fields:
+            return jsonify({
+                "error": "Nema podataka za ažuriranje",
+                "status": 400
+            }), 400
         
-        for field in updated_fields:
-            if patient_external[field] != request.json[field]:
-                return jsonify({
-                    "error": f"Sljedeći podatak nije ispravan: {field}",
-                    "status": 400
-                }), 400
-
         try:
             patient.update(**request.json)
             db.session.commit()
@@ -397,23 +396,5 @@ def get_doctor(doctor_id):
     except Exception as e:
         return jsonify({
             "error": "Došlo je do pogreške prilikom dohvaćanja podataka",
-            "status": 500
-        }), 500
-
-@accounts_bp.route('/doctors/<int:doctor_id>', methods=['GET'])
-@auth_validation
-@require_any_role("admin", "doctor", "patient")
-def get_doctor(doctor_id):
-    try:
-        doctor = get_doctor_from_external_db(doctor_id)
-        return jsonify({
-            "data": {
-                "doctor": doctor
-            },
-            "status": 200
-        }), 200
-    except Exception as e:
-        return jsonify({
-            "error": "There was a problem fetching your data",
             "status": 500
         }), 500
