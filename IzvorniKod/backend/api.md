@@ -842,11 +842,11 @@
 - **Require authorization**
 - **Body:**
    - `therapy_id` (integer): Reference to therapy.
-   - `date_from` (string): Start of the appointment session.
+   - `date_from` (string): Start of the appointment session in format `YYYY-MM-DD HH:MM`.
    - `comment` (string): Comment after appointment.
    - `room_num` (string): Reference to a room.
    - `employee_id` (integer): Reference to a employee that is on appointment session.
-   - `date_to` (string): End of appointent session.
+   - `date_to` (string): End of appointent session in format `YYYY-MM-DD HH:MM`.
 - **Notes:**
    - `therapy_id` and `date_from` are required, other fields are optional.
 
@@ -941,11 +941,11 @@
 - **Require authorization**
 - **Body:**
    - `therapy_id` (integer): Reference to therapy.
-   - `date_from` (string): Start of the appointment session.
+   - `date_from` (string): Start of the appointment session in format `YYYY-MM-DD HH:MM`.
    - `comment` (string): Comment after appointment.
    - `room_num` (string): Reference to a room.
    - `employee_id` (integer): Reference to a employee that is on appointment session.
-   - `date_to` (string): End of appointent session.
+   - `date_to` (string): End of appointent session in format `YYYY-MM-DD HH:MM`.
 - **Notes:**
    - All request parameters are optional.
 
