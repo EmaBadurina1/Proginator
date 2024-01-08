@@ -1,0 +1,40 @@
+.main-container {
+    margin-top: 4em;
+    margin-left: 5em;
+    margin-right: 5em;
+}
+
+.title-div {
+    width: 20em;
+    margin-bottom: 3em;
+}
+
+.prviRed2 {
+    background-color: rgb(97, 95, 95);
+    text-align: center;
+}
+
+.celija{
+    text-align: center;
+    vertical-align: middle;
+}
+
+.reg-btn {
+    height: 2.5em;
+    color: white;
+    background-color: purple;
+    border-radius: 0.5em;
+    width: 13em;
+
+}
+.reg-btn2 {
+    height: 2.5em;
+    color: white;
+    background-color: rgb(80, 49, 100);
+    border-radius: 0.5em;
+    width: 13em;
+}
+.ev1 {
+    margin-bottom: 0.5em;
+}
+

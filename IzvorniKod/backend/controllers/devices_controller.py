@@ -11,7 +11,7 @@ devices_bp = Blueprint('devices_bp', __name__)
 @auth_validation
 @require_any_role('admin')
 def get_devices():
-   return get_all(Model=Device, req=request.json if request.content_type == 'application/json' else {})
+   return get_all(Model=Device, request=request)
 
 # get device with id=device_id
 @devices_bp.route('/devices/<int:device_id>', methods=['GET'])
@@ -48,22 +48,13 @@ def delete_device(device_id):
 @require_any_role('admin')
 def get_by_device_type(device_type_id):
    try:
-      page = 1
-      page_size = 20
+      page = request.args.get('page', default = 1, type = int)
+      page_size = request.args.get('page_size', default = 20, type = int)
 
-      if request.content_type == 'application/json':
-         req = request.json
-      else:
-         req = {}
-
-      if 'page' in req:
-         page = req.get('page')
-      if 'page_size' in req:
-         page_size = req.get('page_size')
       if page_size > 20 or page_size < 1:
          return jsonify({
-         "error": "Page size must be between 1 and 20",
-         "status": 400
+               "error": "Page size must be between 1 and 20",
+               "status": 400
          }), 400
 
       devices = (
@@ -81,7 +72,8 @@ def get_by_device_type(device_type_id):
          "page": 0,
          "page_size": page_size,
          "pages": devices.pages,
-         "status": 200
+         "status": 200,
+         "elements": devices.total
       }), 200
 
       if page > devices.pages or page < 1:
@@ -97,7 +89,8 @@ def get_by_device_type(device_type_id):
          "page": page,
          "page_size": page_size,
          "pages": devices.pages,
-         "status": 200
+         "status": 200,
+         "elements": devices.total
       }), 200
    except Exception as e:
       return jsonify({
@@ -110,7 +103,7 @@ def get_by_device_type(device_type_id):
 @auth_validation
 @require_any_role('admin')
 def get_device_types():
-   return get_all(Model=DeviceType, req=request.json if request.content_type == 'application/json' else {})
+   return get_all(Model=DeviceType, request=request)
 
 # get device types with id=device_type_id
 @devices_bp.route('/device-types/<int:device_type_id>', methods=['GET'])

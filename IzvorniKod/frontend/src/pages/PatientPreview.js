@@ -14,6 +14,8 @@ import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import SearchIcon from "@mui/icons-material/Search";
 //import ForwardIcon from '@mui/icons-material/Forward';
+import EmployeeService from "../services/employeeService";
+import { Link } from "react-router-dom";
 
 const PatientPreview = () => {
   const cellStyle = {
@@ -39,13 +41,11 @@ const PatientPreview = () => {
   const [patients, setPatients] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:8000/patients")
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        setPatients(data);
-      });
+    EmployeeService.patientPreview();
+    const patientData = EmployeeService.getCurrentPatientData();
+
+    setPatients(patientData.data.patients);
+    console.log(patientData);
   }, []);
 
   const onChangeSearch = (e) => {
@@ -54,23 +54,21 @@ const PatientPreview = () => {
   };
 
   const getFilteredPatients = (v) => {
-    fetch("http://localhost:8000/patients")
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        const filteredPatients = data.filter((patient) => {
-          return (
-            patient &&
-            (
-              patient.name.toLowerCase() +
-              " " +
-              patient.surname.toLowerCase()
-            ).includes(v.toLowerCase())
-          );
-        });
-        setPatients(filteredPatients);
-      });
+
+    EmployeeService.patientPreview();
+    const data = EmployeeService.getCurrentPatientData().data.patients;
+
+    const filteredPatients = data.filter((patient) => {
+      return (
+        patient &&
+        (
+          patient.name.toLowerCase() +
+          " " +
+          patient.surname.toLowerCase()
+        ).includes(v.toLowerCase())
+      );
+    });
+    setPatients(filteredPatients);
   };
 
   return (
@@ -112,7 +110,7 @@ const PatientPreview = () => {
           <TableBody>
             {patients &&
               patients.map((patient) => (
-                <TableRow key={patient.id}>
+                <TableRow key={patient.user_id}>
                   <TableCell style={cellStyle2}>{patient.name}</TableCell>
                   <TableCell style={cellStyle2}>{patient.surname}</TableCell>
                   <TableCell style={cellStyle2}>{patient.MBO}</TableCell>
@@ -125,14 +123,16 @@ const PatientPreview = () => {
                   </TableCell>
                   <TableCell style={cellStyle2}>
                     <div>
-                      <Button
-                        variant="contained"
-                        size="medium"
-                        className="reg-btn"
-                        style={buttonStyle}
-                      >
-                        Prikaži termine
-                      </Button>
+                      <Link to={`/appointments-preview/${patient.user_id}`}>
+                        <Button
+                          variant="contained"
+                          size="medium"
+                          className="reg-btn"
+                          style={buttonStyle}
+                        >
+                          Prikaži termine
+                        </Button>
+                      </Link>
                     </div>
                   </TableCell>
                 </TableRow>

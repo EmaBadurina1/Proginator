@@ -20,11 +20,18 @@ import Unauthorized from "./pages/Unauthorized";
 import UserAdd from "./pages/UserAdd";
 import AttendanceRecord from "./pages/AttendanceRecord";
 import PatientPreview from "./pages/PatientPreview";
+import AppointmentsPreview from "./pages/AppointmentsPreview";
+import DenyAppointment from "./pages/DenyAppointment";
+import ChangeAppointment from "./pages/ChangeAppointment";
+import AppointmentRequestsPreview from "./pages/AppointmentRequestsPreview";
+import AttendanceDisplay from "./pages/AttendanceDisplay";
 import { LoginContext } from "./contexts/LoginContext";
 import UserAccount from "./pages/UserAccount";
 import MyTherapies from "./pages/MyTherapies";
 import CreateTherapy from "./pages/CreateTherapy";
+import DataDisplay from "./components/DataDisplay";
 
+import AlreadyLoggedIn from "./pages/AlreadyLoggedIn";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(true);
@@ -111,7 +118,9 @@ function App() {
           path="/"
           element={<Navigate to={isAuthenticated ? "/home" : "/login"} replace />}
         />
-        <Route path="/login" element={<Login onLogin={login} />} />
+        <Route path="/login" element={
+          isAuthenticated? <ProtectedRoute><AlreadyLoggedIn/></ProtectedRoute> : <Login onLogin={login} />
+        } />
         <Route path="/registration" element={<Registration />} />
         <Route
           path="/user-account"
@@ -122,13 +131,19 @@ function App() {
           }
         />
         <Route
-          path="/attendance"
+          path="/attendance/:appointmentId"
           element={
             <ProtectedRoute>
               <EmployeeRoute>
                 <AttendanceRecord />
               </EmployeeRoute>
             </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/attendance-display/:appointmentId"
+          element={
+            <AttendanceDisplay />
           }
         />
         <Route
@@ -139,6 +154,30 @@ function App() {
                 <PatientPreview />
               </EmployeeRoute>
             </ProtectedRoute>
+          }
+        />
+        <Route
+          path ="/appointments-preview/:patientId"
+          element={
+            <AppointmentsPreview />
+          }
+        />
+        <Route
+          path="/deny-appointment/:appointmentId"
+          element={
+            <DenyAppointment />
+          }
+        />
+        <Route
+          path="/change-appointment/:appointmentId"
+          element={
+            <ChangeAppointment />
+          }
+        />
+        <Route
+          path="/appointment-requests-preview"
+          element={
+            <AppointmentRequestsPreview />
           }
         />
         <Route
@@ -173,6 +212,18 @@ function App() {
             <ProtectedRoute>
               <CreateTherapy />
             </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/data-display"
+          element={
+            <DataDisplay
+              url={"/therapy-types"}
+              columns={["Terapija", "Opis"]}
+              options={["therapy_type_name", "therapy_type_descr"]}
+              identificator={"therapy_type_id"}
+              dataName="therapy_types"
+            />
           }
         />
         <Route path="*" element={<NotFound />} />

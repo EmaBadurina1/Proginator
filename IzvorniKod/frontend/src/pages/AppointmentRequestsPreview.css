@@ -1,0 +1,37 @@
+.main-container {
+    margin-top: 4em;
+    margin-left: 5em;
+    margin-right: 5em;
+}
+.header2 {
+    margin-bottom: 2em;
+    display: grid;
+    grid-template-columns: 75% auto;
+}
+
+.title-div3 {
+    width: 30em;
+}
+
+.prviRed2 {
+    background-color: rgb(97, 95, 95);
+    text-align: center;
+}
+
+.celija{
+    text-align: center;
+    vertical-align: middle;
+}
+.button-container {
+    display: flex;
+}
+.reg-btn3 {
+    margin-right: 0.5em;
+}
+.reg-btn4 {
+    margin-left: 0.5em;
+}
+.button-container2 {
+    width: 10em;
+    margin: auto;
+}
