@@ -42,54 +42,51 @@ const AppointmentsPreview = () => {
   useEffect(() => {
     const fetchAppointmentsByPatient = async () => {
       try {
-        await EmployeeService.getAppointmentsByPatient(patientId).then(
-          (resp) => {
-            if (resp.success) {
-              const appointmentData =
-                EmployeeService.getCurrentAppointmentDataByPatient();
-              const pom = appointmentData.data.appointments;
-              const filtered = pom.filter((appointment) => {
-                return (
-                  appointment && appointment.status.status_name !== 'Na čekanju'
-                );
-              });
-              setAppointments(filtered);
-              //setAppointments(pom);
-            } else {
-              console.log("greska");
-            }
-          }
-        );
+        const resp = await EmployeeService.getAppointmentsByPatient(patientId);
+        if (resp.success) {
+          const appointmentData = EmployeeService.getCurrentAppointmentDataByPatient();
+          const pom = appointmentData.data.appointments;
+          const filtered = pom.filter((appointment) => {
+            return appointment && appointment.status.status_name !== 'Na čekanju';
+          });
+          setAppointments(filtered);
+        } else {
+          console.log("greska");
+        }
       } catch (err) {
         toast.error("Greska!", {
           position: toast.POSITION.TOP_RIGHT,
         });
       }
     };
-
+  
     const fetchPatient = async () => {
       try {
-        await EmployeeService.getPatientById(patientId).then((resp) => {
-          if (resp.success) {
-            const pom2 = EmployeeService.getCurrentPatient();
-            setPatient(pom2.data.patient);
-          } else {
-            console.log("greska");
-          }
-        });
+        const resp = await EmployeeService.getPatientById(patientId);
+        if (resp.success) {
+          const pom2 = EmployeeService.getCurrentPatient();
+          setPatient(pom2.data.patient);
+        } else {
+          console.log("greska");
+        }
       } catch (err) {
         toast.error("Greska!", {
           position: toast.POSITION.TOP_RIGHT,
         });
       }
     };
-
-    fetchPatient();
-    fetchAppointmentsByPatient();
-    /*const appointmentData = EmployeeService.getCurrentAppointmentDataByPatient();
-    const pom = appointmentData.data.appointments;
-    setAppointments(pom);*/
+  
+    const fetchData = async () => {
+      await fetchPatient();
+      await fetchAppointmentsByPatient();
+    };
+  
+    fetchData();
   }, [patientId]);
+  
+  useEffect(() => {
+    //console.log(appointments);
+  }, [appointments])
 
   return (
     <div className="main-container">

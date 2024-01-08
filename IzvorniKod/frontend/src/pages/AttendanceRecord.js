@@ -24,10 +24,6 @@ const buttonStyle = {
   display: "block",
 };
 
-const textInputStyle = {
-  marginTop: "0.5em",
-};
-
 const komentarStyle = {
   width: "70%",
 };
@@ -36,17 +32,16 @@ const AttendanceRecord = () => {
   const { appointmentId } = useParams();
   const [appointment, setAppointment] = useState(null);
   const [comment, setComment] = useState(null);
-  const [statusName, setStatusName] = useState(null);
+  const [statusId, setStatusId] = useState(null);
 
   const updateAppointment = async () =>  {
-    console.log("Status Name:", statusName);
+    console.log("Status Id:", statusId);
     console.log("Comment: ", comment);
 
     const updatedData = {
       comment: comment,
-      status: {
-        status_name: statusName,
-      },
+      status_id: statusId,
+
     };
 
     await EmployeeService.updateAppointment(appointmentId, updatedData)
@@ -95,33 +90,23 @@ const AttendanceRecord = () => {
                 <FormLabel id="blabla">Evidencija</FormLabel>
                 <RadioGroup
                   aria-labelledby="blabla"
-                  value={statusName}
+                  value={statusId}
                   onChange={(e) => {
-                    setStatusName(e.target.value);
+                    setStatusId(e.target.value);
                   }}
                 >
                   <FormControlLabel
-                    value="Odrađen"
+                    value={3}
                     control={<Radio />}
                     label="Termin je odrađen"
                   />
                   <FormControlLabel
-                    value="Propušten"
+                    value={5}
                     control={<Radio />}
                     label="Termin je propušten"
                   />
                 </RadioGroup>
               </FormControl>
-            </div>
-            <div className="small-div2">
-              <TextField
-                autoComplete="false"
-                className="soba-text"
-                label="Soba"
-                variant="outlined"
-                name="soba"
-                style={textInputStyle}
-              />
             </div>
           </div>
           <div className="mid-div2">

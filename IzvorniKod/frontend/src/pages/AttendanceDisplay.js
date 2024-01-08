@@ -14,6 +14,7 @@ import TherapyInfo from "../components/TherapyInfo";
 import { useParams } from "react-router-dom";
 import EmployeeService from "../services/employeeService";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const buttonStyle = {
   backgroundColor: "purple",
@@ -36,7 +37,6 @@ const AttendanceDisplay = () => {
   const [appointment, setAppointment] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState("");
 
-
   useEffect(() => {
     const fetchAppointment = async () => {
       await EmployeeService.getAppointmentById(appointmentId).then((resp) => {
@@ -50,10 +50,7 @@ const AttendanceDisplay = () => {
       });
     };
     fetchAppointment();
-    console.log(appointment);
-  }, [appointmentId, appointment]);
-
-
+  }, [appointmentId]);
 
   return (
     <div className="container">
@@ -66,13 +63,11 @@ const AttendanceDisplay = () => {
         <div className="big-div1">
           <div className="mid-div1">
             <div className="small-div1">
-              <FormControl
-              disabled
-              >
+              <FormControl disabled>
                 <FormLabel id="blabla">Evidencija</FormLabel>
-                <RadioGroup 
-                value={selectedStatus}
-                onChange={(event) => setSelectedStatus(event.target.value)}
+                <RadioGroup
+                  value={selectedStatus}
+                  onChange={(event) => setSelectedStatus(event.target.value)}
                 >
                   <FormControlLabel
                     value="Odrađen"
@@ -93,8 +88,11 @@ const AttendanceDisplay = () => {
               <TextField
                 autoComplete="false"
                 className="soba-text"
-                label={appointment && appointment.status.status_name !== "Otkazan" 
-                ? appointment.room.room_num : '/'}
+                label={
+                  appointment && appointment.status.status_name !== "Otkazan"
+                    ? appointment.room.room_num
+                    : "/"
+                }
                 variant="outlined"
                 name="soba"
                 style={textInputStyle}
@@ -117,8 +115,11 @@ const AttendanceDisplay = () => {
           <TextField
             autoComplete="false"
             className="komentar-text"
-            label={appointment && appointment.status.status_name !== "Otkazan" 
-            ? appointment.comment : '/'}
+            label={
+              appointment && appointment.status.status_name !== "Otkazan"
+                ? appointment.comment
+                : "/"
+            }
             variant="outlined"
             name="korištena oprema"
             multiline
@@ -130,15 +131,20 @@ const AttendanceDisplay = () => {
             disabled
           />
         </div>
-
-        <Button
-          variant="contained"
-          size="medium"
-          className="reg-btn"
-          style={buttonStyle}
-        >
-          Predaj evidenciju
-        </Button>
+        {appointment && (
+          <Link
+            to={`/appointments-preview/${appointment.therapy.patient.user_id}`}
+          >
+            <Button
+              variant="contained"
+              size="medium"
+              className="reg-btn"
+              style={buttonStyle}
+            >
+              Povratak
+            </Button>
+          </Link>
+        )}
       </div>
     </div>
   );

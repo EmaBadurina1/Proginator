@@ -13,6 +13,7 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import { Link } from "react-router-dom";
 
 const ChangeAppointment = () => {
   const { appointmentId } = useParams();
@@ -54,27 +55,20 @@ const ChangeAppointment = () => {
   }, [appointmentId]);
 
   const updateAppointment = async () => {
-  
     const timeAsDate = new Date(time);
-  
+
     const hour = timeAsDate.getHours();
     const minute = timeAsDate.getMinutes();
-  
-    const formattedDate = new Date(date);
-    formattedDate.setHours(hour, minute, 0, 0);
-    formattedDate.setHours(formattedDate.getHours() + 1);
-    const formattedDateTime = formattedDate.toUTCString();
-    console.log(formattedDateTime);
-    const formattedDate2 = formattedDate;
-    formattedDate2.setHours(formattedDate2.getHours() + 1);
-    const formattedDateTime2 = formattedDate2.toUTCString();
-    console.log(formattedDateTime2);
+
+    const formattedDate = `${date} ${hour}:${minute}`;
+    const formattedDate2 = `${date} ${hour + 1}:${minute}`;
+    console.log(formattedDate);
 
     const updatedData = {
-      date_from: formattedDateTime,
-      date_to: formattedDateTime2,
+      date_from: formattedDate,
+      date_to: formattedDate2,
     };
-  
+
     await EmployeeService.updateAppointment(appointmentId, updatedData)
       .then((resp) => {
         if (resp.success) {
@@ -89,7 +83,7 @@ const ChangeAppointment = () => {
   };
 
   function onChangeDate(date) {
-    let value = date.toFormat("yyyy.MM.dd");
+    let value = date.toFormat("yyyy-MM-dd");
     setDate(value);
   }
 
@@ -131,9 +125,9 @@ const ChangeAppointment = () => {
           <div className="big-div5">
             <LocalizationProvider dateAdapter={AdapterLuxon}>
               <DemoContainer components={["TimePicker"]}>
-                <TimePicker 
-                label="Vrijeme terapije" 
-                onChange={(newTime) => setTime(newTime)}
+                <TimePicker
+                  label="Vrijeme terapije"
+                  onChange={(newTime) => setTime(newTime)}
                 />
               </DemoContainer>
             </LocalizationProvider>
@@ -152,17 +146,21 @@ const ChangeAppointment = () => {
           </div>
           <div className="button-div">
             {appointment && (
-              <Button
-                variant="contained"
-                size="medium"
-                className="reg-btn"
-                style={buttonStyle}
-                onClick={() => {
-                  updateAppointment();
-                }}
+              <Link
+                to={"../appointment-requests-preview"}
               >
-                Premjesti
-              </Button>
+                <Button
+                  variant="contained"
+                  size="medium"
+                  className="reg-btn"
+                  style={buttonStyle}
+                  onClick={() => {
+                    updateAppointment();
+                  }}
+                >
+                  Premjesti
+                </Button>
+              </Link>
             )}
           </div>
         </div>
