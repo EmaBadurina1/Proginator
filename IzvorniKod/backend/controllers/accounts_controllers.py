@@ -37,14 +37,14 @@ def register_patient():
     # check if required_fields are empty
     if empty_fields:
         return jsonify({
-            "error": f"Required fields cannot be empty: {', '.join(empty_fields)}",
+            "error": f"Sljedeći parametri ne smiju biti prazni: {', '.join(empty_fields)}",
             "status": 400
         }), 400
 
     # check if is MBO is in right format
     if not validate_number(request.json['MBO'], 9):
         return jsonify({
-            "error": "MBO must be 9 characters long",
+            "error": "MBO mora biti 9 znamenki dugačak",
             "status": 400
         }), 400
 
@@ -66,7 +66,7 @@ def register_patient():
             duplicate_params.append("MBO")
 
         return jsonify({
-            "error": f"Data is not unique: {', '.join(duplicate_params)}",
+            "error": f"Sljedeći podaci su već zauzeti: {', '.join(duplicate_params)}",
             "status": 400
         }), 400
     
@@ -74,7 +74,7 @@ def register_patient():
     patient = get_patient_data(request.json['MBO'])
     if not patient:
         return jsonify({
-            "error": f"MBO: {request.json['MBO']} does not exist",
+            "error": f"MBO nije važeći",
             "status": 400
         }), 400
     
@@ -88,7 +88,7 @@ def register_patient():
     for field in MBO_fields:
         if patient[field] != request.json[field]:
             return jsonify({
-                "error": "Data is not correct",
+                "error": "Podaci nisu ispravni",
                 "status": 400
             }), 400
 
@@ -110,19 +110,19 @@ def register_patient():
     except IntegrityError as e:
         db.session.rollback()
         return jsonify({
-            "error": "Data is not unique",
+            "error": "Podaci nisu jedinstveni",
             "status": 400
         }), 400
     except DataError as e:
         db.session.rollback()
         return jsonify({
-            "error": "Invalid data format",
+            "error": "Neispravan format podataka",
             "status": 400
         }), 400
     except Exception as e:
         db.session.rollback()
         return jsonify({
-            "error": "There was an error with storing your data",
+            "error": "Došlo je do pogreške prilikom spremanja podataka",
             "status": 500
         }), 500
     finally:
@@ -142,7 +142,7 @@ def get_patient(user_id):
     # patient can only get his own data
     if session['role'] == 'patient' and session['user_id'] != user_id:
         return jsonify({
-            "error": "You don't have permission to access this data",
+            "error": "Forbidden",
             "status": 403
         }), 403
     
@@ -158,24 +158,21 @@ def update_patient(user_id):
         MBO = patient.MBO
         if 'MBO' in request.json:
             MBO = request.json['MBO']
-
+ 
         patient_external = get_patient_data(MBO)
         
         # test if patient data matches external database
-        MBO_fields = []
-        if 'name' in request.json:
-            MBO_fields.append('name')
-        if 'surname' in request.json:
-            MBO_fields.append('surname')
-        if 'MBO' in request.json:
-            MBO_fields.append('MBO')
-        if 'date_of_birth' in request.json:
-            MBO_fields.append('date_of_birth')
+        all_fields = ['name', 'surname', 'MBO', 'date_of_birth']
+        updated_fields = []
+
+        for field in all_fields:
+            if field in request.json:
+                updated_fields.append(field)
         
-        for field in MBO_fields:
+        for field in updated_fields:
             if patient_external[field] != request.json[field]:
                 return jsonify({
-                    "error": f"Data is not correct. Expected: {patient_external[field]} Given: {request.json[field]}",
+                    "error": f"Sljedeći podatak nije ispravan: {field}",
                     "status": 400
                 }), 400
 
@@ -185,13 +182,13 @@ def update_patient(user_id):
         except (ValueError, IntegrityError, DataError) as e:
             db.session.rollback()
             return jsonify({
-                "error": f"Invalid input: {str(e)}",
+                "error": f"Neispravan format podataka: {e}",
                 "status": 400
             }), 400
         except Exception as e:
             db.session.rollback()
             return jsonify({
-                "error": "There was a problem storing your data",
+                "error": "Došlo je do pogreške prilikom spremanja podataka",
                 "status": 500
             }), 500
         return jsonify({
@@ -202,7 +199,7 @@ def update_patient(user_id):
         }), 200
     else:
         return jsonify({
-            "error": f"No ID: {id}",
+            "error": f"Pacijent nije pronađen",
             "status": 404
         }), 404
 
@@ -217,12 +214,12 @@ def delete_patient(user_id):
         db.session.delete(patient)
         db.session.commit()
         return jsonify({
-            "message": "Deleted",
+            "message": "Pacijent izbrisan",
             "status": 200
         }), 200
     else:
         return jsonify({
-            "error": f"No ID: {user_id}",
+            "error": f"Pacijent nije pronađen",
             "status": 404
         }), 404
 
@@ -257,14 +254,14 @@ def register_employee():
     # check if required_fields are empty
     if empty_fields:
         return jsonify({
-            "error": f"Required fields cannot be empty: {', '.join(empty_fields)}",
+            "error": f"Sljedeći parametri ne smiju biti prazni: {', '.join(empty_fields)}",
             "status": 400
         }), 400
 
     # check if OIB is in right format
     if not validate_number(request.json['OIB'], 11):
         return jsonify({
-            "error": "OIB must be 9 characters long",
+            "error": "OIB mora imati 11 znamenki",
             "status": 400
         }), 400
     
@@ -286,7 +283,7 @@ def register_employee():
             duplicate_params.append("OIB")
 
         return jsonify({
-            "error": f"Data is not unique: {', '.join(duplicate_params)}",
+            "error": f"Sljedeći podaci su već zauzeti: {', '.join(duplicate_params)}",
             "status": 400
         }), 400
     
@@ -302,26 +299,26 @@ def register_employee():
             "data": {
                 "employee": employee.to_dict()
             }, 
-            "message": f"Employee added: {employee.name} {employee.surname}",
+            "message": f"Zaposlenik dodan: {employee.name} {employee.surname}",
             "status": 201
         }), 201
     
     except IntegrityError as e:
         db.session.rollback()
         return jsonify({
-            "error": "Data is not unique",
+            "error": "Podaci nisu jedinstveni",
             "status": 400
         }), 400
     except DataError as e:
         db.session.rollback()
         return jsonify({
-            "error": "Invalid data format",
+            "error": "Neispravan format podataka",
             "status": 400
         }), 400
     except Exception as e:
         db.session.rollback()
         return jsonify({
-            "error": "There was an error with storing your data",
+            "error": "Došlo je do pogreške prilikom spremanja podataka",
             "status": 500
         }), 500
     finally:
@@ -359,12 +356,12 @@ def delete_employee(user_id):
         db.session.delete(employee)
         db.session.commit()
         return jsonify({
-            "message": "Deleted",
+            "message": "Zaposlenik izbrisan",
             "status": 200
         }), 200
     else:
         return jsonify({
-            "error": f"No ID: {user_id}",
+            "error": f"Zaposlenik nije pronađen",
             "status": 404
         }), 404
     
@@ -382,6 +379,6 @@ def get_doctors():
         }), 200
     except Exception as e:
         return jsonify({
-            "error": "There was a problem fetching your data",
+            "error": "Došlo je do pogreške prilikom dohvaćanja podataka",
             "status": 500
         }), 500
