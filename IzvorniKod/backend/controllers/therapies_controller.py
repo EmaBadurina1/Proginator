@@ -11,7 +11,52 @@ therapies_bp = Blueprint('therapies_bp', __name__)
 @auth_validation
 @require_any_role('admin')
 def get_therapies():
-   return get_all(Model=Therapy, req=request.json if request.content_type == 'application/json' else {})
+   try:
+      page = request.args.get('page', default = 1, type = int)
+      page_size = request.args.get('page_size', default = 20, type = int)
+
+      if page_size > 20 or page_size < 1:
+         return jsonify({
+            "error": "Page size must be between 1 and 20",
+            "status": 400
+         }), 400
+      
+      therapies = Therapy.query.paginate(page=page, per_page=page_size, error_out=False)
+
+      if therapies.pages == 0:
+         return jsonify({
+            "data": {
+                  f"{Therapy.get_name_plural()}": []
+            },
+            "page": 0,
+            "page_size": page_size,
+            "pages": therapies.pages,
+            "status": 200,
+            "elements": therapies.total
+         }), 200
+
+      if page > therapies.pages or page < 1:
+         return jsonify({
+               'error': 'Requested page does not exist',
+               'status': 404
+         }), 404
+
+      return jsonify({
+         "data": {
+               f"{Therapy.get_name_plural()}": [therapy.to_dict_simple() for therapy in therapies.items]
+         },
+         "page": page,
+         "page_size": page_size,
+         "pages": therapies.pages,
+         "status": 200,
+         "elements": therapies.total
+      }), 200
+
+   except Exception as e:
+      return jsonify({
+         "error": "Page and page size must be integers",
+         "status": 400
+      }), 400
 
 # get therapy with id=therapy_id
 @therapies_bp.route('/therapies/<int:therapy_id>', methods=['GET'])
@@ -46,24 +91,15 @@ def delete_therapy(therapy_id):
 @therapies_bp.route('/therapies/by-type/<int:therapy_type_id>', methods=['GET'])
 @auth_validation
 @require_any_role('admin')
-def get_by_therapy_type(therapy_type_id):
+def get_by_therapies_type(therapy_type_id):
    try:
-      page = 1
-      page_size = 20
+      page = request.args.get('page', default = 1, type = int)
+      page_size = request.args.get('page_size', default = 20, type = int)
 
-      if request.content_type == 'application/json':
-         req = request.json
-      else:
-         req = {}
-
-      if 'page' in req:
-         page = req.get('page')
-      if 'page_size' in req:
-         page_size = req.get('page_size')
       if page_size > 20 or page_size < 1:
          return jsonify({
-         "error": "Page size must be between 1 and 20",
-         "status": 400
+               "error": "Page size must be between 1 and 20",
+               "status": 400
          }), 400
 
       therapies = (
@@ -81,7 +117,8 @@ def get_by_therapy_type(therapy_type_id):
          "page": 0,
          "page_size": page_size,
          "pages": therapies.pages,
-         "status": 200
+         "status": 200,
+         "elements": therapies.total
       }), 200
 
       if page > therapies.pages or page < 1:
@@ -92,12 +129,13 @@ def get_by_therapy_type(therapy_type_id):
 
       return jsonify({
          "data": {
-            "therapies": [therapy.to_dict() for therapy in therapies.items]
+            "therapies": [therapy.to_dict_simple() for therapy in therapies.items]
          },
          "page": page,
          "page_size": page_size,
          "pages": therapies.pages,
-         "status": 200
+         "status": 200,
+         "elements": therapies.total
       }), 200
    except Exception as e:
       return jsonify({
@@ -109,24 +147,15 @@ def get_by_therapy_type(therapy_type_id):
 @therapies_bp.route('/therapies/by-patient/<int:user_id>', methods=['GET'])
 @auth_validation
 @require_any_role('admin', 'patient')
-def get_by_patient(user_id):
+def get_by_therapies_patient(user_id):
    try:
-      page = 1
-      page_size = 20
+      page = request.args.get('page', default = 1, type = int)
+      page_size = request.args.get('page_size', default = 20, type = int)
 
-      if request.content_type == 'application/json':
-         req = request.json
-      else:
-         req = {}
-
-      if 'page' in req:
-         page = req.get('page')
-      if 'page_size' in req:
-         page_size = req.get('page_size')
       if page_size > 20 or page_size < 1:
          return jsonify({
-         "error": "Page size must be between 1 and 20",
-         "status": 400
+               "error": "Page size must be between 1 and 20",
+               "status": 400
          }), 400
 
       therapies = (
@@ -144,7 +173,8 @@ def get_by_patient(user_id):
          "page": 0,
          "page_size": page_size,
          "pages": therapies.pages,
-         "status": 200
+         "status": 200,
+         "elements": therapies.total
       }), 200
 
       if page > therapies.pages or page < 1:
@@ -155,12 +185,13 @@ def get_by_patient(user_id):
 
       return jsonify({
          "data": {
-            "therapies": [therapy.to_dict() for therapy in therapies.items]
+            "therapies": [therapy.to_dict_simple() for therapy in therapies.items]
          },
          "page": page,
          "page_size": page_size,
          "pages": therapies.pages,
-         "status": 200
+         "status": 200,
+         "elements": therapies.total
       }), 200
    except Exception as e:
       return jsonify({
@@ -173,7 +204,7 @@ def get_by_patient(user_id):
 @auth_validation
 @require_any_role('admin')
 def get_therapy_types():
-   return get_all(Model=TherapyType, req=request.json if request.content_type == 'application/json' else {})
+   return get_all(Model=TherapyType, request=request)
 
 # get therapy types with id=therapy_type_id
 @therapies_bp.route('/therapy-types/<int:therapy_type_id>', methods=['GET'])

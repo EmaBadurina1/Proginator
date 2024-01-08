@@ -13,7 +13,7 @@ appointments_bp = Blueprint('appointments_bp', __name__)
 @auth_validation
 @require_any_role('admin')
 def get_appointments():
-    return get_all(Model=Appointment, req=request.json if request.content_type == 'application/json' else {})
+    return get_all(Model=Appointment, request=request)
 
 # get appointment with id=appointment_id
 @appointments_bp.route('/appointments/<int:appointment_id>', methods=['GET'])
@@ -50,22 +50,13 @@ def delete_appointment(appointment_id):
 @require_any_role('admin', 'patient')
 def get_by_therapy(therapy_id):
     try:
-        page = 1
-        page_size = 20
+        page = request.args.get('page', default = 1, type = int)
+        page_size = request.args.get('page_size', default = 20, type = int)
 
-        if request.content_type == 'application/json':
-            req = request.json
-        else:
-            req = {}
-
-        if 'page' in req:
-            page = req.get('page')
-        if 'page_size' in req:
-            page_size = req.get('page_size')
         if page_size > 20 or page_size < 1:
             return jsonify({
-            "error": "Page size must be between 1 and 20",
-            "status": 400
+                "error": "Page size must be between 1 and 20",
+                "status": 400
             }), 400
 
         appointments = (
@@ -83,7 +74,8 @@ def get_by_therapy(therapy_id):
             "page": 0,
             "page_size": page_size,
             "pages": appointments.pages,
-            "status": 200
+            "status": 200,
+            "elements": appointments.total
         }), 200
 
         if page > appointments.pages or page < 1:
@@ -99,7 +91,8 @@ def get_by_therapy(therapy_id):
             "page": page,
             "page_size": page_size,
             "pages": appointments.pages,
-            "status": 200
+            "status": 200,
+            "elements": appointments.total
         }), 200
     except Exception as e:
         return jsonify({
@@ -113,22 +106,13 @@ def get_by_therapy(therapy_id):
 @require_any_role('admin', 'patient')
 def get_by_patient(user_id):
     try:
-        page = 1
-        page_size = 20
+        page = request.args.get('page', default = 1, type = int)
+        page_size = request.args.get('page_size', default = 20, type = int)
 
-        if request.content_type == 'application/json':
-            req = request.json
-        else:
-            req = {}
-
-        if 'page' in req:
-            page = req.get('page')
-        if 'page_size' in req:
-            page_size = req.get('page_size')
         if page_size > 20 or page_size < 1:
             return jsonify({
-            "error": "Page size must be between 1 and 20",
-            "status": 400
+                "error": "Page size must be between 1 and 20",
+                "status": 400
             }), 400
 
         appointments = (
@@ -149,7 +133,8 @@ def get_by_patient(user_id):
             "page": 0,
             "page_size": page_size,
             "pages": appointments.pages,
-            "status": 200
+            "status": 200,
+            "elements": appointments.total
         }), 200
 
         if page > appointments.pages or page < 1:
@@ -165,7 +150,8 @@ def get_by_patient(user_id):
             "page": page,
             "page_size": page_size,
             "pages": appointments.pages,
-            "status": 200
+            "status": 200,
+            "elements": appointments.total
         }), 200
     except Exception as e:
         return jsonify({
@@ -176,25 +162,16 @@ def get_by_patient(user_id):
 # get list of appointments by employee
 @appointments_bp.route('/appointments/by-employee/<int:user_id>', methods=['GET'])
 @auth_validation
-@require_any_role('doctor')
+@require_any_role('doctor', 'admin')
 def get_by_employee(user_id):
     try:
-        page = 1
-        page_size = 20
+        page = request.args.get('page', default = 1, type = int)
+        page_size = request.args.get('page_size', default = 20, type = int)
 
-        if request.content_type == 'application/json':
-            req = request.json
-        else:
-            req = {}
-
-        if 'page' in req:
-            page = req.get('page')
-        if 'page_size' in req:
-            page_size = req.get('page_size')
         if page_size > 20 or page_size < 1:
             return jsonify({
-            "error": "Page size must be between 1 and 20",
-            "status": 400
+                "error": "Page size must be between 1 and 20",
+                "status": 400
             }), 400
 
         appointments = (
@@ -212,7 +189,8 @@ def get_by_employee(user_id):
             "page": 0,
             "page_size": page_size,
             "pages": appointments.pages,
-            "status": 200
+            "status": 200,
+            "elements": appointments.total
         }), 200
 
         if page > appointments.pages or page < 1:
@@ -228,7 +206,8 @@ def get_by_employee(user_id):
             "page": page,
             "page_size": page_size,
             "pages": appointments.pages,
-            "status": 200
+            "status": 200,
+            "elements": appointments.total
         }), 200
     except Exception as e:
         return jsonify({
@@ -241,7 +220,7 @@ def get_by_employee(user_id):
 @auth_validation
 @require_any_role('admin')
 def get_statuses():
-    return get_all(Model=Status, req=request.json if request.content_type == 'application/json' else {})
+    return get_all(Model=Status, request=request)
 
 # get status with id=status_id
 @appointments_bp.route('/statuses/<int:status_id>', methods=['GET'])
