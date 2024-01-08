@@ -4,10 +4,6 @@ import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
-import { IconButton } from "@mui/material";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -17,9 +13,11 @@ import "./UserAccount.css";
 import { Typography } from "@mui/material";
 import { DateTime } from "luxon";
 import Box from "@mui/material/Box";
+import UserAccountUpdateService from "../services/userAccountUpdateService";
+import { useNavigate } from "react-router-dom";
 
 const UserAccount = () => {
-  const { userData, userRole } = React.useContext(LoginContext);
+  const { userData, userRole, setUserData } = React.useContext(LoginContext);
 
   const [values, setValues] = useState({
     name: "",
@@ -28,7 +26,7 @@ const UserAccount = () => {
     phone_number: "",
     date_of_birth: "",
     MBO: "",
-    password: "",
+    OIB: "",
   });
 
   /* Object for highlighting the error fields */
@@ -36,6 +34,7 @@ const UserAccount = () => {
     email: false,
     phone_number: false,
     MBO: false,
+    OIB: false,
   });
 
   /* Object for error description on error fields */
@@ -43,10 +42,9 @@ const UserAccount = () => {
     email: "",
     phone_number: "",
     MBO: "",
+    OIB: "",
   });
 
-  /* Show or hide password */
-  const [showPass, setShowPass] = useState(false);
 
   /* Disable submit button if form is not filled correctly */
   const [disableSubmit, setDisableSubmit] = useState(true);
@@ -54,9 +52,13 @@ const UserAccount = () => {
   /* Text that is shown on submit button */
   const [submitMessage, setSubmitMessage] = useState("Unesi podatke");
 
+  const [isEditing, setIsEditing] = useState(false);
+
   const nav = useNavigate();
 
   useEffect(() => {
+    // set values from user data if user data is not null
+    if (userData === null) return;
     setValues({
       name: userData.name,
       surname: userData.surname,
@@ -64,8 +66,11 @@ const UserAccount = () => {
       phone_number: userData.phone_number,
       date_of_birth: new Date(userData.date_of_birth).toISOString(),
       MBO: userData.MBO,
-      password: userData.password,
+      OIB: userData.OIB,
     });
+  }, [userData]);
+
+  useEffect(() => {
 
     const isFilled = () => {
       if (values.name === "") return false;
@@ -74,14 +79,14 @@ const UserAccount = () => {
       if (values.phone_number === "") return false;
       if (values.date_of_birth === "") return false;
       if (values.MBO === "") return false;
-      if (values.password === "") return false;
+      if (values.OIB === "") return false;
       return true;
     };
 
     let filled = isFilled();
     setDisableSubmit(!filled);
     if (filled) {
-      setSubmitMessage("Promijeni podatke");
+      setSubmitMessage("Potvrdi");
     } else {
       setSubmitMessage("Unesi podatke");
     }
@@ -124,6 +129,9 @@ const UserAccount = () => {
  are guaranteed in correct pattern or it's not
  possible to check their pattern */
   const validateInput = (name, value) => {
+    if (name === "OIB") {
+      checkRegex(name, value, /^[0-9]{11}$/, "OIB mora biti niz od 11 znamenki");
+    }
     if (name === "MBO") {
       checkRegex(name, value, /^[0-9]{9}$/, "MBO mora biti niz od 9 znamenki");
     }
@@ -135,15 +143,6 @@ const UserAccount = () => {
     }
   };
 
-  /* Show/hide password when called */
-  const onClickShowPassword = () => {
-    setShowPass(!showPass);
-  };
-
-  /* Allowing password visibility button to be clicked */
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
 
   /* Set form object values whenever
    date input is changed */
@@ -155,30 +154,59 @@ const UserAccount = () => {
     }));
   };
 
-  // write me a function that will handle the form submit
-  const handleProfileChange = (e) => {
+  const handleProfileChange = async (e) => {
     e.preventDefault();
-    // do something with the form data
+    let resp;
+    
+    if(userRole === "patient"){
+      const data = {
+        name: values.name,
+        surname: values.surname,
+        email: values.email,
+        phone_number: values.phone_number,
+        date_of_birth: values.date_of_birth,
+        MBO: values.MBO,
+      };
+      setIsEditing(false);
+      resp = await UserAccountUpdateService.updatePatientProfile(userData.user_id, data);
+    }
+    else{
+      const data = {
+        name: values.name,
+        surname: values.surname,
+        email: values.email,
+        phone_number: values.phone_number,
+        date_of_birth: values.date_of_birth,
+        OIB: values.OIB,
+      };
+      setIsEditing(false);
+      resp = await UserAccountUpdateService.updateEmployeeProfile(userData.user_id, data);
+    }
+    if(resp.success){
+      setUserData(resp.user_data);
+      localStorage.setItem("user_data", JSON.stringify(resp.user_data));
+    }
+    else{
+      window.location.reload();
+    }
   };
+
+  const enableEdit = () => {
+    setIsEditing(true);
+  };
+
+  const quitEdit = () => {
+    setIsEditing(false);
+  };
+
+  const changePassword = () => {
+    nav("/change-password");
+  }
 
   return (
     <>
-      {/* {userData ? (
+      <Container maxWidth="md" className="profile-form">
         <div>
-          <pre>{JSON.stringify(userData, null, 2)}</pre>
-        </div>
-      ) : (
-        <p>Korisnički podaci nisu nađeni!</p>
-      )}
-      {userRole ? (
-        <div>
-          <pre>{JSON.stringify(userRole, null, 2)}</pre>
-        </div>
-      ) : (
-        <p>Uloga korisnika nije nađena!</p>
-      )} */}
-      <Container maxWidth="md">
-        <div className="profile-form">
           <h1 className="mb-4">Moji korisnički podaci:</h1>
           <Typography variant="h6" className="mt-2" align="right">
             {userRole == "admin"
@@ -198,6 +226,7 @@ const UserAccount = () => {
                   label="Ime"
                   variant="outlined"
                   name="name"
+                  disabled={!isEditing}
                   onChange={handleChange}
                   value={values.name}
                 />
@@ -210,6 +239,7 @@ const UserAccount = () => {
                   label="Prezime"
                   variant="outlined"
                   name="surname"
+                  disabled={!isEditing}
                   onChange={handleChange}
                   value={values.surname}
                 />
@@ -222,6 +252,7 @@ const UserAccount = () => {
                   label="E-mail"
                   variant="outlined"
                   name="email"
+                  disabled={!isEditing}
                   onChange={handleChange}
                   error={errors.email}
                   helperText={helperText.email}
@@ -236,6 +267,7 @@ const UserAccount = () => {
                   label="Telefon"
                   variant="outlined"
                   name="phone_number"
+                  disabled={!isEditing}
                   onChange={handleChange}
                   error={errors.phone_number}
                   helperText={helperText.phone_number}
@@ -255,78 +287,100 @@ const UserAccount = () => {
                       disableFuture
                       format="dd/MM/yyyy"
                       label="Datum rođenja"
+                      disabled={!isEditing}
                       value={DateTime.fromISO(values.date_of_birth)}
                       onChange={onChangeDate}
                     />
                   </DemoContainer>
                 </LocalizationProvider>
               </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  className="mt-2"
-                  sx={{ width: "100%" }}
-                  autoComplete="false"
-                  label="MBO"
-                  variant="outlined"
-                  name="MBO"
-                  onChange={handleChange}
-                  error={errors.MBO}
-                  helperText={helperText.MBO}
-                  value={values.MBO}
-                />
-              </Grid>
 
-              <Grid item xs={6}>
-                <TextField
-                  sx={{ width: "100%", padding: "0", margin: "0!important" }}
-                  autoComplete="false"
-                  className="reg-form-input"
-                  label="Lozinka"
-                  variant="outlined"
-                  name="password"
-                  onChange={handleChange}
-                  value={values.password}
-                  type={showPass ? "text" : "password"}
-                  InputProps={{
-                    // Rest of the code...
+              {userRole == "patient" ? (
+                <Grid item xs={6}>
+                  <TextField
+                    className="mt-2"
+                    sx={{ width: "100%" }}
+                    autoComplete="false"
+                    label="MBO"
+                    variant="outlined"
+                    name="MBO"
+                    disabled={!isEditing}
+                    onChange={handleChange}
+                    error={errors.MBO}
+                    helperText={helperText.MBO}
+                    value={values.MBO}
+                  />
+                </Grid>
+              ) : (
+                <Grid item xs={6}>
+                  <TextField
+                    className="mt-2"
+                    sx={{
+                      width: "100%",
+                    }}
+                    autoComplete="false"
+                    label="OIB"
+                    variant="outlined"
+                    name="OIB"
+                    disabled={!isEditing}
+                    onChange={handleChange}
+                    error={errors.OIB}
+                    helperText={helperText.OIB}
+                    value={values.OIB}
+                  />
+                </Grid>
+              )}
 
-                    endAdornment: (
-                      <IconButton
-                        size="medium"
-                        aria-label="toggle password visibility"
-                        onClick={onClickShowPassword}
-                        onMouseDown={handleMouseDownPassword}
-                      >
-                        {showPass ? (
-                          <VisibilityOff fontSize="medium" />
-                        ) : (
-                          <Visibility fontSize="medium" />
-                        )}
-                      </IconButton>
-                    ),
-                  }}
-                />
-              </Grid>
               <Grid item xs={12}>
-                <Box display="flex" justifyContent="flex-end">
-                  <Button
-                    color="error"
-                    variant="contained"
-                    size="medium"
-                    className="mx-4"
-                    onClick={() => nav("/login")}
-                  >
-                    Odustani
-                  </Button>
-                  <Button
-                    type="submit"
-                    className="reg-form-submit"
-                    variant="contained"
-                    size="medium"
-                    disabled={disableSubmit}
-                  >
-                    {submitMessage}
-                  </Button>
+                <Box display="flex" justifyContent="center">
+                  {isEditing ? (
+                    <>
+                      <Button
+                        key="cancelBtn"
+                        color="error"
+                        variant="contained"
+                        size="medium"
+                        className="mx-4"
+                        onClick={quitEdit}
+                      >
+                        Odustani
+                      </Button>
+                      <Button
+                        key="submitBtn"
+                        type="submit"
+                        className="reg-form-submit"
+                        variant="contained"
+                        size="medium"
+                        // onClick={submitEdit}
+                        disabled={disableSubmit}
+                      >
+                        {submitMessage}
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                    <Button
+                      key="changePasswordBtn"
+                      color="primary"
+                      variant="contained"
+                      size="medium"
+                      className="mx-4"
+                      onClick={changePassword}
+                    >
+                      Promijeni lozinku
+                    </Button>
+                    <Button
+                      key="editBtn"
+                      color="primary"
+                      variant="contained"
+                      size="medium"
+                      className="mx-4"
+                      onClick={enableEdit}
+                    >
+                      Promijeni podatke
+                    </Button>
+                    </>
+                  )}
                 </Box>
               </Grid>
             </Grid>

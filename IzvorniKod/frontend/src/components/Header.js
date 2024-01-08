@@ -52,6 +52,7 @@ const Header = ({ onLogout }) => {
     e.preventDefault();
 
     nav("/user-account");
+    handleCloseUserMenu();
   }
 
   return (
