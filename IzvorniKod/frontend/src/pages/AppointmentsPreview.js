@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import EmployeeService from "../services/employeeService";
 import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const AppointmentsPreview = () => {
   const { patientId } = useParams();
@@ -39,28 +40,55 @@ const AppointmentsPreview = () => {
   };
 
   useEffect(() => {
-
-    const appointmentData = EmployeeService.getCurrentAppointmentData();
-    const pom = appointmentData.data.appointments;
-    const filtered = pom.filter((appointment) => {
-      return (
-        appointment && appointment.therapy.patient.user_id == patientId
-      );
-    });
-    setAppointments(filtered);
+    const fetchAppointmentsByPatient = async () => {
+      try {
+        await EmployeeService.getAppointmentsByPatient(patientId).then(
+          (resp) => {
+            if (resp.success) {
+              const appointmentData =
+                EmployeeService.getCurrentAppointmentDataByPatient();
+              const pom = appointmentData.data.appointments;
+              const filtered = pom.filter((appointment) => {
+                return (
+                  appointment && appointment.status.status_name !== 'Na čekanju'
+                );
+              });
+              setAppointments(filtered);
+              //setAppointments(pom);
+            } else {
+              console.log("greska");
+            }
+          }
+        );
+      } catch (err) {
+        toast.error("Greska!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      }
+    };
 
     const fetchPatient = async () => {
-      await EmployeeService.getPatientById(patientId).then((resp) => {
-        if (resp.success) {
-          const pom2 = EmployeeService.getCurrentPatient();
-          setPatient(pom2.data.patient);
-        } else {
-          console.log("greska");
-        }
-      });
+      try {
+        await EmployeeService.getPatientById(patientId).then((resp) => {
+          if (resp.success) {
+            const pom2 = EmployeeService.getCurrentPatient();
+            setPatient(pom2.data.patient);
+          } else {
+            console.log("greska");
+          }
+        });
+      } catch (err) {
+        toast.error("Greska!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      }
     };
 
     fetchPatient();
+    fetchAppointmentsByPatient();
+    /*const appointmentData = EmployeeService.getCurrentAppointmentDataByPatient();
+    const pom = appointmentData.data.appointments;
+    setAppointments(pom);*/
   }, [patientId]);
 
   return (
@@ -97,7 +125,7 @@ const AppointmentsPreview = () => {
                   </TableCell>
 
                   <TableCell style={cellStyle4}>
-                    {appointment.status.status_name === "Na čekanju" && (
+                    {appointment.status.status_name === "Zakazan" && (
                       <Link to={`/attendance/${appointment.appointment_id}`}>
                         <Button
                           variant="contained"
@@ -109,7 +137,7 @@ const AppointmentsPreview = () => {
                         </Button>
                       </Link>
                     )}
-                    {appointment.status.status_name !== "Na čekanju" && (
+                    {appointment.status.status_name !== "Zakazan" && (
                       <div>
                         <div className="ev1">EVIDENTIRANO</div>
                         <div>

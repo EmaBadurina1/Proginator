@@ -9,12 +9,12 @@ import {
 } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import { TextareaAutosize } from "@mui/base/TextareaAutosize";
 //import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 import TherapyInfo from "../components/TherapyInfo";
 import { useParams } from "react-router-dom";
 import EmployeeService from "../services/employeeService";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const buttonStyle = {
   backgroundColor: "purple",
@@ -33,15 +33,43 @@ const komentarStyle = {
 };
 
 const AttendanceRecord = () => {
-
   const { appointmentId } = useParams();
   const [appointment, setAppointment] = useState(null);
+  const [comment, setComment] = useState(null);
+  const [statusName, setStatusName] = useState(null);
+
+  const updateAppointment = async () =>  {
+    console.log("Status Name:", statusName);
+    console.log("Comment: ", comment);
+
+    const updatedData = {
+      comment: comment,
+      status: {
+        status_name: statusName,
+      },
+    };
+
+    await EmployeeService.updateAppointment(appointmentId, updatedData)
+      .then((resp) => {
+        if (resp.success) {
+          console.log("Update uspio", resp.message);
+          //setAppointment(EmployeeService.getCurrentAppointment().data.appointment);
+          //console.log(appointment);
+          console.log(EmployeeService.getCurrentAppointment().data.appointment);
+          //console.log(appointment);
+        } else {
+          console.error("greska", resp.message);
+        }
+      })
+      .catch((error) => {
+        console.error("greska", error);
+      });
+  }
 
   useEffect(() => {
     const fetchAppointment = async () => {
       await EmployeeService.getAppointmentById(appointmentId).then((resp) => {
         if (resp.success) {
-          EmployeeService.getAppointmentById(appointmentId);
           const pom = EmployeeService.getCurrentAppointment();
           setAppointment(pom.data.appointment);
         } else {
@@ -54,35 +82,38 @@ const AttendanceRecord = () => {
 
   return (
     <div className="container">
-      <h2>Pacijent {appointment && appointment.therapy.patient.name} - evidencija dolaska na terapiju</h2>
+      <h2>
+        Pacijent {appointment && appointment.therapy.patient.name}{" "}
+        {appointment && appointment.therapy.patient.surname} - evidencija
+        dolaska na termin
+      </h2>
       <div className="mini-container">
         <div className="big-div1">
           <div className="mid-div1">
             <div className="small-div1">
               <FormControl>
                 <FormLabel id="blabla">Evidencija</FormLabel>
-                <RadioGroup aria-labelledby="blabla" defaultValue="nijeDosao">
+                <RadioGroup
+                  aria-labelledby="blabla"
+                  value={statusName}
+                  onChange={(e) => {
+                    setStatusName(e.target.value);
+                  }}
+                >
                   <FormControlLabel
-                    value="nijeDosao"
+                    value="Odrađen"
                     control={<Radio />}
-                    label="Pacijent nije došao na dogovoreni termin"
+                    label="Termin je odrađen"
                   />
                   <FormControlLabel
-                    value="dosaoINijeOdradio"
+                    value="Propušten"
                     control={<Radio />}
-                    label="Pacijent je došao, ali nije uspješno odradio terapiju"
-                  />
-                  <FormControlLabel
-                    value="odradio"
-                    control={<Radio />}
-                    label="Pacijent je uspješno odradio terapiju"
+                    label="Termin je propušten"
                   />
                 </RadioGroup>
               </FormControl>
             </div>
             <div className="small-div2">
-              Soba:
-              <br></br>
               <TextField
                 autoComplete="false"
                 className="soba-text"
@@ -92,41 +123,45 @@ const AttendanceRecord = () => {
                 style={textInputStyle}
               />
             </div>
-            <div className="small-div3">
-              Korištena oprema:
-              <br></br>
-              <TextField
-                autoComplete="false"
-                className="oprema-text"
-                label="Korištena oprema"
-                variant="outlined"
-                name="korištena oprema"
-                style={textInputStyle}
-              />
-            </div>
           </div>
           <div className="mid-div2">
-            <TherapyInfo />
+            {appointment && appointment.therapy && (
+              <TherapyInfo therapy={appointment.therapy} />
+            )}
           </div>
         </div>
         <div className="big-div2">
-          Komentari:
-          <br></br>
-          <TextareaAutosize
-            style={komentarStyle}
-            minRows={4}
+          <TextField
+            autoComplete="false"
             className="komentar-text"
+            label="Komentari"
+            variant="outlined"
+            name="komentar"
+            value={comment}
+            multiline
+            rows={4}
+            style={komentarStyle}
+            onChange={(e) => setComment(e.target.value)}
           />
         </div>
 
-        <Button
-          variant="contained"
-          size="medium"
-          className="reg-btn"
-          style={buttonStyle}
-        >
-          Predaj evidenciju
-        </Button>
+        {appointment && (
+          <Link
+            to={`/appointments-preview/${appointment.therapy.patient.user_id}`}
+          >
+            <Button
+              variant="contained"
+              size="medium"
+              className="reg-btn"
+              style={buttonStyle}
+              onClick={() => {
+                updateAppointment();
+              }}
+            >
+              Predaj evidenciju
+            </Button>
+          </Link>
+        )}
       </div>
     </div>
   );

@@ -1,13 +1,15 @@
 import { React } from "react";
 import "./DenyAppointment.css";
 import TherapyInfo from "../components/TherapyInfo";
-import { TextareaAutosize } from "@mui/base/TextareaAutosize";
 import Button from "@mui/material/Button";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { IconButton } from "@mui/material";
 import AppointmentInfo from "../components/AppointmentInfo";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
+import EmployeeService from "../services/employeeService";
+import { useEffect, useState } from "react";
+import TextField from "@mui/material/TextField";
 
 const komentarStyle = {
   width: "100%",
@@ -43,6 +45,22 @@ const iconButtonStyle = {
 
 const DenyAppointment = () => {
   const { appointmentId } = useParams();
+  const [appointment, setAppointment] = useState(null);
+
+  useEffect(() => {
+    const fetchAppointment = async () => {
+      await EmployeeService.getAppointmentById(appointmentId).then((resp) => {
+        if (resp.success) {
+          EmployeeService.getAppointmentById(appointmentId);
+          const pom = EmployeeService.getCurrentAppointment();
+          setAppointment(pom.data.appointment);
+        } else {
+          console.log("greska");
+        }
+      });
+    };
+    fetchAppointment();
+  }, [appointmentId]);
 
   return (
     <div className="container-div">
@@ -58,19 +76,26 @@ const DenyAppointment = () => {
         <div className="border-container">
           <div className="big-div1">
             <div className="mid-div1">
-              <AppointmentInfo />
+              {appointment && appointment.therapy && (
+                <AppointmentInfo appointment={appointment} />
+              )}
             </div>
             <div className="mid-div2">
-              <TherapyInfo />
+              {appointment && appointment.therapy && (
+                <TherapyInfo therapy={appointment.therapy} />
+              )}
             </div>
           </div>
           <div className="big-div2" style={komentarDivStyle}>
-            Komentar za pacijenta:
-            <br></br>
-            <TextareaAutosize
-              style={komentarStyle}
-              minRows={7}
+            <TextField
+              autoComplete="false"
               className="komentar-text"
+              label="Komentar za pacijenta"
+              variant="outlined"
+              name="komentar"
+              multiline
+              rows={4}
+              style={komentarStyle}
             />
           </div>
           <div className="button-div-container">
