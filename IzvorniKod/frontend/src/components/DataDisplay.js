@@ -1,5 +1,5 @@
 import { React, useEffect, useState } from "react";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, Skeleton } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, CircularProgress } from '@mui/material';
 import PropTypes from 'prop-types';
 import axiosInstance from "../axiosInstance";
 import { toast } from "react-toastify";
@@ -72,9 +72,7 @@ const DataDisplay = ({ url, columns, options, identificator, dataName }) => {
    return (
       <div className="data-display">
          {loading && 
-            Array.apply(null, { length: rows + 2 }).map((e, i) => (
-               <Skeleton key={i}/>
-            ))
+            <CircularProgress />
          }
          {!loading &&
             <>
@@ -84,7 +82,7 @@ const DataDisplay = ({ url, columns, options, identificator, dataName }) => {
                      <TableRow>
                         {
                            columns.map(column => (
-                              <TableCell align="center" key={column}>{column}</TableCell>
+                              <TableCell align="center" key={column}><strong>{column}</strong></TableCell>
                            ))
                         }
                      </TableRow>
