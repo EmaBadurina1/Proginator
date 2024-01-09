@@ -29,6 +29,7 @@ import { LoginContext } from "./contexts/LoginContext";
 import UserAccount from "./pages/UserAccount";
 import MyTherapies from "./pages/MyTherapies";
 import CreateTherapy from "./pages/CreateTherapy";
+import MyTherapy from "./pages/MyTherapy";
 import DataDisplay from "./components/DataDisplay";
 import ChangePassword from "./pages/ChangePassword";
 import AlreadyLoggedIn from "./pages/AlreadyLoggedIn";
@@ -250,6 +251,17 @@ function App() {
             <ProtectedRoute>
               <PatientRoute>
                 <MyTherapies />
+              </PatientRoute>
+            </ProtectedRoute>
+          }
+        >
+        </ Route>
+        <Route
+          path="/my-therapies/:therapy_id"
+          element={
+            <ProtectedRoute>
+              <PatientRoute>
+                <MyTherapy />
               </PatientRoute>
             </ProtectedRoute>
           }
