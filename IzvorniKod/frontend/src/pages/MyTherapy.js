@@ -13,6 +13,9 @@ import { useEffect, useState, React, useContext, useRef } from "react";
 import { LoginContext } from "../contexts/LoginContext";
 import axiosInstance from "../axiosInstance";
 import { toast } from "react-toastify";
+import Button from "@mui/material/Button";
+import { Link } from "react-router-dom";
+
 
 const MyTherapy = () => {
     const { patientId } = useParams();
@@ -32,6 +35,10 @@ const MyTherapy = () => {
     const cellStyle4 = {
         textAlign: "center",
         border: "0.1em solid black",
+    };
+
+    const buttonStyle = {
+        backgroundColor: "purple",
     };
 
     useEffect(() => {
@@ -61,6 +68,16 @@ const MyTherapy = () => {
                     Moja terapija
                 </h2>
             </div>
+            <Link to="/new-appointment" >
+                <Button
+                    variant="contained"
+                    size="large"
+                    className="reg-btn"
+                    style={buttonStyle}
+                >
+                    NARUČI SE
+                </Button>
+            </Link>
 
             <TableContainer>
                 <Table>
@@ -86,40 +103,6 @@ const MyTherapy = () => {
                                 </TableCell>
                                 <TableCell style={cellStyle4}>{appointment.comment}</TableCell>
                                 <TableCell style={cellStyle4}>{appointment.status.status_name}</TableCell>
-
-                                {/* <TableCell style={cellStyle4}>
-                                    {therapy.appointments.status.status_name === "Čeka na odobrenje" && (
-                                        <Link to={`/attendance/${appointment.appointment_id}`}>
-                                            <Button
-                                                variant="contained"
-                                                size="medium"
-                                                className="reg-btn"
-                                                style={buttonStyle}
-                                            >
-                                                Evidentiraj
-                                            </Button>
-                                        </Link>
-                                    )}
-                                    {appointment.status.status_name !== "Na čekanju" && (
-                                        <div>
-                                            <div className="ev1">EVIDENTIRANO</div>
-                                            <div>
-                                                <Link
-                                                    to={`/attendance-display/${appointment.appointment_id}`}
-                                                >
-                                                    <Button
-                                                        variant="contained"
-                                                        size="medium"
-                                                        className="reg-btn2"
-                                                        style={buttonStyle2}
-                                                    >
-                                                        Prikaži evidenciju
-                                                    </Button>
-                                                </Link>
-                                            </div>
-                                        </div>
-                                    )}
-                                </TableCell> */}
                             </TableRow>
                         ))}
                     </TableBody>

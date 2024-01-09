@@ -107,6 +107,16 @@ const MyTherapies = () => {
           onChange={(event) => onChangeSearch(event)}
           value={searchInput}
         /> */}
+                <Link to="/create-therapy" >
+                    <Button
+                        variant="contained"
+                        size="large"
+                        className="reg-btn"
+                        style={buttonStyle}
+                    >
+                        NOVA TERAPIJA
+                    </Button>
+                </Link>
             </div>
             <TableContainer>
                 <Table>
