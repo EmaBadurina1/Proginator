@@ -13,7 +13,7 @@ import "./UserAccount.css";
 import { Typography } from "@mui/material";
 import { DateTime } from "luxon";
 import Box from "@mui/material/Box";
-import UserAccountUpdateService from "../services/userAccountUpdateService";
+import UserAccountService from "../services/userAccountService";
 import { useNavigate } from "react-router-dom";
 
 const UserAccount = () => {
@@ -168,7 +168,7 @@ const UserAccount = () => {
         MBO: values.MBO,
       };
       setIsEditing(false);
-      resp = await UserAccountUpdateService.updatePatientProfile(userData.user_id, data);
+      resp = await UserAccountService.updatePatientProfile(userData.user_id, data);
     }
     else{
       const data = {
@@ -180,7 +180,7 @@ const UserAccount = () => {
         OIB: values.OIB,
       };
       setIsEditing(false);
-      resp = await UserAccountUpdateService.updateEmployeeProfile(userData.user_id, data);
+      resp = await UserAccountService.updateEmployeeProfile(userData.user_id, data);
     }
     if(resp.success){
       setUserData(resp.user_data);

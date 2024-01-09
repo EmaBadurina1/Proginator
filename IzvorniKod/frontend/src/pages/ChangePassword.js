@@ -7,7 +7,7 @@ import TextField from "@mui/material/TextField";
 import Container from "@mui/material/Container";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import UserAccountUpdateService from "../services/userAccountUpdateService";
+import UserAccountService from "../services/userAccountService";
 import { LoginContext } from "../contexts/LoginContext";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
@@ -38,7 +38,7 @@ const ChangePassword = () => {
       return;
     }
 
-    await UserAccountUpdateService.updateUserPassword(
+    await UserAccountService.updateUserPassword(
       userData.user_id,
       values.oldPassword,
       values.newPassword,

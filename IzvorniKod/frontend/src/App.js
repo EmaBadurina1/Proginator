@@ -34,6 +34,9 @@ import NewAppointment from "./pages/NewAppointment";
 import DataDisplay from "./components/DataDisplay";
 import ChangePassword from "./pages/ChangePassword";
 import AlreadyLoggedIn from "./pages/AlreadyLoggedIn";
+import UserAccounts from "./pages/UserAccounts";
+import Devices from "./pages/Devices";
+import Rooms from "./pages/Rooms";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(true);
@@ -161,6 +164,36 @@ function App() {
           element={
             <ProtectedRoute>
               <UserAccount />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/user-accounts"
+          element={
+            <ProtectedRoute>
+              <AdminRoute>
+                <UserAccounts />
+              </AdminRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/devices"
+          element={
+            <ProtectedRoute>
+              <AdminRoute>
+                <Devices />
+              </AdminRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/rooms"
+          element={
+            <ProtectedRoute>
+              <AdminRoute>
+                <Rooms />
+              </AdminRoute>
             </ProtectedRoute>
           }
         />
