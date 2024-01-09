@@ -188,19 +188,43 @@ function App() {
         />
         <Route
           path="/appointments-preview/:patientId"
-          element={<AppointmentsPreview />}
+          element={
+            <ProtectedRoute>
+              <EmployeeRoute>
+                <AppointmentsPreview />
+              </EmployeeRoute>
+            </ProtectedRoute>
+          }
         />
         <Route
           path="/deny-appointment/:appointmentId"
-          element={<DenyAppointment />}
+          element={
+            <ProtectedRoute>
+              <EmployeeRoute>
+                <DenyAppointment />
+              </EmployeeRoute>
+            </ProtectedRoute>
+          }
         />
         <Route
           path="/change-appointment/:appointmentId"
-          element={<ChangeAppointment />}
+          element={
+            <ProtectedRoute>
+              <EmployeeRoute>
+                <ChangeAppointment />
+              </EmployeeRoute>
+            </ProtectedRoute>
+          }
         />
         <Route
           path="/appointment-requests-preview"
-          element={<AppointmentRequestsPreview />}
+          element={
+            <ProtectedRoute>
+              <EmployeeRoute>
+                <AppointmentRequestsPreview />
+              </EmployeeRoute>
+            </ProtectedRoute>
+          }
         />
         <Route
           path="/home"
@@ -224,7 +248,9 @@ function App() {
           path="/my-therapies"
           element={
             <ProtectedRoute>
-              <MyTherapies />
+              <PatientRoute>
+                <MyTherapies />
+              </PatientRoute>
             </ProtectedRoute>
           }
         />
@@ -232,7 +258,9 @@ function App() {
           path="/create-therapy"
           element={
             <ProtectedRoute>
-              <CreateTherapy />
+              <PatientRoute>
+                <CreateTherapy />
+              </PatientRoute>
             </ProtectedRoute>
           }
         />

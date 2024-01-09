@@ -16,10 +16,30 @@ import AccessibleForwardIcon from "@mui/icons-material/AccessibleForward";
 import { useNavigate } from "react-router-dom";
 import AuthService from "../services/authService";
 import PropTypes from 'prop-types';
+import { LoginContext } from "../contexts/LoginContext";
 
-const pages = ["Početna", "Pacijenti", "Zahtjevi"];
+const pagesPatient = ["Početna", "Moje terapije"];
+const pagesEmployee = ["Početna", "Pacijenti", "Zahtjevi"];
+const pagesAdmin = ["Početna", "Pacijenti", "Zahtjevi", "Oprema", "Prostorije", "Korisnički računi"];
+
+const routes = {
+  "Prijava": "/login",
+  "Registracija": "/registration",
+  "Korisnički račun": "/user-account",
+  "Promjena lozinke": "/change-password",
+  "Početna": "/home",
+  "Pacijenti": "/patient-preview",
+  "Zahtjevi": "/appointment-requests-preview",
+  "Korisnički računi": "/users",
+  "Dodavanje korisnika": "/add-users",
+  "Moje terapije": "/my-therapies",
+  "Nova terapija": "/create-therapy",
+  "Oprema": "/devices",
+  "Prostorije": "/rooms",
+}
 
 const Header = ({ onLogout }) => {
+  const { userRole } = React.useContext(LoginContext);
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const nav = useNavigate();
@@ -34,6 +54,11 @@ const Header = ({ onLogout }) => {
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
+
+  const navigateToPage = (page) => {
+    nav(routes[page]);
+    handleCloseNavMenu();
+  }
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
@@ -109,11 +134,25 @@ const Header = ({ onLogout }) => {
                 display: { xs: "block", md: "none" },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))}
+              {userRole === "patient" && 
+                pagesPatient.map((page) => (
+                  <MenuItem key={page} onClick={() => navigateToPage(page)}>
+                    <Typography textAlign="center">{page}</Typography>
+                  </MenuItem>
+                ))}
+                {userRole === "employee" && 
+                pagesEmployee.map((page) => (
+                  <MenuItem key={page} onClick={() => navigateToPage(page)}>
+                    <Typography textAlign="center">{page}</Typography>
+                  </MenuItem>
+                ))}
+                {userRole === "admin" && 
+                pagesAdmin.map((page) => (
+                  <MenuItem key={page} onClick={() => navigateToPage(page)}>
+                    <Typography textAlign="center">{page}</Typography>
+                  </MenuItem>
+                ))}
+          
             </Menu>
           </Box>
           <AccessibleForwardIcon
@@ -138,10 +177,28 @@ const Header = ({ onLogout }) => {
             REH_APP
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {pages.map((page) => (
+            {userRole == "patient" && pagesPatient.map((page) => (
               <Button
                 key={page}
-                onClick={handleCloseNavMenu}
+                onClick={() => navigateToPage(page)}
+                sx={{ mx: 2, my: 2, color: "white", display: "block" }}
+              >
+                {page}
+              </Button>
+            ))}
+            {userRole == "employee" && pagesEmployee.map((page) => (
+              <Button
+                key={page}
+                onClick={() => navigateToPage(page)}
+                sx={{ mx: 2, my: 2, color: "white", display: "block" }}
+              >
+                {page}
+              </Button>
+            ))}
+            {userRole == "admin" && pagesAdmin.map((page) => (
+              <Button
+                key={page}
+                onClick={() => navigateToPage(page)}
                 sx={{ mx: 2, my: 2, color: "white", display: "block" }}
               >
                 {page}

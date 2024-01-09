@@ -207,7 +207,7 @@ const UserAccount = () => {
     <>
       <Container maxWidth="md" className="profile-form">
         <div>
-          <h1 className="mb-4">Moji korisnički podaci:</h1>
+          <h1 className="mb-4">Moji korisnički podaci</h1>
           <Typography variant="h6" className="mt-2" align="right">
             {userRole == "admin"
               ? "Administrator"

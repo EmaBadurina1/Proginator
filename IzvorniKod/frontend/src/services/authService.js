@@ -9,7 +9,11 @@ class AuthService {
         password,
       });
       const user_id = res1.data.data.user.user_id;
-      const user_role = res1.data.data.user.role;
+      let user_role = res1.data.data.user.role;
+      if(user_role === "doctor"){
+        user_role = "employee";
+      }
+        
       localStorage.setItem("user_role", JSON.stringify(user_role));
       let res2;
       if(user_role === "patient"){
