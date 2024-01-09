@@ -1,7 +1,7 @@
 import axiosInstance from "../axiosInstance";
 import { toast } from "react-toastify";
 
-class UserAccountUpdateService {
+class UserAccountService {
 
    async updateEmployeeProfile(userId, data) {
       try {
@@ -52,4 +52,4 @@ class UserAccountUpdateService {
       }
    }
 }
-export default new UserAccountUpdateService();
+export default new UserAccountService();

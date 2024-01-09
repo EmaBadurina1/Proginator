@@ -20,7 +20,7 @@ import { LoginContext } from "../contexts/LoginContext";
 
 const pagesPatient = ["Početna", "Moje terapije"];
 const pagesEmployee = ["Početna", "Pacijenti", "Zahtjevi"];
-const pagesAdmin = ["Početna", "Pacijenti", "Zahtjevi", "Oprema", "Prostorije", "Korisnički računi"];
+const pagesAdmin = ["Početna", "Pacijenti", "Zahtjevi", "Inventar", "Prostorije", "Korisnički računi"];
 
 const routes = {
   "Prijava": "/login",
@@ -30,11 +30,11 @@ const routes = {
   "Početna": "/home",
   "Pacijenti": "/patient-preview",
   "Zahtjevi": "/appointment-requests-preview",
-  "Korisnički računi": "/users",
+  "Korisnički računi": "/user-accounts",
   "Dodavanje korisnika": "/add-users",
   "Moje terapije": "/my-therapies",
   "Nova terapija": "/create-therapy",
-  "Oprema": "/devices",
+  "Inventar": "/devices",
   "Prostorije": "/rooms",
 }
 
