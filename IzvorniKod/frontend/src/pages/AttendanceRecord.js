@@ -9,12 +9,12 @@ import {
 } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-//import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 import TherapyInfo from "../components/TherapyInfo";
 import { useParams } from "react-router-dom";
 import EmployeeService from "../services/employeeService";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const buttonStyle = {
   backgroundColor: "purple",
@@ -31,12 +31,29 @@ const komentarStyle = {
 const AttendanceRecord = () => {
   const { appointmentId } = useParams();
   const [appointment, setAppointment] = useState(null);
-  const [comment, setComment] = useState(null);
-  const [statusId, setStatusId] = useState(null);
+  const [comment, setComment] = useState("");
+  const [statusId, setStatusId] = useState("");
+  const nav = useNavigate();
+
+  const isFilled = () => {
+    if (comment === "") return false;
+    if (statusId === "") return false;
+    return true;
+  };
 
   const updateAppointment = async () =>  {
-    console.log("Status Id:", statusId);
-    console.log("Comment: ", comment);
+
+    try {
+      let filled = isFilled();
+      if (!filled) {
+        throw new Error("Status ili komentar je" + filled);
+      }
+    } catch (err) {
+      toast.error("Treba odabrati status i unijeti komentar!", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      return false;
+    }
 
     const updatedData = {
       comment: comment,
@@ -44,21 +61,19 @@ const AttendanceRecord = () => {
 
     };
 
-    await EmployeeService.updateAppointment(appointmentId, updatedData)
-      .then((resp) => {
-        if (resp.success) {
-          console.log("Update uspio", resp.message);
-          //setAppointment(EmployeeService.getCurrentAppointment().data.appointment);
-          //console.log(appointment);
-          console.log(EmployeeService.getCurrentAppointment().data.appointment);
-          //console.log(appointment);
-        } else {
-          console.error("greska", resp.message);
-        }
-      })
-      .catch((error) => {
-        console.error("greska", error);
-      });
+    try {
+      const resp = await EmployeeService.updateAppointment(appointmentId, updatedData);
+      
+      if (resp.success) {
+        return true;
+      } else {
+        console.error("greska", resp.message);
+        return false;
+      }
+    } catch (error) {
+      console.error("API Error:", error.response.data);
+      return false;
+    }
   }
 
   useEffect(() => {
@@ -75,17 +90,25 @@ const AttendanceRecord = () => {
     fetchAppointment();
   }, [appointmentId]);
 
+  const provjeraUspjehaUpdatea = async () => {
+    const updBool = await updateAppointment();
+    console.log('updBool:', updBool);
+    if(updBool) {
+      nav(`/appointments-preview/${appointment.therapy.patient.user_id}`);
+    }
+  }
+
   return (
-    <div className="container">
+    <div className="main-container3_1">
       <h2>
         Pacijent {appointment && appointment.therapy.patient.name}{" "}
         {appointment && appointment.therapy.patient.surname} - evidencija
         dolaska na termin
       </h2>
-      <div className="mini-container">
-        <div className="big-div1">
-          <div className="mid-div1">
-            <div className="small-div1">
+      <div className="mini-container3_1">
+        <div className="big-div3_1">
+          <div className="mid-div3_1">
+            <div className="small-div3_1">
               <FormControl>
                 <FormLabel id="blabla">Evidencija</FormLabel>
                 <RadioGroup
@@ -105,20 +128,25 @@ const AttendanceRecord = () => {
                     control={<Radio />}
                     label="Termin je propušten"
                   />
+                  <FormControlLabel
+                    value={4}
+                    control={<Radio />}
+                    label="Termin je otkazan"
+                  />
                 </RadioGroup>
               </FormControl>
             </div>
           </div>
-          <div className="mid-div2">
+          <div className="mid-div3_2">
             {appointment && appointment.therapy && (
               <TherapyInfo therapy={appointment.therapy} />
             )}
           </div>
         </div>
-        <div className="big-div2">
+        <div className="big-div3_2">
           <TextField
             autoComplete="false"
-            className="komentar-text"
+            className="komentar-text3_1"
             label="Komentari"
             variant="outlined"
             name="komentar"
@@ -131,21 +159,17 @@ const AttendanceRecord = () => {
         </div>
 
         {appointment && (
-          <Link
-            to={`/appointments-preview/${appointment.therapy.patient.user_id}`}
+          <Button
+            variant="contained"
+            size="medium"
+            className="gumb3_1"
+            style={buttonStyle}
+            onClick={() => {
+              provjeraUspjehaUpdatea();
+            }}
           >
-            <Button
-              variant="contained"
-              size="medium"
-              className="reg-btn"
-              style={buttonStyle}
-              onClick={() => {
-                updateAppointment();
-              }}
-            >
-              Predaj evidenciju
-            </Button>
-          </Link>
+            Predaj evidenciju
+          </Button>
         )}
       </div>
     </div>

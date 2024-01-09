@@ -9,7 +9,6 @@ import {
 } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-//import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 import TherapyInfo from "../components/TherapyInfo";
 import { useParams } from "react-router-dom";
 import EmployeeService from "../services/employeeService";
@@ -53,16 +52,16 @@ const AttendanceDisplay = () => {
   }, [appointmentId]);
 
   return (
-    <div className="container">
+    <div className="main-container4_1">
       <h2>
         Pacijent {appointment && appointment.therapy.patient.name}{" "}
         {appointment && appointment.therapy.patient.surname} - evidencija
         dolaska na termin
       </h2>
-      <div className="mini-container">
-        <div className="big-div1">
-          <div className="mid-div1">
-            <div className="small-div1">
+      <div className="mini-container4_1">
+        <div className="big-div4_1">
+          <div className="mid-div4_1">
+            <div className="small-div4_1">
               <FormControl disabled>
                 <FormLabel id="blabla">Evidencija</FormLabel>
                 <RadioGroup
@@ -79,15 +78,20 @@ const AttendanceDisplay = () => {
                     control={<Radio />}
                     label="Termin je propušten"
                   />
+                  <FormControlLabel
+                    value="Otkazan"
+                    control={<Radio />}
+                    label="Termin je otkazan"
+                  />
                 </RadioGroup>
               </FormControl>
             </div>
-            <div className="small-div2">
+            <div className="small-div4_2">
               Soba:
               <br></br>
               <TextField
                 autoComplete="false"
-                className="soba-text"
+                className="soba-text4_1"
                 label={
                   appointment && appointment.status.status_name !== "Otkazan"
                     ? appointment.room.room_num
@@ -103,22 +107,21 @@ const AttendanceDisplay = () => {
               />
             </div>
           </div>
-          <div className="mid-div2">
+          <div className="mid-div4_2">
             {appointment && appointment.therapy && (
               <TherapyInfo therapy={appointment.therapy} />
             )}
           </div>
         </div>
-        <div className="big-div2">
+        <div className="big-div4_2">
           Komentari:
           <br></br>
           <TextField
             autoComplete="false"
-            className="komentar-text"
+            className="komentar-text4_1"
             label={
-              appointment && appointment.status.status_name !== "Otkazan"
-                ? appointment.comment
-                : "/"
+              appointment && appointment.comment
+
             }
             variant="outlined"
             name="korištena oprema"
@@ -138,7 +141,7 @@ const AttendanceDisplay = () => {
             <Button
               variant="contained"
               size="medium"
-              className="reg-btn"
+              className="gumb4_1"
               style={buttonStyle}
             >
               Povratak

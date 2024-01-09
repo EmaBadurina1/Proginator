@@ -5,15 +5,16 @@ const AppointmentInfo = (props) => {
 
   const bolded = {
     fontWeight: "bold",
+    display: "inline"
   }
 
   const appointment = props.appointment;
 
   return (
     <div className="appointment-info">
-      <p><h7 style={bolded}>IME PACIJENTA:</h7> {appointment.therapy.patient.name} </p>
-      <p><h7 style={bolded}>PREZIME PACIJENTA:</h7> {appointment.therapy.patient.surname}  </p>
-      <p><h7 style={bolded}>DATUM I VRIJEME:</h7> {appointment.date_from} </p>
+      <p><p style={bolded}>IME PACIJENTA:</p> {appointment.therapy.patient.name} </p>
+      <p><p style={bolded}>PREZIME PACIJENTA:</p> {appointment.therapy.patient.surname}  </p>
+      <p><p style={bolded}>DATUM I VRIJEME:</p> {appointment.date_from} </p>
       
     </div>
   );

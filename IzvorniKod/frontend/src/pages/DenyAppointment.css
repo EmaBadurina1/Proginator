@@ -1,47 +1,72 @@
-.container-div {
+.main-container7_1 {
     margin-top: 3em;
 }
-.mini-container2 {
+.mini-container7_1 {
     margin-top: 2em;
     margin-left: 5em;
     margin-right: 5em;
     margin-bottom: 2em;
 }
-.border-container {
+.border-container7_1 {
     margin-top: 1em;
     border: 0.1em solid black;
 }
-.title-div2 {
+.title-div7_1 {
     margin-left: 3em;
 }
 
-.big-div1 {
-    margin-bottom: 4em;
+.big-div7_1 {
+    display: grid;
+    grid-template-columns: 50% auto;
+    grid-template-areas: 
+    "div1 div2";
 }
-.mid-div1 {
+.big-div7_2 {
+    margin-top: 2em;
+}
+.mid-div7_1 {
     margin-top: 2em;
     line-height: 2em;
     margin-left: 2em;
+    grid-area: div1;
 }
-.reg-btn {
+.mid-div7_2 {
+    border: 0.1em solid black;
+    margin-top: 1em;
+    margin-right: 1em;
+    padding-left: 1em;
+    padding-top: 1em;
+    grid-area: div2;
+    margin-left: 1em;
+}
+.gumb7_1 {
     height: 2.5em;
     border-radius: 0.5em;
     width: 13em;
     margin-top: 1em;
 }
-.button-div-container {
+.button-div-container7_1 {
     margin-bottom: 6em;
 }
-.button-div1 {
+.button-div7_1 {
     width: 40%;
     margin-right: 5em;
     float: left;
 }
-.button-div2 {
+.button-div7_2 {
     width: 40%;
     margin-left: 5em;
     float: right;
 }
-.iconButtonDiv {
+.iconButtonDiv7_1 {
     margin-left: 3em;
+}
+
+@media (max-width: 1024px) {
+    .big-div7_1 {
+      grid-template-columns: 100%;
+      grid-template-areas: 
+      "div1"
+      "div2";
+    }
 }

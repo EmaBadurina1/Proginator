@@ -8,6 +8,7 @@ const therapyInfoStyle = {
 
 const bolded = {
   fontWeight: "bold",
+  display: "inline",
 }
 
 const TherapyInfo = (props) => {
@@ -16,10 +17,10 @@ const TherapyInfo = (props) => {
   return (
     <div className="therapy-info" style={therapyInfoStyle}>
       <h4>Informacije o terapiji</h4>
-      <p><h7 style={bolded}>Vrsta terapije:</h7> {therapy.therapy_type.therapy_type_name}</p> 
-      <p><h7 style={bolded}>Zahtjevani postupak liječenja:</h7> {therapy.req_treatment}</p> 
-      <p><h7 style={bolded}>Datum početka:</h7> {therapy.date_from}</p> 
-      <p><h7 style={bolded}>Opis:</h7> {therapy.therapy_type.therapy_type_descr}</p> 
+      <p><p style={bolded}>Vrsta terapije:</p> {therapy.therapy_type.therapy_type_name}</p> 
+      <p><p style={bolded}>Zahtjevani postupak liječenja:</p> {therapy.req_treatment}</p> 
+      <p><p style={bolded}>Datum početka:</p> {therapy.date_from}</p> 
+      <p><p style={bolded}>Opis:</p> {therapy.therapy_type.therapy_type_descr}</p> 
       
       <br></br>
     </div>

@@ -10,6 +10,8 @@ import { Link } from "react-router-dom";
 import EmployeeService from "../services/employeeService";
 import { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const komentarStyle = {
   width: "100%",
@@ -46,6 +48,47 @@ const iconButtonStyle = {
 const DenyAppointment = () => {
   const { appointmentId } = useParams();
   const [appointment, setAppointment] = useState(null);
+  const [comment, setComment] = useState("");
+  const nav = useNavigate();
+
+  const isFilled = () => {
+    if (comment === "") return false;
+    return true;
+  };
+
+  const updateAppointment = async () => {
+    try {
+      let filled = isFilled();
+      if (!filled) {
+        throw new Error("Komentar je" + filled);
+      }
+    } catch (err) {
+      toast.error("Treba unijeti komentar!", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      return false;
+    }
+
+    const updatedData = {
+      comment: comment,
+      status_id: 4,
+    };
+
+    try {
+
+      const resp = await EmployeeService.updateAppointment(appointmentId, updatedData);
+
+      if (resp.success) {
+        return true;
+      } else {
+        console.error("greska", resp.message);
+        return false;
+      }
+    } catch (error) {
+      console.error("API Error:", error.response.data);
+      return false;
+    }
+  };
 
   useEffect(() => {
     const fetchAppointment = async () => {
@@ -62,31 +105,39 @@ const DenyAppointment = () => {
     fetchAppointment();
   }, [appointmentId]);
 
+  const provjeraUspjehaUpdatea = async () => {
+    const updBool = await updateAppointment();
+    console.log("updBool:", updBool);
+    if (updBool) {
+      nav(-1);
+    }
+  };
+
   return (
-    <div className="container-div">
-      <div className="iconButtonDiv">
-        <IconButton style={iconButtonStyle}>
+    <div className="main-container7_1">
+      <div className="iconButtonDiv7_1">
+        <IconButton style={iconButtonStyle} onClick={() => nav(-1)}>
           <ArrowBackIosNewIcon></ArrowBackIosNewIcon>
         </IconButton>
       </div>
-      <div className="mini-container2">
-        <div className="title-div2">
+      <div className="mini-container7_1">
+        <div className="title-div7_1">
           <h2>Odbijanje zahtjeva za terminom</h2>
         </div>
-        <div className="border-container">
-          <div className="big-div1">
-            <div className="mid-div1">
+        <div className="border-container7_1">
+          <div className="big-div7_1">
+            <div className="mid-div7_1">
               {appointment && appointment.therapy && (
                 <AppointmentInfo appointment={appointment} />
               )}
             </div>
-            <div className="mid-div2">
+            <div className="mid-div7_2">
               {appointment && appointment.therapy && (
                 <TherapyInfo therapy={appointment.therapy} />
               )}
             </div>
           </div>
-          <div className="big-div2" style={komentarDivStyle}>
+          <div className="big-div7_2" style={komentarDivStyle}>
             <TextField
               autoComplete="false"
               className="komentar-text"
@@ -96,38 +147,47 @@ const DenyAppointment = () => {
               multiline
               rows={4}
               style={komentarStyle}
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
             />
           </div>
-          <div className="button-div-container">
-            <div className="button-div1">
+          <div className="button-div-container7_1">
+            <div className="button-div7_1">
               <Link to={`/change-appointment/${appointmentId}`}>
                 <Button
                   variant="contained"
                   size="medium"
-                  className="reg-btn"
+                  className="gumb7_1"
                   style={buttonStyle1}
                 >
                   Premjesti ovaj termin
                 </Button>
               </Link>
             </div>
-            <div className="button-div2">
-              <Button
-                variant="contained"
-                size="medium"
-                className="reg-btn"
-                style={buttonStyle2}
-              >
-                Odustani
-              </Button>
-              <Button
-                variant="contained"
-                size="medium"
-                className="reg-btn"
-                style={buttonStyle3}
-              >
-                Potvrdi
-              </Button>
+            <div className="button-div7_2">
+              <Link to={"../appointment-requests-preview"}>
+                <Button
+                  variant="contained"
+                  size="medium"
+                  className="gumb7_1"
+                  style={buttonStyle2}
+                >
+                  Odustani
+                </Button>
+              </Link>
+              {appointment && (
+                <Button
+                  variant="contained"
+                  size="medium"
+                  className="gumb7_1"
+                  style={buttonStyle3}
+                  onClick={() => {
+                    provjeraUspjehaUpdatea();
+                  }}
+                >
+                  Potvrdi
+                </Button>
+              )}
             </div>
           </div>
         </div>
