@@ -202,7 +202,7 @@ def get_by_therapies_patient(user_id):
 # get list of therapy types
 @therapies_bp.route('/therapy-types', methods=['GET'])
 @auth_validation
-@require_any_role('admin')
+@require_any_role('admin', 'patient', 'doctor')
 def get_therapy_types():
    return get_all(Model=TherapyType, request=request)
 

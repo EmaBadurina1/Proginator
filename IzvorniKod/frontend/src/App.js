@@ -29,8 +29,10 @@ import { LoginContext } from "./contexts/LoginContext";
 import UserAccount from "./pages/UserAccount";
 import MyTherapies from "./pages/MyTherapies";
 import CreateTherapy from "./pages/CreateTherapy";
+import MyTherapy from "./pages/MyTherapy";
+import NewAppointment from "./pages/NewAppointment";
 import DataDisplay from "./components/DataDisplay";
-
+import ChangePassword from "./pages/ChangePassword";
 import AlreadyLoggedIn from "./pages/AlreadyLoggedIn";
 
 function App() {
@@ -72,12 +74,14 @@ function App() {
   const ProtectedRoute = ({ children }) => {
     const isLoggedIn = isAuthenticated;
     return isLoggedIn ? (
-      <LoginContext.Provider value={{ userData, setUserData, userRole, setUserRole }}>
-        <Layout onLogout={logout}>
-          {children}
-        </Layout>
+      <LoginContext.Provider
+        value={{ userData, setUserData, userRole, setUserRole }}
+      >
+        <Layout onLogout={logout}>{children}</Layout>
       </LoginContext.Provider>
-    ) : <Navigate replace to="/login" />;
+    ) : (
+      <Navigate replace to="/login" />
+    );
   };
 
   ProtectedRoute.propTypes = {
@@ -116,12 +120,42 @@ function App() {
       <Route path="/">
         <Route
           path="/"
-          element={<Navigate to={isAuthenticated ? "/home" : "/login"} replace />}
+          element={
+            <Navigate to={isAuthenticated ? "/home" : "/login"} replace />
+          }
         />
-        <Route path="/login" element={
-          isAuthenticated? <ProtectedRoute><AlreadyLoggedIn/></ProtectedRoute> : <Login onLogin={login} />
-        } />
-        <Route path="/registration" element={<Registration />} />
+        <Route
+          path="/login"
+          element={
+            isAuthenticated ? (
+              <ProtectedRoute>
+                <AlreadyLoggedIn />
+              </ProtectedRoute>
+            ) : (
+              <Login onLogin={login} />
+            )
+          }
+        />
+        <Route
+          path="/registration"
+          element={
+            isAuthenticated ? (
+              <ProtectedRoute>
+                <AlreadyLoggedIn />
+              </ProtectedRoute>
+            ) : (
+              <Registration />
+            )
+          }
+        />
+        <Route
+          path="/change-password"
+          element={
+            <ProtectedRoute>
+              <ChangePassword />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/user-account"
           element={
@@ -142,9 +176,7 @@ function App() {
         />
         <Route
           path="/attendance-display/:appointmentId"
-          element={
-            <AttendanceDisplay />
-          }
+          element={<AttendanceDisplay />}
         />
         <Route
           path="/patient-preview"
@@ -157,27 +189,43 @@ function App() {
           }
         />
         <Route
-          path ="/appointments-preview/:patientId"
+          path="/appointments-preview/:patientId"
           element={
-            <AppointmentsPreview />
+            <ProtectedRoute>
+              <EmployeeRoute>
+                <AppointmentsPreview />
+              </EmployeeRoute>
+            </ProtectedRoute>
           }
         />
         <Route
           path="/deny-appointment/:appointmentId"
           element={
-            <DenyAppointment />
+            <ProtectedRoute>
+              <EmployeeRoute>
+                <DenyAppointment />
+              </EmployeeRoute>
+            </ProtectedRoute>
           }
         />
         <Route
           path="/change-appointment/:appointmentId"
           element={
-            <ChangeAppointment />
+            <ProtectedRoute>
+              <EmployeeRoute>
+                <ChangeAppointment />
+              </EmployeeRoute>
+            </ProtectedRoute>
           }
         />
         <Route
           path="/appointment-requests-preview"
           element={
-            <AppointmentRequestsPreview />
+            <ProtectedRoute>
+              <EmployeeRoute>
+                <AppointmentRequestsPreview />
+              </EmployeeRoute>
+            </ProtectedRoute>
           }
         />
         <Route
@@ -202,7 +250,20 @@ function App() {
           path="/my-therapies"
           element={
             <ProtectedRoute>
-              <MyTherapies />
+              <PatientRoute>
+                <MyTherapies />
+              </PatientRoute>
+            </ProtectedRoute>
+          }
+        >
+        </ Route>
+        <Route
+          path="/my-therapies/:therapy_id"
+          element={
+            <ProtectedRoute>
+              <PatientRoute>
+                <MyTherapy />
+              </PatientRoute>
             </ProtectedRoute>
           }
         />
@@ -210,7 +271,19 @@ function App() {
           path="/create-therapy"
           element={
             <ProtectedRoute>
-              <CreateTherapy />
+              <PatientRoute>
+                <CreateTherapy />
+              </PatientRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/new-appointment"
+          element={
+            <ProtectedRoute>
+              <PatientRoute>
+                <NewAppointment />
+              </PatientRoute>
             </ProtectedRoute>
           }
         />
@@ -228,7 +301,6 @@ function App() {
         />
         <Route path="*" element={<NotFound />} />
       </Route>
-
     )
   );
 
