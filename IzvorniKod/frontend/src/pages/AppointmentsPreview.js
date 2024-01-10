@@ -89,12 +89,8 @@ const AppointmentsPreview = () => {
       }
     };
 
-    const fetchData = async () => {
-      await fetchPatient();
-      await fetchAppointmentsByPatient();
-    };
-
-    fetchData();
+    fetchPatient();
+    fetchAppointmentsByPatient();
   }, [patientId]);
 
   useEffect(() => {
