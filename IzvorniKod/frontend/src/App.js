@@ -37,6 +37,7 @@ import AlreadyLoggedIn from "./pages/AlreadyLoggedIn";
 import UserAccounts from "./pages/UserAccounts";
 import Devices from "./pages/Devices";
 import Rooms from "./pages/Rooms";
+import UserEdit from "./pages/UserEdit";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(true);
@@ -270,11 +271,21 @@ function App() {
           }
         />
         <Route
-          path="/add-users"
+          path="/new-user"
           element={
             <ProtectedRoute>
               <AdminRoute>
                 <UserAdd />
+              </AdminRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/edit-user/:userId"
+          element={
+            <ProtectedRoute>
+              <AdminRoute>
+                <UserEdit />
               </AdminRoute>
             </ProtectedRoute>
           }

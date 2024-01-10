@@ -51,5 +51,16 @@ class UserAccountService {
           });
       }
    }
+
+   async getEmployeeById(userId){
+      try {
+         const response = await axiosInstance.get(`/employees/${userId}`);
+         return response.data.data.employee;
+      } catch (error) {
+         toast.error("Dogodila se greška! " + error.response.error, {
+            position: toast.POSITION.BOTTOM_RIGHT,
+          });
+      }
+   }
 }
 export default new UserAccountService();
