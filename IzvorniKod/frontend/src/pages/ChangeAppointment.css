@@ -1,38 +1,74 @@
-.container-div2 {
+.main-container6_1 {
     margin-top: 3em;
 }
-.mini-container3 {
+.mini-container6_1 {
     margin-top: 2em;
     margin-left: 5em;
     margin-right: 5em;
     margin-bottom: 2em;
 }
-.border-container2 {
+.border-container6_1 {
     margin-top: 1em;
     border: 0.1em solid black;
 }
-.title-div3 {
+.title-div6_1 {
     margin-left: 3em;
 }
 
-.big-div1 {
-    margin-bottom: 4em;
+.big-div6_1 {
+    display: grid;
+    grid-template-columns: 50% auto;
+    grid-template-areas: 
+    "div1 div2";
 }
-.mid-div1 {
+.mid-div6_1 {
     margin-top: 2em;
     line-height: 2em;
     margin-left: 2em;
+    grid-area: div1;
 }
-.iconButtonDiv2 {
+.mid-div6_2 {
+    border: 0.1em solid black;
+    margin-top: 1em;
+    margin-right: 1em;
+    padding-left: 1em;
+    padding-top: 1em;
+    grid-area: div2;
+    margin-left: 1em;
+}
+
+.iconButtonDiv6_1 {
     margin-left: 3em;
 }
-.reg-btn {
+.gumb6_1 {
     height: 2.5em;
     color: black;
     background-color: orange;
     border-radius: 0.5em;
     width: 13em;
 }
-.button-div {
+.button-div6_1 {
     margin-bottom: 6em;
+}
+
+.big-div6_3{
+    margin-left: 2em;
+}
+
+.big-div6_4 {
+    margin-left: 2em;
+    margin-bottom: 2em;
+}
+.big-div6_5 {
+    margin-left: 2em;
+    margin-bottom: 2em;
+}
+
+@media (max-width: 1024px) {
+    .big-div6_1 {
+      grid-template-columns: 100%;
+      grid-template-areas: 
+      "div1"
+      "div2";
+    }
 }

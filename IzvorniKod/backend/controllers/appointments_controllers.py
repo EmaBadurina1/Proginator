@@ -103,7 +103,7 @@ def get_by_therapy(therapy_id):
 # get list of appointments by patient
 @appointments_bp.route('/appointments/by-patient/<int:user_id>', methods=['GET'])
 @auth_validation
-@require_any_role('admin', 'patient')
+@require_any_role('admin', 'patient', 'doctor')
 def get_by_patient(user_id):
     try:
         page = request.args.get('page', default = 1, type = int)

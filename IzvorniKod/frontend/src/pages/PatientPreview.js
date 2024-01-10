@@ -72,9 +72,9 @@ const PatientPreview = () => {
   };
 
   return (
-    <div className="main-container">
-      <div className="header">
-        <div className="title-div">
+    <div className="main-container1_1">
+      <div className="header1_1">
+        <div className="title-div1_1">
           <h2>Svi pacijenti</h2>
         </div>
         <TextField
@@ -97,7 +97,7 @@ const PatientPreview = () => {
       <TableContainer>
         <Table>
           <TableHead>
-            <TableRow className="prviRed">
+            <TableRow className="prviRed1_1">
               <TableCell style={cellStyle}>Ime</TableCell>
               <TableCell style={cellStyle}>Prezime</TableCell>
               <TableCell style={cellStyle}>MBO</TableCell>
@@ -127,7 +127,7 @@ const PatientPreview = () => {
                         <Button
                           variant="contained"
                           size="medium"
-                          className="reg-btn"
+                          className="gumb1_1"
                           style={buttonStyle}
                         >
                           Prikaži termine

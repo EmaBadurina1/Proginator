@@ -9,12 +9,12 @@ import {
 } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import { TextareaAutosize } from "@mui/base/TextareaAutosize";
-//import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 import TherapyInfo from "../components/TherapyInfo";
 import { useParams } from "react-router-dom";
 import EmployeeService from "../services/employeeService";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const buttonStyle = {
   backgroundColor: "purple",
@@ -24,24 +24,62 @@ const buttonStyle = {
   display: "block",
 };
 
-const textInputStyle = {
-  marginTop: "0.5em",
-};
-
 const komentarStyle = {
   width: "70%",
 };
 
 const AttendanceRecord = () => {
-
   const { appointmentId } = useParams();
   const [appointment, setAppointment] = useState(null);
+  const [comment, setComment] = useState("");
+  const [statusId, setStatusId] = useState("");
+  const nav = useNavigate();
+
+  const isFilled = () => {
+    if (comment === "") return false;
+    if (statusId === "") return false;
+    return true;
+  };
+
+  const updateAppointment = async () =>  {
+
+    try {
+      let filled = isFilled();
+      if (!filled) {
+        throw new Error("Status ili komentar je" + filled);
+      }
+    } catch (err) {
+      toast.error("Treba odabrati status i unijeti komentar!", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      return false;
+    }
+
+    const updatedData = {
+      comment: comment,
+      status_id: statusId,
+
+    };
+
+    try {
+      const resp = await EmployeeService.updateAppointment(appointmentId, updatedData);
+      
+      if (resp.success) {
+        return true;
+      } else {
+        console.error("greska", resp.message);
+        return false;
+      }
+    } catch (error) {
+      console.error("API Error:", error.response.data);
+      return false;
+    }
+  }
 
   useEffect(() => {
     const fetchAppointment = async () => {
       await EmployeeService.getAppointmentById(appointmentId).then((resp) => {
         if (resp.success) {
-          EmployeeService.getAppointmentById(appointmentId);
           const pom = EmployeeService.getCurrentAppointment();
           setAppointment(pom.data.appointment);
         } else {
@@ -52,81 +90,87 @@ const AttendanceRecord = () => {
     fetchAppointment();
   }, [appointmentId]);
 
+  const provjeraUspjehaUpdatea = async () => {
+    const updBool = await updateAppointment();
+    console.log('updBool:', updBool);
+    if(updBool) {
+      nav(`/appointments-preview/${appointment.therapy.patient.user_id}`);
+    }
+  }
+
   return (
-    <div className="container">
-      <h2>Pacijent {appointment && appointment.therapy.patient.name} - evidencija dolaska na terapiju</h2>
-      <div className="mini-container">
-        <div className="big-div1">
-          <div className="mid-div1">
-            <div className="small-div1">
+    <div className="main-container3_1">
+      <h2>
+        Pacijent {appointment && appointment.therapy.patient.name}{" "}
+        {appointment && appointment.therapy.patient.surname} - evidencija
+        dolaska na termin
+      </h2>
+      <div className="mini-container3_1">
+        <div className="big-div3_1">
+          <div className="mid-div3_1">
+            <div className="small-div3_1">
               <FormControl>
                 <FormLabel id="blabla">Evidencija</FormLabel>
-                <RadioGroup aria-labelledby="blabla" defaultValue="nijeDosao">
+                <RadioGroup
+                  aria-labelledby="blabla"
+                  value={statusId}
+                  onChange={(e) => {
+                    setStatusId(e.target.value);
+                  }}
+                >
                   <FormControlLabel
-                    value="nijeDosao"
+                    value={3}
                     control={<Radio />}
-                    label="Pacijent nije došao na dogovoreni termin"
+                    label="Termin je odrađen"
                   />
                   <FormControlLabel
-                    value="dosaoINijeOdradio"
+                    value={5}
                     control={<Radio />}
-                    label="Pacijent je došao, ali nije uspješno odradio terapiju"
+                    label="Termin je propušten"
                   />
                   <FormControlLabel
-                    value="odradio"
+                    value={4}
                     control={<Radio />}
-                    label="Pacijent je uspješno odradio terapiju"
+                    label="Termin je otkazan"
                   />
                 </RadioGroup>
               </FormControl>
             </div>
-            <div className="small-div2">
-              Soba:
-              <br></br>
-              <TextField
-                autoComplete="false"
-                className="soba-text"
-                label="Soba"
-                variant="outlined"
-                name="soba"
-                style={textInputStyle}
-              />
-            </div>
-            <div className="small-div3">
-              Korištena oprema:
-              <br></br>
-              <TextField
-                autoComplete="false"
-                className="oprema-text"
-                label="Korištena oprema"
-                variant="outlined"
-                name="korištena oprema"
-                style={textInputStyle}
-              />
-            </div>
           </div>
-          <div className="mid-div2">
-            <TherapyInfo />
+          <div className="mid-div3_2">
+            {appointment && appointment.therapy && (
+              <TherapyInfo therapy={appointment.therapy} />
+            )}
           </div>
         </div>
-        <div className="big-div2">
-          Komentari:
-          <br></br>
-          <TextareaAutosize
+        <div className="big-div3_2">
+          <TextField
+            autoComplete="false"
+            className="komentar-text3_1"
+            label="Komentari"
+            variant="outlined"
+            name="komentar"
+            value={comment}
+            multiline
+            rows={4}
             style={komentarStyle}
-            minRows={4}
-            className="komentar-text"
+            onChange={(e) => setComment(e.target.value)}
           />
         </div>
 
-        <Button
-          variant="contained"
-          size="medium"
-          className="reg-btn"
-          style={buttonStyle}
-        >
-          Predaj evidenciju
-        </Button>
+        {appointment && (
+          <Button
+            variant="contained"
+            size="medium"
+            className="gumb3_1"
+            style={buttonStyle}
+            onClick={() => {
+              provjeraUspjehaUpdatea();
+            }}
+          >
+            Predaj evidenciju
+          </Button>
+        )}
       </div>
     </div>
   );
