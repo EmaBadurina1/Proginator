@@ -424,7 +424,6 @@
    - `phone_number` (string): User's phone number (must be unique).
    - `date_of_birth` (string): User's date of birth in the format `YYYY-MM-DD`.
    - `OIB` (string): User's OIB (must be unique).
-   - `password` (string): User's password.
    - `is_active` (boolean): Is employee active.
    - `is_admin` (boolean): Is employee admin.
 - **Notes:**

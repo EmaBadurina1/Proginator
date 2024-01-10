@@ -29,9 +29,9 @@ import { LoginContext } from "./contexts/LoginContext";
 import UserAccount from "./pages/UserAccount";
 import MyTherapies from "./pages/MyTherapies";
 import CreateTherapy from "./pages/CreateTherapy";
-import DataDisplay from "./components/DataDisplay";
 
 import AlreadyLoggedIn from "./pages/AlreadyLoggedIn";
+import DataPreview from "./pages/DataPreview";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(true);
@@ -217,18 +217,11 @@ function App() {
         <Route
           path="/data-display"
           element={
-            <DataDisplay
-              url={"/therapy-types"}
-              columns={["Terapija", "Opis"]}
-              options={["therapy_type_name", "therapy_type_descr"]}
-              identificator={"therapy_type_id"}
-              dataName="therapy_types"
-            />
+            <DataPreview/>
           }
         />
         <Route path="*" element={<NotFound />} />
       </Route>
-
     )
   );
 

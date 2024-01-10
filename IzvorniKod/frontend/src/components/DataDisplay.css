@@ -14,3 +14,19 @@
    margin-top: auto;
    margin-bottom: auto;
 }
+
+.data-display .conteiner .loading {
+   margin: 15px;
+}
+
+.data-display th {
+   font-weight: bold;
+}
+
+.data-display .search {
+   display: flex;
+   justify-content: flex-end;
+   padding-top: 15px;
+   padding-right: 15px;
+   padding-bottom: 5px;
+}

@@ -14,6 +14,8 @@ def get_therapies():
    try:
       page = request.args.get('page', default = 1, type = int)
       page_size = request.args.get('page_size', default = 20, type = int)
+      order_by = request.args.get('order_by', default="therapy_id", type=str)
+      order = request.args.get('order', default="asc", type=str)
 
       if page_size > 20 or page_size < 1:
          return jsonify({
@@ -21,7 +23,31 @@ def get_therapies():
             "status": 400
          }), 400
       
-      therapies = Therapy.query.paginate(page=page, per_page=page_size, error_out=False)
+      valid_columns = [
+         'therapy_id',
+         'doctor_id',
+         'disease_descr',
+         'req_treatment',
+         'date_from',
+         'date_to',
+         'patient_id',
+         'therapy_type_id'
+      ]
+
+      order_by = order_by if order_by in valid_columns else 'therapy_id'
+
+      if order.lower() not in ['asc', 'desc']:
+         order = 'asc'
+
+      order_column = getattr(Therapy, order_by)
+      if order.lower() == 'desc':
+         order_column = order_column.desc()
+
+      therapies = (Therapy
+         .query
+         .order_by(order_column)
+         .paginate(page=page, per_page=page_size, error_out=False)
+      )
 
       if therapies.pages == 0:
          return jsonify({
