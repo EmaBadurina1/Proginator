@@ -96,8 +96,9 @@ def get_therapies():
 @auth_validation
 @require_any_role('admin', 'doctor', 'patient')
 def get_therapy(therapy_id):
+   therapy = Therapy.query.get(therapy_id)
    # patient can only get his therapies
-   if session['role'] == 'patient' and Therapy.query.get(therapy_id).patient_id:
+   if session['role'] == 'patient' and therapy.patient_id != session['user_id']:
       return jsonify({
          "error": "Forbidden",
          "status": 403
@@ -124,7 +125,7 @@ def create_therapy():
 @require_any_role('admin', 'doctor', 'patient')
 def update_therapy(therapy_id):
    # patient can only update his therapies
-   if session['role'] == 'patient' and Therapy.query.get(therapy_id).patient_id:
+   if session['role'] == 'patient' and Therapy.query.get(therapy_id).patient_id != session['user_id']:
       return jsonify({
          "error": "Forbidden",
          "status": 403
@@ -137,7 +138,7 @@ def update_therapy(therapy_id):
 @require_any_role('admin', 'patient')
 def delete_therapy(therapy_id):
    # patient can only delete his therapies
-   if session['role'] == 'patient' and Therapy.query.get(therapy_id).patient_id:
+   if session['role'] == 'patient' and Therapy.query.get(therapy_id).patient_id != session['user_id']:
       return jsonify({
          "error": "Forbidden",
          "status": 403

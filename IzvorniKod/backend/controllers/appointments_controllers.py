@@ -6,6 +6,7 @@ from sqlalchemy.orm import joinedload
 import psycopg2
 from flask import request, jsonify, session
 from db import db
+from datetime import datetime, timedelta
 
 from utils.appointments_util import appointment_overlapping
 
