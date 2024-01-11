@@ -1,6 +1,7 @@
 from controllers.crud_template import *
 from models import *
 from auth import auth_validation, require_any_role
+from flask import request, jsonify, session
 
 # setup blueprint
 from flask import Blueprint
@@ -63,6 +64,12 @@ def get_therapies():
 @auth_validation
 @require_any_role('admin', 'doctor', 'patient')
 def get_therapy(therapy_id):
+   # patient can only get his therapies
+   if session['role'] == 'patient' and Therapy.query.get(therapy_id).patient_id:
+      return jsonify({
+         "error": "Forbidden",
+         "status": 403
+      }), 403
    return get_one(id=therapy_id, Model=Therapy)
 
 # create new therapy
@@ -71,6 +78,12 @@ def get_therapy(therapy_id):
 @require_any_role('patient')
 def create_therapy():
    required_fields = ['doctor_id', 'disease_descr', 'patient_id', 'date_from']
+   # patient can only create his therapies
+   if session['role'] == 'patient' and request.json['patient_id'] != session['user_id']:
+      return jsonify({
+         "error": "Forbidden",
+         "status": 403
+      }), 403
    return create(required_fields=required_fields, Model=Therapy)
 
 # update therapy with id=therapy_id
@@ -78,6 +91,12 @@ def create_therapy():
 @auth_validation
 @require_any_role('admin', 'doctor', 'patient')
 def update_therapy(therapy_id):
+   # patient can only update his therapies
+   if session['role'] == 'patient' and Therapy.query.get(therapy_id).patient_id:
+      return jsonify({
+         "error": "Forbidden",
+         "status": 403
+      }), 403
    return update(id=therapy_id, Model=Therapy)
     
 # delete therapy with id=therapy_id
@@ -85,6 +104,12 @@ def update_therapy(therapy_id):
 @auth_validation
 @require_any_role('admin', 'patient')
 def delete_therapy(therapy_id):
+   # patient can only delete his therapies
+   if session['role'] == 'patient' and Therapy.query.get(therapy_id).patient_id:
+      return jsonify({
+         "error": "Forbidden",
+         "status": 403
+      }), 403
    return delete(id=therapy_id, Model=Therapy)
 
 # get list of therapies by therapy_type
@@ -148,6 +173,13 @@ def get_by_therapies_type(therapy_type_id):
 @auth_validation
 @require_any_role('admin', 'patient')
 def get_by_therapies_patient(user_id):
+   # patient can only get his therapies
+   if session['role'] == 'patient' and user_id != session['user_id']:
+      return jsonify({
+         "error": "Forbidden",
+         "status": 403
+      }), 403
+   
    try:
       page = request.args.get('page', default = 1, type = int)
       page_size = request.args.get('page_size', default = 20, type = int)
@@ -202,14 +234,14 @@ def get_by_therapies_patient(user_id):
 # get list of therapy types
 @therapies_bp.route('/therapy-types', methods=['GET'])
 @auth_validation
-@require_any_role('admin')
+@require_any_role('admin', 'doctor')
 def get_therapy_types():
    return get_all(Model=TherapyType, request=request)
 
 # get therapy types with id=therapy_type_id
 @therapies_bp.route('/therapy-types/<int:therapy_type_id>', methods=['GET'])
 @auth_validation
-@require_any_role('admin')
+@require_any_role('admin', 'doctor')
 def get_therapy_type(therapy_type_id):
    return get_one(id=therapy_type_id, Model=TherapyType)
 
