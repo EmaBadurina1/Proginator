@@ -12,9 +12,9 @@ const AppointmentInfo = (props) => {
 
   return (
     <div className="appointment-info">
-      <p><p style={bolded}>IME PACIJENTA:</p> {appointment.therapy.patient.name} </p>
-      <p><p style={bolded}>PREZIME PACIJENTA:</p> {appointment.therapy.patient.surname}  </p>
-      <p><p style={bolded}>DATUM I VRIJEME:</p> {appointment.date_from} </p>
+      <p><span style={bolded}>IME PACIJENTA:</span> {appointment.therapy.patient.name} </p>
+      <p><span style={bolded}>PREZIME PACIJENTA:</span> {appointment.therapy.patient.surname}  </p>
+      <p><span style={bolded}>DATUM I VRIJEME:</span> {appointment.date_from} </p>
       
     </div>
   );

@@ -14,6 +14,7 @@ import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { DateTime } from "luxon";
 
 const ChangeAppointment = () => {
   const { appointmentId } = useParams();
@@ -43,26 +44,11 @@ const ChangeAppointment = () => {
 
   const provjeraUspjehaUpdatea = async () => {
     const updBool = await updateAppointment();
-    console.log('updBool:', updBool);
-    if(updBool) {
+    console.log("updBool:", updBool);
+    if (updBool) {
       nav(-1);
     }
-  }
-
-  useEffect(() => {
-    const fetchAppointment = async () => {
-      await EmployeeService.getAppointmentById(appointmentId).then((resp) => {
-        if (resp.success) {
-          EmployeeService.getAppointmentById(appointmentId);
-          const pom = EmployeeService.getCurrentAppointment();
-          setAppointment(pom.data.appointment);
-        } else {
-          console.log("greska");
-        }
-      });
-    };
-    fetchAppointment();
-  }, [appointmentId]);
+  };
 
   const updateAppointment = async () => {
     try {
@@ -76,36 +62,58 @@ const ChangeAppointment = () => {
       });
       return false;
     }
-  
+
     const timeAsDate = new Date(time);
-  
+
     const hour = timeAsDate.getHours();
-    const minute = timeAsDate.getMinutes();
-  
+    const minute = '00';
+
     const formattedDate = `${date} ${hour}:${minute}`;
     const formattedDate2 = `${date} ${hour + 1}:${minute}`;
-  
+
     const updatedData = {
       date_from: formattedDate,
       date_to: formattedDate2,
       status_id: 2,
     };
-  
+
     try {
-      const resp = await EmployeeService.updateAppointment(appointmentId, updatedData);
-  
+      const resp = await EmployeeService.updateAppointment(
+        appointmentId,
+        updatedData
+      );
       if (resp.success) {
-        return true; 
+        setAppointment(resp.data);
+        return true;
       } else {
         console.error("greska", resp.message);
         return false;
       }
-    } catch (error) {
-      console.error("API Error:", error.response.data);
+    } catch (err) {
+      toast.error(`API Error:${err.response.data}`, {
+        position: toast.POSITION.TOP_RIGHT,
+      });
       return false;
     }
   };
-  
+
+  useEffect(() => {
+    const fetchAppointment = async () => {
+      try {
+        const resp = await EmployeeService.getAppointmentById(appointmentId);
+        if (resp.success) {
+          setAppointment(resp.data);
+        } else {
+          console.log("greska");
+        }
+      } catch (err) {
+        toast.error("Greska!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      }
+    };
+    fetchAppointment();
+  }, [appointmentId]);
 
   function onChangeDate(date) {
     let value = date.toFormat("yyyy-MM-dd");
@@ -137,12 +145,16 @@ const ChangeAppointment = () => {
             </div>
           </div>
           <div className="big-div6_4">
-            <LocalizationProvider dateAdapter={AdapterLuxon}>
+            <LocalizationProvider
+              dateAdapter={AdapterLuxon}
+              dateLibInstance={DateTime}
+            >
               <DemoContainer components={["DatePicker"]}>
                 <DatePicker
                   format="dd/MM/yyyy"
                   label="Datum terapije"
                   onChange={onChangeDate}
+                  minDate={DateTime.local()}
                 />
               </DemoContainer>
             </LocalizationProvider>

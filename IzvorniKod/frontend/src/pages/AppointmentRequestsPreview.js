@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import EmployeeService from "../services/employeeService";
 import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const AppointmentRequestsPreview = () => {
   const [appointments, setAppointments] = useState(null);
@@ -62,9 +63,21 @@ const AppointmentRequestsPreview = () => {
   const [searchInput, setSearchInput] = useState("");
 
   useEffect(() => {
-    EmployeeService.appointmentsPreview();
-    const appointmentData = EmployeeService.getCurrentAppointmentData();
-    setAppointments(appointmentData.data.appointments);
+    const fetchAppointments = async () => {
+      try {
+        const resp = await EmployeeService.appointmentsPreview();
+        if (resp.success) {
+          setAppointments(resp.data);
+        } else {
+          console.log("greska");
+        }
+      } catch (err) {
+        toast.error("Greska!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      }
+    };
+    fetchAppointments();
   }, []);
 
   const onChangeSearch = (e) => {
@@ -73,10 +86,8 @@ const AppointmentRequestsPreview = () => {
   };
 
   const getFilteredAppointments = (v) => {
-    EmployeeService.appointmentsPreview();
-    const data = EmployeeService.getCurrentAppointmentData().data.appointments;
 
-    const filteredAppointments = data.filter((appointment) => {
+    const filteredAppointments = appointments.filter((appointment) => {
       return (
         appointment &&
         (

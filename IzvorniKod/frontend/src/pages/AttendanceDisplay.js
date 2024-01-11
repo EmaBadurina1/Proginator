@@ -14,6 +14,7 @@ import { useParams } from "react-router-dom";
 import EmployeeService from "../services/employeeService";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const buttonStyle = {
   backgroundColor: "purple",
@@ -38,15 +39,19 @@ const AttendanceDisplay = () => {
 
   useEffect(() => {
     const fetchAppointment = async () => {
-      await EmployeeService.getAppointmentById(appointmentId).then((resp) => {
+      try {
+        const resp = await EmployeeService.getAppointmentById(appointmentId);
         if (resp.success) {
-          const pom = EmployeeService.getCurrentAppointment();
-          setAppointment(pom.data.appointment);
-          setSelectedStatus(pom.data.appointment.status.status_name);
+          setAppointment(resp.data);
+          setSelectedStatus(resp.data.status.status_name);
         } else {
           console.log("greska");
         }
-      });
+      } catch (err) {
+        toast.error(`API Error:${err.response.data}`, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      }
     };
     fetchAppointment();
   }, [appointmentId]);

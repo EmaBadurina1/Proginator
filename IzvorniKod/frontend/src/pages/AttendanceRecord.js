@@ -42,7 +42,6 @@ const AttendanceRecord = () => {
   };
 
   const updateAppointment = async () =>  {
-
     try {
       let filled = isFilled();
       if (!filled) {
@@ -58,34 +57,39 @@ const AttendanceRecord = () => {
     const updatedData = {
       comment: comment,
       status_id: statusId,
-
     };
 
     try {
       const resp = await EmployeeService.updateAppointment(appointmentId, updatedData);
-      
       if (resp.success) {
+        setAppointment(resp.data);
         return true;
       } else {
         console.error("greska", resp.message);
         return false;
       }
-    } catch (error) {
-      console.error("API Error:", error.response.data);
+    } catch (err) {
+      toast.error(`API Error:${err.response.data}`, {
+        position: toast.POSITION.TOP_RIGHT,
+      });
       return false;
     }
   }
 
   useEffect(() => {
     const fetchAppointment = async () => {
-      await EmployeeService.getAppointmentById(appointmentId).then((resp) => {
+      try {
+        const resp = await EmployeeService.getAppointmentById(appointmentId);
         if (resp.success) {
-          const pom = EmployeeService.getCurrentAppointment();
-          setAppointment(pom.data.appointment);
+          setAppointment(resp.data);
         } else {
           console.log("greska");
         }
-      });
+      } catch (err) {
+        toast.error(`API Error:${err.response.data}`, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      }
     };
     fetchAppointment();
   }, [appointmentId]);

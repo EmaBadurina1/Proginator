@@ -13,11 +13,15 @@ import TableCell from "@mui/material/TableCell";
 import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import SearchIcon from "@mui/icons-material/Search";
-//import ForwardIcon from '@mui/icons-material/Forward';
 import EmployeeService from "../services/employeeService";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const PatientPreview = () => {
+
+  const [searchInput, setSearchInput] = useState("");
+  const [patients, setPatients] = useState(null);
+
   const cellStyle = {
     textAlign: "center",
   };
@@ -35,17 +39,26 @@ const PatientPreview = () => {
     color: "blue",
   };
 
-  const [searchInput, setSearchInput] = useState("");
-
-  //test podatci
-  const [patients, setPatients] = useState(null);
+  const fetchPatients = async () => {
+    try {
+      const resp = await EmployeeService.patientPreview();
+      if (resp.success) {
+        setPatients(resp.data);
+        return resp.data;
+      } else {
+        console.error("greska", resp.message);
+        return false;
+      }
+    } catch(err) {
+      toast.error(`API Error:${err.response.data}`, {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      return false;
+    }
+  }
 
   useEffect(() => {
-    EmployeeService.patientPreview();
-    const patientData = EmployeeService.getCurrentPatientData();
-
-    setPatients(patientData.data.patients);
-    console.log(patientData);
+    fetchPatients();
   }, []);
 
   const onChangeSearch = (e) => {
@@ -55,20 +68,19 @@ const PatientPreview = () => {
 
   const getFilteredPatients = (v) => {
 
-    EmployeeService.patientPreview();
-    const data = EmployeeService.getCurrentPatientData().data.patients;
-
-    const filteredPatients = data.filter((patient) => {
-      return (
-        patient &&
-        (
-          patient.name.toLowerCase() +
-          " " +
-          patient.surname.toLowerCase()
-        ).includes(v.toLowerCase())
-      );
+    fetchPatients().then((data) => {
+  
+      const filteredPatients = data.filter((patient) => {
+        return (
+          patient &&
+          (patient.name.toLowerCase() +
+            " " +
+            patient.surname.toLowerCase()).includes(v.toLowerCase())
+        );
+      });
+  
+      setPatients(filteredPatients);
     });
-    setPatients(filteredPatients);
   };
 
   return (

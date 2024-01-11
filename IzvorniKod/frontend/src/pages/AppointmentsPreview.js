@@ -19,6 +19,7 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useNavigate } from "react-router-dom";
 
 const AppointmentsPreview = () => {
+  
   const { patientId } = useParams();
   const [appointments, setAppointments] = useState(null);
   const [patient, setPatient] = useState(null);
@@ -54,12 +55,9 @@ const AppointmentsPreview = () => {
       try {
         const resp = await EmployeeService.getAppointmentsByPatient(patientId);
         if (resp.success) {
-          const appointmentData =
-            EmployeeService.getCurrentAppointmentDataByPatient();
-          const pom = appointmentData.data.appointments;
-          const filtered = pom.filter((appointment) => {
+          const filtered = resp.data.filter((appointment) => {
             return (
-              appointment && appointment.status.status_name !== "Na čekanju"
+              appointment && appointment.status && appointment.status.status_name !== "Na čekanju"
             );
           });
           setAppointments(filtered);
@@ -67,7 +65,7 @@ const AppointmentsPreview = () => {
           console.log("greska");
         }
       } catch (err) {
-        toast.error("Greska!", {
+        toast.error(`API Error:${err.response.data}`, {
           position: toast.POSITION.TOP_RIGHT,
         });
       }
@@ -77,13 +75,12 @@ const AppointmentsPreview = () => {
       try {
         const resp = await EmployeeService.getPatientById(patientId);
         if (resp.success) {
-          const pom2 = EmployeeService.getCurrentPatient();
-          setPatient(pom2.data.patient);
+          setPatient(resp.data);
         } else {
           console.log("greska");
         }
       } catch (err) {
-        toast.error("Greska!", {
+        toast.error(`API Error:${err.response.data}`, {
           position: toast.POSITION.TOP_RIGHT,
         });
       }
@@ -134,11 +131,11 @@ const AppointmentsPreview = () => {
                     </TableCell>
 
                     <TableCell style={cellStyle4}>
-                      {appointment.status.status_name}
+                      {appointment.status && appointment.status.status_name}
                     </TableCell>
 
                     <TableCell style={cellStyle4}>
-                      {appointment.status.status_name === "Zakazan" && (
+                      {appointment.status && appointment.status.status_name === "Zakazan" && (
                         <Link to={`/attendance/${appointment.appointment_id}`}>
                           <Button
                             variant="contained"
@@ -150,7 +147,7 @@ const AppointmentsPreview = () => {
                           </Button>
                         </Link>
                       )}
-                      {appointment.status.status_name !== "Zakazan" && (
+                      {appointment.status && appointment.status.status_name !== "Zakazan" && (
                         <div>
                           <div className="ev2_1">EVIDENTIRANO</div>
                           <div>

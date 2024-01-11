@@ -75,32 +75,36 @@ const DenyAppointment = () => {
     };
 
     try {
-
       const resp = await EmployeeService.updateAppointment(appointmentId, updatedData);
-
       if (resp.success) {
+        setAppointment(resp.data);
         return true;
       } else {
         console.error("greska", resp.message);
         return false;
       }
-    } catch (error) {
-      console.error("API Error:", error.response.data);
+    } catch (err) {
+      toast.error(`API Error:${err.response.data}`, {
+        position: toast.POSITION.TOP_RIGHT,
+      });
       return false;
     }
   };
 
   useEffect(() => {
     const fetchAppointment = async () => {
-      await EmployeeService.getAppointmentById(appointmentId).then((resp) => {
+      try {
+        const resp = await EmployeeService.getAppointmentById(appointmentId);
         if (resp.success) {
-          EmployeeService.getAppointmentById(appointmentId);
-          const pom = EmployeeService.getCurrentAppointment();
-          setAppointment(pom.data.appointment);
+          setAppointment(resp.data);
         } else {
           console.log("greska");
         }
-      });
+      } catch (err) {
+        toast.error(`API Error:${err.response.data}`, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      }
     };
     fetchAppointment();
   }, [appointmentId]);
