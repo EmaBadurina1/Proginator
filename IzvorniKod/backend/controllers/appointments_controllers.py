@@ -1,8 +1,8 @@
 from controllers.crud_template import *
 from models import *
 from auth import auth_validation, require_any_role
-from datetime import datetime, timedelta
 from sqlalchemy.orm import joinedload
+import psycopg2
 
 # setup blueprint
 from flask import Blueprint
@@ -52,6 +52,9 @@ def get_by_therapy(therapy_id):
     try:
         page = request.args.get('page', default = 1, type = int)
         page_size = request.args.get('page_size', default = 20, type = int)
+        order_by = request.args.get('order_by', default="therapy_id", type=str)
+        order = request.args.get('order', default="asc", type=str)
+        search = request.args.get('search', default="", type=str)
 
         if page_size > 20 or page_size < 1:
             return jsonify({
@@ -59,12 +62,32 @@ def get_by_therapy(therapy_id):
                 "status": 400
             }), 400
 
-        appointments = (
-            Appointment
-            .query
-            .filter_by(therapy_id=therapy_id)
-            .paginate(page=page, per_page=page_size, error_out=False)
-        )
+        valid_columns = Appointment.get_column_names()
+
+        order_by = order_by if order_by in valid_columns else Appointment.get_pk_column_name()
+
+        if order.lower() not in ['asc', 'desc']:
+            order = 'asc'
+
+        order_column = getattr(Appointment, order_by)
+        if order.lower() == 'desc':
+            order_column = order_column.desc()
+
+        if search == "":
+            appointments = (Appointment
+                .query
+                .filter_by(therapy_id=therapy_id)
+                .order_by(order_column)
+                .paginate(page=page, per_page=page_size, error_out=False)
+            )
+        else:
+            appointments = (Appointment
+                .query
+                .filter_by(therapy_id=therapy_id)
+                .filter(Appointment.get_search_filter(search=search))
+                .order_by(order_column)
+                .paginate(page=page, per_page=page_size, error_out=False)
+            )
 
         if appointments.pages == 0:
             return jsonify({
@@ -75,7 +98,7 @@ def get_by_therapy(therapy_id):
             "page_size": page_size,
             "pages": appointments.pages,
             "status": 200,
-            "elements": appointments.total
+            "total": appointments.total
         }), 200
 
         if page > appointments.pages or page < 1:
@@ -92,11 +115,17 @@ def get_by_therapy(therapy_id):
             "page_size": page_size,
             "pages": appointments.pages,
             "status": 200,
-            "elements": appointments.total
+            "total": appointments.total
         }), 200
+    
+    except psycopg2.OperationalError as e:
+      return jsonify({
+         "error": "There was a problem with connection on server side",
+         "status": 500
+      }), 500
     except Exception as e:
         return jsonify({
-            "error": "Page and page size must be integers",
+            "error": "Page and page size must be integers and order, order_by and search must be strings",
             "status": 400
         }), 400
 
@@ -108,6 +137,9 @@ def get_by_patient(user_id):
     try:
         page = request.args.get('page', default = 1, type = int)
         page_size = request.args.get('page_size', default = 20, type = int)
+        order_by = request.args.get('order_by', default="therapy_id", type=str)
+        order = request.args.get('order', default="asc", type=str)
+        search = request.args.get('search', default="", type=str)
 
         if page_size > 20 or page_size < 1:
             return jsonify({
@@ -115,15 +147,38 @@ def get_by_patient(user_id):
                 "status": 400
             }), 400
 
-        appointments = (
-            Appointment
-            .query
-            .join(Therapy)
-            .join(Patient)
-            .filter(Patient.user_id == user_id)
-            .options(joinedload(Appointment.therapy).joinedload(Therapy.patient))
-            .paginate(page=page, per_page=page_size, error_out=False)
-        )
+        valid_columns = Appointment.get_column_names()
+
+        order_by = order_by if order_by in valid_columns else Appointment.get_pk_column_name()
+
+        if order.lower() not in ['asc', 'desc']:
+            order = 'asc'
+
+        order_column = getattr(Appointment, order_by)
+        if order.lower() == 'desc':
+            order_column = order_column.desc()
+
+        if search == "":
+            appointments = (Appointment
+                .query
+                .join(Therapy)
+                .join(Patient)
+                .filter(Patient.user_id == user_id)
+                .options(joinedload(Appointment.therapy).joinedload(Therapy.patient))
+                .order_by(order_column)
+                .paginate(page=page, per_page=page_size, error_out=False)
+            )
+        else:
+            appointments = (Appointment
+                .query
+                .join(Therapy)
+                .join(Patient)
+                .filter(Patient.user_id == user_id)
+                .options(joinedload(Appointment.therapy).joinedload(Therapy.patient))
+                .filter(Appointment.get_search_filter(search=search))
+                .order_by(order_column)
+                .paginate(page=page, per_page=page_size, error_out=False)
+            )
 
         if appointments.pages == 0:
             return jsonify({
@@ -134,7 +189,7 @@ def get_by_patient(user_id):
             "page_size": page_size,
             "pages": appointments.pages,
             "status": 200,
-            "elements": appointments.total
+            "total": appointments.total
         }), 200
 
         if page > appointments.pages or page < 1:
@@ -151,11 +206,16 @@ def get_by_patient(user_id):
             "page_size": page_size,
             "pages": appointments.pages,
             "status": 200,
-            "elements": appointments.total
+            "total": appointments.total
         }), 200
+    except psycopg2.OperationalError as e:
+      return jsonify({
+         "error": "There was a problem with connection on server side",
+         "status": 500
+      }), 500
     except Exception as e:
         return jsonify({
-            "error": "Page and page size must be integers",
+            "error": "Page and page size must be integers and order, order_by and search must be strings",
             "status": 400
         }), 400
 
@@ -167,6 +227,9 @@ def get_by_employee(user_id):
     try:
         page = request.args.get('page', default = 1, type = int)
         page_size = request.args.get('page_size', default = 20, type = int)
+        order_by = request.args.get('order_by', default="therapy_id", type=str)
+        order = request.args.get('order', default="asc", type=str)
+        search = request.args.get('search', default="", type=str)
 
         if page_size > 20 or page_size < 1:
             return jsonify({
@@ -174,12 +237,32 @@ def get_by_employee(user_id):
                 "status": 400
             }), 400
 
-        appointments = (
-            Appointment
-            .query
-            .filter_by(employee_id=user_id)
-            .paginate(page=page, per_page=page_size, error_out=False)
-        )
+        valid_columns = Appointment.get_column_names()
+
+        order_by = order_by if order_by in valid_columns else Appointment.get_pk_column_name()
+
+        if order.lower() not in ['asc', 'desc']:
+            order = 'asc'
+
+        order_column = getattr(Appointment, order_by)
+        if order.lower() == 'desc':
+            order_column = order_column.desc()
+
+        if search == "":
+            appointments = (Appointment
+                .query
+                .filter_by(employee_id=user_id)
+                .order_by(order_column)
+                .paginate(page=page, per_page=page_size, error_out=False)
+            )
+        else:
+            appointments = (Appointment
+                .query
+                .filter_by(employee_id=user_id)
+                .filter(Appointment.get_search_filter(search=search))
+                .order_by(order_column)
+                .paginate(page=page, per_page=page_size, error_out=False)
+            )
 
         if appointments.pages == 0:
             return jsonify({
@@ -190,7 +273,7 @@ def get_by_employee(user_id):
             "page_size": page_size,
             "pages": appointments.pages,
             "status": 200,
-            "elements": appointments.total
+            "total": appointments.total
         }), 200
 
         if page > appointments.pages or page < 1:
@@ -207,11 +290,16 @@ def get_by_employee(user_id):
             "page_size": page_size,
             "pages": appointments.pages,
             "status": 200,
-            "elements": appointments.total
+            "total": appointments.total
         }), 200
+    except psycopg2.OperationalError as e:
+      return jsonify({
+         "error": "There was a problem with connection on server side",
+         "status": 500
+      }), 500
     except Exception as e:
         return jsonify({
-            "error": "Page and page size must be integers",
+            "error": "Page and page size must be integers and order, order_by and search must be strings",
             "status": 400
         }), 400
     

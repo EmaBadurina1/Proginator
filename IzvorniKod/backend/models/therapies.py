@@ -2,6 +2,7 @@ from datetime import datetime
 from models import *
 from db import db
 from external_connector import get_doctor_from_external_db
+from sqlalchemy import or_
 
 class Therapy(db.Model):
    __tablename__ = 'therapy'
@@ -101,6 +102,30 @@ class Therapy(db.Model):
    @staticmethod
    def get_name_plural():
       return "therapies"
+   
+   @staticmethod
+   def get_search_filter(search):
+      return or_(
+         Therapy.disease_descr.like(f"%{search}%"),
+         Therapy.req_treatment.like(f"%{search}%")
+      )
+   
+   @staticmethod
+   def get_column_names():
+      return [
+         'therapy_id',
+         'doctor_id',
+         'disease_descr',
+         'req_treatment',
+         'date_from',
+         'date_to',
+         'patient_id',
+         'therapy_type_id'
+      ]
+
+   @staticmethod
+   def get_pk_column_name():
+      return 'therapy_id'
 
 class TherapyType(db.Model):
    __tablename__ = 'therapy_type'
@@ -144,3 +169,22 @@ class TherapyType(db.Model):
    @staticmethod
    def get_name_plural():
       return "therapy_types"
+   
+   @staticmethod
+   def get_search_filter(search):
+      return or_(
+         TherapyType.therapy_type_name.like(f"%{search}%"),
+         TherapyType.therapy_type_descr.like(f"%{search}%")
+      )
+   
+   @staticmethod
+   def get_column_names():
+      return [
+         'therapy_type_id',
+         'therapy_type_name',
+         'therapy_type_descr'
+      ]
+
+   @staticmethod
+   def get_pk_column_name():
+      return 'therapy_type_id'

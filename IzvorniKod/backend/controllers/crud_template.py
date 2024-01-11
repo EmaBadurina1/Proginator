@@ -2,6 +2,7 @@ from flask import request, jsonify
 from sqlalchemy.exc import IntegrityError, DataError
 from db import db
 from utils.utils import validate_required_fields
+import psycopg2
 
 # get page of entities
 # methods=['GET']
@@ -9,6 +10,9 @@ def get_all(Model, request):
    try:
       page = request.args.get('page', default = 1, type = int)
       page_size = request.args.get('page_size', default = 20, type = int)
+      order_by = request.args.get('order_by', default="therapy_id", type=str)
+      order = request.args.get('order', default="asc", type=str)
+      search = request.args.get('search', default="", type=str)
 
       if page_size > 20 or page_size < 1:
          return jsonify({
@@ -16,7 +20,30 @@ def get_all(Model, request):
             "status": 400
          }), 400
       
-      values = Model.query.paginate(page=page, per_page=page_size, error_out=False)
+      valid_columns = Model.get_column_names()
+
+      order_by = order_by if order_by in valid_columns else Model.get_pk_column_name()
+
+      if order.lower() not in ['asc', 'desc']:
+         order = 'asc'
+
+      order_column = getattr(Model, order_by)
+      if order.lower() == 'desc':
+         order_column = order_column.desc()
+
+      if search == "":
+         values = (Model
+            .query
+            .order_by(order_column)
+            .paginate(page=page, per_page=page_size, error_out=False)
+         )
+      else:
+         values = (Model
+            .query
+            .filter(Model.get_search_filter(search=search))
+            .order_by(order_column)
+            .paginate(page=page, per_page=page_size, error_out=False)
+         )
 
       if values.pages == 0:
          return jsonify({
@@ -27,7 +54,7 @@ def get_all(Model, request):
             "page_size": page_size,
             "pages": values.pages,
             "status": 200,
-            "elements": values.total
+            "total": values.total
          }), 200
 
       if page > values.pages or page < 1:
@@ -44,12 +71,17 @@ def get_all(Model, request):
          "page_size": page_size,
          "pages": values.pages,
          "status": 200,
-         "elements": values.total
+         "total": values.total
       }), 200
-
+   
+   except psycopg2.OperationalError as e:
+      return jsonify({
+         "error": "There was a problem with connection on server side",
+         "status": 500
+      }), 500
    except Exception as e:
       return jsonify({
-         "error": "Page and page size must be integers",
+         "error": "Page and page size must be integers and order, order_by and search must be strings",
          "status": 400
       }), 400
    

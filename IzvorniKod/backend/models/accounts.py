@@ -1,8 +1,9 @@
 from datetime import datetime
 from flask import jsonify, abort
-import bcrypt  # Import the bcrypt library
+import bcrypt
 from db import db
 import bcrypt
+from sqlalchemy import or_
 
 # Define the User model
 class User(db.Model):
@@ -83,6 +84,40 @@ class User(db.Model):
     @staticmethod
     def get_name_plural():
         return "users"
+    
+    @staticmethod
+    def get_search_filters(search):
+        return [
+            User.name.like(f"%{search}%"),
+            User.surname.like(f"%{search}%"),
+            User.email.like(f"%{search}%"),
+            User.phone_number.like(f"%{search}%"),
+        ]
+
+    @staticmethod
+    def get_search_filter(search):
+        return or_(
+            User.name.like(f"%{search}%"),
+            User.surname.like(f"%{search}%"),
+            User.email.like(f"%{search}%"),
+            User.phone_number.like(f"%{search}%"),
+        )
+    
+    @staticmethod
+    def get_column_names():
+        return [
+            'user_id',
+            'name',
+            'surname',
+            'email',
+            'phone_number',
+            'date_of_birth',
+            'hashed_password'
+        ]
+
+    @staticmethod
+    def get_pk_column_name():
+        return 'user_id'
 
 # inheritance from User
 class Patient(User):
@@ -129,6 +164,23 @@ class Patient(User):
     @staticmethod
     def get_name_plural():
         return "patients"
+
+    @staticmethod
+    def get_search_filter(search):
+        return or_(
+            Patient.MBO.like(f"%{search}%"),
+            *User.get_search_filters(search=search)
+        )
+    
+    @staticmethod
+    def get_column_names():
+        columns = User.get_column_names()
+        columns.append('MBO')
+        return columns
+
+    @staticmethod
+    def get_pk_column_name():
+        return 'user_id'
 
 
 class Employee(User):
@@ -186,3 +238,20 @@ class Employee(User):
     @staticmethod
     def get_name_plural():
         return "employees"
+
+    @staticmethod
+    def get_search_filter(search):
+        return or_(
+            Employee.OIB.like(f"%{search}%"),
+            *User.get_search_filters(search=search)
+        )
+    
+    @staticmethod
+    def get_column_names():
+        columns = User.get_column_names()
+        columns.extend(['OIB', 'is_active', 'is_admin'])
+        return columns
+
+    @staticmethod
+    def get_pk_column_name():
+        return 'user_id'
