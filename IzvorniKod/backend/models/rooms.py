@@ -1,5 +1,6 @@
 from db import db
 from models import *
+from sqlalchemy import or_
 
 # many to many table
 room_for_table = db.Table('room_for',
@@ -31,7 +32,7 @@ class Room(db.Model):
    room_num = db.Column(db.String(10), primary_key=True, nullable=False)
    capacity = db.Column(db.Integer, nullable=False)
    in_use = db.Column(db.Boolean, default=True, nullable=False)
-   
+
    therapy_types = db.relationship(
       'TherapyType',
       secondary=room_for_table,
@@ -96,3 +97,21 @@ class Room(db.Model):
    @staticmethod
    def get_name_plural():
       return "rooms"
+   
+   @staticmethod
+   def get_search_filter(search):
+      return or_(
+         Room.room_num.like(f"%{search}%")
+      )
+   
+   @staticmethod
+   def get_column_names():
+      return [
+         'room_num',
+         'capacity',
+         'in_use'
+      ]
+
+   @staticmethod
+   def get_pk_column_name():
+      return 'room_num'

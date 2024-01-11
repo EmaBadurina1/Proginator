@@ -1,10 +1,12 @@
-import { React, useEffect, useState, useRef } from "react";
-import { Table, TableContainer, TablePagination, CircularProgress, TableRow, TableCell, TableHead, TableBody, TableSortLabel, Box, TextField, InputAdornment, IconButton } from '@mui/material';
+import { React, Children, useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { Table, TableContainer, TablePagination, CircularProgress, TableRow, TableCell, TableHead, TableBody, TableSortLabel, Box, TextField, InputAdornment, IconButton, Button } from '@mui/material';
+import { visuallyHidden } from '@mui/utils';
+import { toast } from "react-toastify";
 import SearchIcon from '@mui/icons-material/Search';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 import PropTypes from 'prop-types';
 import axiosInstance from "../axiosInstance";
-import { toast } from "react-toastify";
-import { visuallyHidden } from '@mui/utils';
 import "./DataDisplay.css";
 
 const DataDisplay = (props) => {
@@ -16,30 +18,35 @@ const DataDisplay = (props) => {
    const [order, setOrder] = useState("asc");
    const [search, setSearch] = useState("");
    const [value, setValue] = useState("");
+   
    const setData = useRef(props.setData);
+
+   const nav = useNavigate();
 
    useEffect(() => {
       setLoading(true);
       const getData = async () => {
          try {
-            const res = await axiosInstance.get(props.url, {
-               params: {
-                  page: page + 1,
-                  page_size: rows,
-                  order_by: orderBy,
-                  order: order === "desc" ? "desc" : "asc",
-                  search: search
-               }
-            });
+            var params = {
+               page: page + 1,
+               page_size: rows
+            }
+            if(orderBy !== "") {
+               params["order_by"] = orderBy;
+               params["order"] = order === "desc" ? "desc" : "asc";
+            }
+            if(search !== "") params["search"] = search;
+
+            const res = await axiosInstance.get(props.url, {params: params});
             setData.current(res.data);
-            setTotal(res.data.elements);
+            setTotal(res.data.total);
             setLoading(false);
          }
          catch (err) {
-            console.log(err);
             toast.error("Dogodila se greška!", {
                position: toast.POSITION.TOP_RIGHT,
             });
+            setLoading(false);
          }
       }
       getData();
@@ -48,12 +55,17 @@ const DataDisplay = (props) => {
    const handleChangePage = (event, newPage) => {
       setLoading(true);
       setPage(newPage);
+      setSearch(value);
    }
 
    const handleChangeRowsPerPage = (event) => {
       setLoading(true);
       setRows(parseInt(event.target.value, 10));
       setPage(0);
+      setSearch("");
+      setOrder("");
+      setOrderBy("");
+      setValue("");
    }
 
    const labelDisplayedRows = ({ from, to, count }) => {
@@ -85,13 +97,14 @@ const DataDisplay = (props) => {
       const isAsc = orderBy === column && order === 'asc';
       setOrder(isAsc ? 'desc' : 'asc');
       setOrderBy(column);
+      setSearch(value);
    }
 
    const handleMouseDown = (event) => {
       event.preventDefault();
    };
 
-   const handleClickSearch = () => {
+   const handleSearch = () => {
       setSearch(value);
    }
 
@@ -102,7 +115,17 @@ const DataDisplay = (props) => {
    return (
       <div className="data-display">
          <TableContainer>
-            <div className="search">
+            <div className="top-conteiner">
+               <Button
+                  className="add-button"
+                  color="success"
+                  variant="contained"
+                  size="medium"
+                  onClick={() => nav(props.buttonUrl)}
+               >
+                  <span className="lg-button-label">{props.buttonLabel}</span>
+                  <AddCircleIcon className="sm-button-label"/>
+               </Button>
                <TextField
                   id="search-input"
                   type="text"
@@ -111,13 +134,19 @@ const DataDisplay = (props) => {
                   label="Traži"
                   value={value}
                   onChange={handleOnChangeValue}
+                  onKeyDown={(event) => {
+                     if (event.key === 'Enter') {
+                        handleSearch();
+                     }
+                  }}
                   InputProps={{
                      endAdornment: (
                         <InputAdornment position="end">
                            <IconButton
                               aria-label="search button"
-                              onClick={handleClickSearch}
+                              onClick={handleSearch}
                               onMouseDown={handleMouseDown}
+                              disabled={loading}
                            >
                               <SearchIcon />
                            </IconButton>
@@ -139,6 +168,7 @@ const DataDisplay = (props) => {
                               active={orderBy === column.orderBy}
                               direction={orderBy === column.orderBy ? order : 'asc'}
                               onClick={handleSort(column.orderBy)}
+                              disabled={loading}
                            >
                               {column.name}
                               {orderBy === column.orderBy ? (
@@ -160,7 +190,18 @@ const DataDisplay = (props) => {
                      </TableRow>
                   }
                   {!loading &&
-                     <>{props.children}</>
+                     <>
+                        {Children.count(props.children) === 0 || props.children === false
+                           ? (
+                              <TableRow>
+                                 <TableCell colSpan={props.tableHead.length} align="center">
+                                    Nema rezultata
+                                 </TableCell>
+                              </TableRow>
+                           )
+                           : <>{props.children}</>
+                        }
+                     </>
                   }
                </TableBody>
             </Table>
@@ -195,7 +236,9 @@ DataDisplay.propTypes = {
          orderBy: PropTypes.string.isRequired,
          align: PropTypes.oneOf(['left', 'right', 'center']).isRequired
       })
-   ).isRequired
+   ).isRequired,
+   buttonUrl: PropTypes.string.isRequired,
+   buttonLabel: PropTypes.string.isRequired
 };
 
 export default DataDisplay;

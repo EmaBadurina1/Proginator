@@ -10,10 +10,13 @@ const DataPreview = () => {
 
    return (
       <DataDisplay
-         url="/therapies"
-         setData={setData}
-         tableHead={tableHead}
+         url="/therapies" // url from where to fetch data
+         setData={setData} // function for setting data declared with useState() hook
+         tableHead={tableHead} // array of objects representing table header
+         buttonLabel="Dodaj terapiju" // text on button/link
+         buttonUrl="/home" // link to adding new element page
       >
+         {/* adding table rows as children to DataDisplay component */}
          { data !== null && data.data.therapies.map(therapy => (
             <TableRow key={therapy.therapy_id}>
                <TableCell>{therapy.date_from}</TableCell>

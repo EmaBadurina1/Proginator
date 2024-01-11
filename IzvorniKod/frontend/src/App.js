@@ -31,7 +31,6 @@ import MyTherapies from "./pages/MyTherapies";
 import CreateTherapy from "./pages/CreateTherapy";
 import MyTherapy from "./pages/MyTherapy";
 import NewAppointment from "./pages/NewAppointment";
-import DataDisplay from "./components/DataDisplay";
 import ChangePassword from "./pages/ChangePassword";
 import AlreadyLoggedIn from "./pages/AlreadyLoggedIn";
 import DataPreview from "./pages/DataPreview";
