@@ -51,6 +51,14 @@ const ChangeAppointment = () => {
   };
 
   const updateAppointment = async () => {
+
+    if (appointment && (appointment.status.status_id === 3 || appointment.status.status_id === 5)) {
+      toast.error("Ne može se promijeniti propušten ili odrađen termin!", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      return false;
+    }
+
     try {
       let filled = isFilled();
       if (!filled) {
@@ -98,6 +106,7 @@ const ChangeAppointment = () => {
   };
 
   useEffect(() => {
+
     const fetchAppointment = async () => {
       try {
         const resp = await EmployeeService.getAppointmentById(appointmentId);

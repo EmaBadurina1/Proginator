@@ -74,7 +74,7 @@
 }
 
 @media (max-width: 1024px) {
-    .big-div1 {
+    .big-div3_1 {
       grid-template-columns: 100%;
       grid-template-areas: 
       "div1"

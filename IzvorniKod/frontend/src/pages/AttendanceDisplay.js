@@ -13,8 +13,8 @@ import TherapyInfo from "../components/TherapyInfo";
 import { useParams } from "react-router-dom";
 import EmployeeService from "../services/employeeService";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const buttonStyle = {
   backgroundColor: "purple",
@@ -36,6 +36,7 @@ const AttendanceDisplay = () => {
   const { appointmentId } = useParams();
   const [appointment, setAppointment] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState("");
+  const nav = useNavigate();
 
   useEffect(() => {
     const fetchAppointment = async () => {
@@ -124,10 +125,7 @@ const AttendanceDisplay = () => {
           <TextField
             autoComplete="false"
             className="komentar-text4_1"
-            label={
-              appointment && appointment.comment
-
-            }
+            label={appointment && appointment.comment}
             variant="outlined"
             name="korištena oprema"
             multiline
@@ -140,18 +138,19 @@ const AttendanceDisplay = () => {
           />
         </div>
         {appointment && (
-          <Link
-            to={`/appointments-preview/${appointment.therapy.patient.user_id}`}
+          <Button
+            variant="contained"
+            size="medium"
+            className="gumb4_1"
+            style={buttonStyle}
+            onClick={() => {
+              nav(
+                `/appointments-preview/${appointment.therapy.patient.user_id}`
+              );
+            }}
           >
-            <Button
-              variant="contained"
-              size="medium"
-              className="gumb4_1"
-              style={buttonStyle}
-            >
-              Povratak
-            </Button>
-          </Link>
+            Povratak
+          </Button>
         )}
       </div>
     </div>

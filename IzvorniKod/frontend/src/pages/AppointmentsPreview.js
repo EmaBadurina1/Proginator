@@ -1,76 +1,20 @@
-import React from "react";
-import "./AppointmentsPreview.css";
-import {
-  TableContainer,
-  Table,
-  TableBody,
-  TableHead,
-  TableRow,
-} from "@mui/material";
-import TableCell from "@mui/material/TableCell";
+import { React, useEffect, useState } from "react";
+import DataDisplay from "../components/DataDisplay";
+import { TableCell, TableRow } from "@mui/material";
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import EmployeeService from "../services/employeeService";
-import Button from "@mui/material/Button";
-import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
-import { IconButton } from "@mui/material";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useNavigate } from "react-router-dom";
+import EmployeeService from "../services/employeeService";
+import { toast } from "react-toastify";
+import "./AppointmentsPreview.css";
 
 const AppointmentsPreview = () => {
-  
+  const [data, setData] = useState(null);
   const { patientId } = useParams();
-  const [appointments, setAppointments] = useState(null);
-  const [patient, setPatient] = useState(null);
+  const url = `/appointments/by-patient/${patientId}`;
   const nav = useNavigate();
-
-  const iconButtonStyle = {
-    backgroundColor: "black",
-    color: "white",
-    float: "left",
-  };
-
-  const cellStyle3 = {
-    textAlign: "center",
-    border: "0.2em solid black",
-    color: "white",
-  };
-
-  const cellStyle4 = {
-    textAlign: "center",
-    border: "0.1em solid black",
-  };
-
-  const buttonStyle = {
-    backgroundColor: "purple",
-  };
-
-  const buttonStyle2 = {
-    backgroundColor: "rgb(80, 49, 100)",
-  };
+  const [patient, setPatient] = useState(null);
 
   useEffect(() => {
-    const fetchAppointmentsByPatient = async () => {
-      try {
-        const resp = await EmployeeService.getAppointmentsByPatient(patientId);
-        if (resp.success) {
-          const filtered = resp.data.filter((appointment) => {
-            return (
-              appointment && appointment.status && appointment.status.status_name !== "Na čekanju"
-            );
-          });
-          setAppointments(filtered);
-        } else {
-          console.log("greska");
-        }
-      } catch (err) {
-        toast.error(`API Error:${err.response.data}`, {
-          position: toast.POSITION.TOP_RIGHT,
-        });
-      }
-    };
-
     const fetchPatient = async () => {
       try {
         const resp = await EmployeeService.getPatientById(patientId);
@@ -85,96 +29,79 @@ const AppointmentsPreview = () => {
         });
       }
     };
-
     fetchPatient();
-    fetchAppointmentsByPatient();
-  }, [patientId]);
-
-  useEffect(() => {
-    //console.log(appointments);
-  }, [appointments]);
+  }, [data, patientId]);
 
   return (
-    <div className="main-container2_1">
-      <div className="iconButtonDiv2_1">
-        <IconButton style={iconButtonStyle}
-        onClick={() => nav("../patient-preview")}>
-          <ArrowBackIosNewIcon></ArrowBackIosNewIcon>
-        </IconButton>
+    <div>
+      <div className="title-div2_1">
+        <h2>
+          Pacijent {patient && patient.name} {patient && patient.surname}
+        </h2>
       </div>
-      <div className="mini-container2_1">
-        <div className="title-div2_1">
-          <h2>
-            {patient && patient.name} {patient && patient.surname}
-          </h2>
-        </div>
-
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow className="prviRed2_1">
-                <TableCell style={cellStyle3}>Datum i vrijeme</TableCell>
-                <TableCell style={cellStyle3}>Terapija</TableCell>
-                <TableCell style={cellStyle3}>Ishod</TableCell>
-                <TableCell style={cellStyle3}>Akcija</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {appointments &&
-                appointments.map((appointment) => (
-                  <TableRow key={appointment.appointment_id}>
-                    <TableCell style={cellStyle4}>
-                      {appointment.date_from}
-                    </TableCell>
-                    <TableCell style={cellStyle4}>
-                      {appointment.therapy.therapy_type.therapy_type_name}
-                    </TableCell>
-
-                    <TableCell style={cellStyle4}>
-                      {appointment.status && appointment.status.status_name}
-                    </TableCell>
-
-                    <TableCell style={cellStyle4}>
-                      {appointment.status && appointment.status.status_name === "Zakazan" && (
-                        <Link to={`/attendance/${appointment.appointment_id}`}>
-                          <Button
-                            variant="contained"
-                            size="medium"
-                            className="gumb2_1"
-                            style={buttonStyle}
-                          >
-                            Evidentiraj
-                          </Button>
-                        </Link>
-                      )}
-                      {appointment.status && appointment.status.status_name !== "Zakazan" && (
-                        <div>
-                          <div className="ev2_1">EVIDENTIRANO</div>
-                          <div>
-                            <Link
-                              to={`/attendance-display/${appointment.appointment_id}`}
-                            >
-                              <Button
-                                variant="contained"
-                                size="medium"
-                                className="gumb2_2"
-                                style={buttonStyle2}
-                              >
-                                Prikaži evidenciju
-                              </Button>
-                            </Link>
-                          </div>
-                        </div>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </div>
+      <DataDisplay
+        url={url} // url from where to fetch data
+        setData={setData} // function for setting data declared with useState() hook
+        tableHead={tableHead} // array of objects representing table header
+        //buttonLabel="Dodaj terapiju" // text on button/link
+        //buttonUrl="/home" // link to adding new element page
+      >
+        {/* adding table rows as children to DataDisplay component */}
+        {data !== null &&
+          data.data.appointments.map((appointment) => (
+            <TableRow
+              key={appointment.appointment_id}
+              onClick={() => {
+                if (appointment.status) {
+                  if (appointment.status.status_id === 2) {
+                    nav(`/attendance/${appointment.appointment_id}`);
+                  } else {
+                    nav(`/attendance-display/${appointment.appointment_id}`);
+                  }
+                }
+              }}
+            >
+              <TableCell>{appointment.therapy.date_from}</TableCell>
+              <TableCell>
+                {appointment.therapy.therapy_type.therapy_type_name}
+              </TableCell>
+              <TableCell>
+                {appointment.employee &&
+                  appointment.employee.name +
+                    " " +
+                    appointment.employee.surname}
+              </TableCell>
+              <TableCell>
+                {appointment.status && appointment.status.status_name}
+              </TableCell>
+            </TableRow>
+          ))}
+      </DataDisplay>
     </div>
   );
 };
 
 export default AppointmentsPreview;
+
+const tableHead = [
+  {
+    name: "Datum i vrijeme",
+    orderBy: "date_from",
+    align: "left",
+  },
+  {
+    name: "Terapija",
+    orderBy: "therapy_name",
+    align: "left",
+  },
+  {
+    name: "Doktor",
+    orderBy: "surname",
+    align: "left",
+  },
+  {
+    name: "Ishod",
+    orderBy: "status_name",
+    align: "left",
+  },
+];
