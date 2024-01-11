@@ -1,5 +1,6 @@
 from db import db
 from models import *
+from sqlalchemy import or_
 
 class Device(db.Model):
    __tablename__ = 'device'
@@ -56,6 +57,24 @@ class Device(db.Model):
    def get_name_plural():
       return "devices"
 
+   @staticmethod
+   def get_search_filter(search):
+      return or_(
+         Device.room_num.like(f"%{search}%")
+      )
+   
+   @staticmethod
+   def get_column_names():
+      return [
+         'device_id',
+         'room_num',
+         'device_type_id'
+      ]
+
+   @staticmethod
+   def get_pk_column_name():
+      return 'device_id'
+
 class DeviceType(db.Model):
    __tablename__ = 'device_type'
    device_type_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
@@ -98,3 +117,22 @@ class DeviceType(db.Model):
    @staticmethod
    def get_name_plural():
       return "device_types"
+   
+   @staticmethod
+   def get_search_filter(search):
+      return or_(
+         DeviceType.device_type_name.like(f"%{search}%"),
+         DeviceType.device_type_descr.like(f"%{search}%"),
+      )
+   
+   @staticmethod
+   def get_column_names():
+      return [
+         'device_type_id',
+         'device_type_name',
+         'device_type_descr'
+      ]
+
+   @staticmethod
+   def get_pk_column_name():
+      return 'device_type_id'

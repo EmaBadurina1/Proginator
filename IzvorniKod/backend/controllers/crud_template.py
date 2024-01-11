@@ -2,6 +2,7 @@ from flask import request, jsonify
 from sqlalchemy.exc import IntegrityError, DataError
 from db import db
 from utils.utils import validate_required_fields
+import psycopg2
 
 # get page of entities
 # methods=['GET']
@@ -9,14 +10,40 @@ def get_all(Model, request):
    try:
       page = request.args.get('page', default = 1, type = int)
       page_size = request.args.get('page_size', default = 20, type = int)
+      order_by = request.args.get('order_by', default="therapy_id", type=str)
+      order = request.args.get('order', default="asc", type=str)
+      search = request.args.get('search', default="", type=str)
 
       if page_size > 20 or page_size < 1:
          return jsonify({
-            "error": "Page size must be between 1 and 20",
+            "error": "Stranica mora sadržavati između 1 i 20 elemenata",
             "status": 400
          }), 400
       
-      values = Model.query.paginate(page=page, per_page=page_size, error_out=False)
+      valid_columns = Model.get_column_names()
+
+      order_by = order_by if order_by in valid_columns else Model.get_pk_column_name()
+
+      if order.lower() not in ['asc', 'desc']:
+         order = 'asc'
+
+      order_column = getattr(Model, order_by)
+      if order.lower() == 'desc':
+         order_column = order_column.desc()
+
+      if search == "":
+         values = (Model
+            .query
+            .order_by(order_column)
+            .paginate(page=page, per_page=page_size, error_out=False)
+         )
+      else:
+         values = (Model
+            .query
+            .filter(Model.get_search_filter(search=search))
+            .order_by(order_column)
+            .paginate(page=page, per_page=page_size, error_out=False)
+         )
 
       if values.pages == 0:
          return jsonify({
@@ -27,12 +54,12 @@ def get_all(Model, request):
             "page_size": page_size,
             "pages": values.pages,
             "status": 200,
-            "elements": values.total
+            "total": values.total
          }), 200
 
       if page > values.pages or page < 1:
          return jsonify({
-               'error': 'Requested page does not exist',
+               'error': 'Tražena stranica ne postoji',
                'status': 404
          }), 404
 
@@ -44,19 +71,24 @@ def get_all(Model, request):
          "page_size": page_size,
          "pages": values.pages,
          "status": 200,
-         "elements": values.total
+         "total": values.total
       }), 200
-
+   
+   except psycopg2.OperationalError as e:
+      return jsonify({
+         "error": "There was a problem with connection on server side",
+         "status": 500
+      }), 500
    except Exception as e:
       return jsonify({
-         "error": "Page and page size must be integers",
+         "error": "Stranica i broj elemenata po stranici moraju biti cijeli brojevi",
          "status": 400
       }), 400
    
 # get a row by id
 # methods=['GET']
 def get_one(id, Model):
-   row = Model.query.get(id);
+   row = Model.query.get(id)
    if row:
       return jsonify({
          "data": {
@@ -66,7 +98,7 @@ def get_one(id, Model):
       }), 200
    else:
       return jsonify({
-         "error": f"No ID: {id}",
+         "error": f"Nepostojeći ID: {id}",
          "status": 404
       }), 404
 
@@ -76,7 +108,7 @@ def create(required_fields, Model):
    missing_fields = validate_required_fields(request.json, required_fields)
 
    if missing_fields:
-      error_message = f"Missing required fields: {', '.join(missing_fields)}"
+      error_message = f"Missing fields: {', '.join(missing_fields)}"
       return jsonify({
          "error": error_message,
          "status": 400
@@ -89,14 +121,15 @@ def create(required_fields, Model):
       db.session.commit()
    except (ValueError, IntegrityError, DataError) as e:
       db.session.rollback()
+      print(e)
       return jsonify({
-         "error": "Invalid input",
+         "error": "Podaci su neispravni",
          "status": 400
       }), 400
    except Exception as e:
       db.session.rollback()
       return jsonify({
-         "error": "There was a problem storing your data",
+         "error": "Došlo je do pogreške prilikom spremanja podataka",
          "status": 500
       }), 500
 
@@ -118,13 +151,13 @@ def update(id, Model):
       except (ValueError, IntegrityError, DataError) as e:
          db.session.rollback()
          return jsonify({
-            "error": f"Invalid input: {str(e)}",
+            "error": f"Podaci su neispravni: {e}",
             "status": 400
          }), 400
       except Exception as e:
          db.session.rollback()
          return jsonify({
-            "error": "There was a problem storing your data",
+            "error": "Došlo je do pogreške prilikom spremanja podataka",
             "status": 500
          }), 500
       return jsonify({
@@ -135,7 +168,7 @@ def update(id, Model):
       }), 200
    else:
       return jsonify({
-         "error": f"No ID: {id}",
+         "error": f"Nepostojeći ID: {id}",
          "status": 404
       }), 404
    
@@ -148,11 +181,11 @@ def delete(id, Model):
       db.session.delete(row)
       db.session.commit()
       return jsonify({
-         "message": "Deleted",
+         "message": "Uspješno obrisano",
          "status": 200
       }), 200
    else:
       return jsonify({
-         "error": f"No ID: {id}",
+         "error": f"Nepostojeći ID: {id}",
          "status": 404
       }), 404
