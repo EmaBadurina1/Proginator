@@ -1,7 +1,8 @@
-.container {
+.main-container4_1 {
     margin-left: 4em;
     margin-top: 2em;
     margin-bottom: 2em;
+    margin-right: 4em;
 }
 
 .text-field {
@@ -9,39 +10,39 @@
     margin-top: 5em;
 }
 
-.mini-container {
+.mini-container4_1 {
     border: 0.2em solid black;
     height: 80%;
 }
 
-.small-div1 {
+.small-div4_1 {
     border: 0.1em solid gray;
     width: 27em;
     padding-left: 0.5em;
     padding-top: 0.2em;
     margin-right: 3em;
 }
-.small-div1, .small-div2, .small-div3 {
+.small-div4_1, .small-div4_2, .small-div4_3 {
     margin-bottom: 1em;
 }
-.big-div1 {
+.big-div4_1 {
     display: grid;
     grid-template-columns: 50% auto;
     grid-template-areas: 
     "div1 div2";
 }
-.big-div2 {
+.big-div4_2 {
     margin-left: 1em;
     margin-top: 1em;
     margin-bottom: 1em;
 }
-.mid-div1 {
+.mid-div4_1 {
     margin-top: 1em;
     margin-left: 1em;
     grid-area: div1;
 }
 
-.mid-div2 {
+.mid-div4_2 {
     border: 0.1em solid black;
     margin-top: 1em;
     margin-right: 1em;
@@ -51,7 +52,7 @@
     margin-left: 1em;
 }
 
-.reg-btn {
+.gumb4_1 {
     height: 2.5em;
     margin-right: 0;
     margin-left: auto;
@@ -64,11 +65,11 @@
     margin-top: 1em;
 }
 
-.soba-text {
+.soba-text4_1 {
     width: 90%;
 }
 
-.oprema-text {
+.oprema-text4_1 {
     width: 90%;
 }
 

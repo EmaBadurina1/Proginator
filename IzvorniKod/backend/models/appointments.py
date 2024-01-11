@@ -1,8 +1,6 @@
 from datetime import datetime
 from db import db
-from models.accounts import Employee
-from models.rooms import Room
-from models.therapies import Therapy
+from sqlalchemy import or_
 
 class Appointment(db.Model):
    __tablename__ = 'appointment'
@@ -19,7 +17,6 @@ class Appointment(db.Model):
       ),
       nullable=False
    )
-   # statud_id is default upon initializing 
    status_id = db.Column(
       db.Integer,
       db.ForeignKey(
@@ -106,6 +103,30 @@ class Appointment(db.Model):
    @staticmethod
    def get_name_plural():
       return "appointments"
+   
+   @staticmethod
+   def get_search_filter(search):
+      return or_(
+         Appointment.comment.like(f"%{search}%"),
+         Appointment.room_num.like(f"%{search}%")
+      )
+   
+   @staticmethod
+   def get_column_names():
+      return [
+         'appointment_id',
+         'date_from',
+         'date_to',
+         'comment',
+         'therapy_id',
+         'status_id',
+         'room_num',
+         'employee_id'
+      ]
+
+   @staticmethod
+   def get_pk_column_name():
+      return 'appointment_id'
 
 class Status(db.Model):
    __tablename__ = 'status'
@@ -143,3 +164,20 @@ class Status(db.Model):
    @staticmethod
    def get_name_plural():
       return "statuses"
+   
+   @staticmethod
+   def get_search_filter(search):
+      return or_(
+         Status.status_name.like(f"%{search}%")
+      )
+   
+   @staticmethod
+   def get_column_names():
+      return [
+         'status_id',
+         'status_name'
+      ]
+
+   @staticmethod
+   def get_pk_column_name():
+      return 'status_id'

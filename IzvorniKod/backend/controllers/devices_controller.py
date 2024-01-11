@@ -1,6 +1,7 @@
 from controllers.crud_template import *
 from models import *
 from auth import auth_validation, require_any_role
+import psycopg2
 
 # setup blueprint
 from flask import Blueprint
@@ -50,6 +51,9 @@ def get_by_device_type(device_type_id):
    try:
       page = request.args.get('page', default = 1, type = int)
       page_size = request.args.get('page_size', default = 20, type = int)
+      order_by = request.args.get('order_by', default="therapy_id", type=str)
+      order = request.args.get('order', default="asc", type=str)
+      search = request.args.get('search', default="", type=str)
 
       if page_size > 20 or page_size < 1:
          return jsonify({
@@ -57,12 +61,32 @@ def get_by_device_type(device_type_id):
                "status": 400
          }), 400
 
-      devices = (
-         Device
-         .query
-         .filter_by(device_type_id=device_type_id)
-         .paginate(page=page, per_page=page_size, error_out=False)
-      )
+      valid_columns = Device.get_column_names()
+
+      order_by = order_by if order_by in valid_columns else Device.get_pk_column_name()
+
+      if order.lower() not in ['asc', 'desc']:
+         order = 'asc'
+
+      order_column = getattr(Device, order_by)
+      if order.lower() == 'desc':
+         order_column = order_column.desc()
+
+      if search == "":
+         devices = (Device
+            .query
+            .filter_by(device_type_id=device_type_id)
+            .order_by(order_column)
+            .paginate(page=page, per_page=page_size, error_out=False)
+         )
+      else:
+         devices = (Device
+            .query
+            .filter_by(device_type_id=device_type_id)
+            .filter(Device.get_search_filter(search=search))
+            .order_by(order_column)
+            .paginate(page=page, per_page=page_size, error_out=False)
+         )
 
       if devices.pages == 0:
          return jsonify({
@@ -73,7 +97,7 @@ def get_by_device_type(device_type_id):
          "page_size": page_size,
          "pages": devices.pages,
          "status": 200,
-         "elements": devices.total
+         "total": devices.total
       }), 200
 
       if page > devices.pages or page < 1:
@@ -90,11 +114,17 @@ def get_by_device_type(device_type_id):
          "page_size": page_size,
          "pages": devices.pages,
          "status": 200,
-         "elements": devices.total
+         "total": devices.total
       }), 200
+   
+   except psycopg2.OperationalError as e:
+      return jsonify({
+         "error": "There was a problem with connection on server side",
+         "status": 500
+      }), 500
    except Exception as e:
       return jsonify({
-         "error": "Page and page size must be integers",
+         "error": "Page and page size must be integers and order, order_by and search must be strings",
          "status": 400
       }), 400
 

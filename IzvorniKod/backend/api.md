@@ -6,14 +6,26 @@
 
 #### Request
 
-- **Endpoint:** `/patients?page=<page>&page_size=<page_size>`
+- **Endpoint:** `/patients?page=<page>&page_size=<page_size>&order_by=<order_by>&order=<order>&search=<search>`
 - **Method:** `GET`
 - **Require authorization**
 - **Params:**
    - `page` (integer): Page number you want to get (default 1).
    - `page_size` (integer): Number of elements per page, max 20 (default 20).
+   - `order_by` (string): Column name to sort on.
+   - `order` (string): Ascending (`asc`) or descending (`desc`).
+   - `search` (string): String you want to search for out of all strings in table.
 - **Notes:**
    - All request parameters are optional.
+   - `order_by` if used must be one of following:
+      - `user_id`
+      - `name`
+      - `surname`
+      - `email`
+      - `phone_number`
+      - `date_of_birth`
+      - `hashed_password`
+      - `MBO`
 
 #### Response
 
@@ -40,7 +52,7 @@
       "page_size": <page_size>,
       "pages": 1,
       "status": 200,
-      "elements": 5
+      "total": 5
    }
    ```
 
@@ -48,14 +60,25 @@
    - `400 Bad Request`
       - If `page` or `page_size` are not integers.
       - If `page_size` is not between 1 and 20.
+      - If `order_by`, `order` or `search` is not a string.
    - `404 Not Found`
       - If page does not exist.
+   - `500 Internal Server Error`
+      - If there is a problem with server.
 
 - **Error:**
    ```json
    {
       "error": "Error message",
       "status": 400
+   }
+   ```
+
+- **Error:**
+   ```json
+   {
+      "error": "Error message",
+      "status": 500
    }
    ```
 
@@ -253,14 +276,28 @@
 
 #### Request
 
-- **Endpoint:** `/employees?page=<page>&page_size=<page_size>`
+- **Endpoint:** `/employees?page=<page>&page_size=<page_size>&order_by=<order_by>&order=<order>&search=<search>`
 - **Method:** `GET`
 - **Require authorization**
 - **Params:**
    - `page` (integer): Page number you want to get (default 1).
    - `page_size` (integer): Number of elements per page, max 20 (default 20).
+   - `order_by` (string): Column name to sort on.
+   - `order` (string): Ascending (`asc`) or descending (`desc`).
+   - `search` (string): String you want to search for out of all strings in table.
 - **Notes:**
    - All request parameters are optional.
+   - `order_by` if used must be one of following:
+      - `user_id`
+      - `name`
+      - `surname`
+      - `email`
+      - `phone_number`
+      - `date_of_birth`
+      - `hashed_password`
+      - `OIB`
+      - `is_active`
+      - `is_admin`
 
 #### Response
 
@@ -289,7 +326,7 @@
       "page_size": <page_size>,
       "pages": 1,
       "status": 200,
-      "elements": 5
+      "total": 5
    }
    ```
 
@@ -297,14 +334,25 @@
    - `400 Bad Request`
       - If `page` or `page_size` are not integers.
       - If `page_size` is not between 1 and 20.
+      - If `order_by`, `order` or `search` is not a string.
    - `404 Not Found`
       - If page does not exist.
+   - `500 Internal Server Error`
+      - If there is a problem with server.
 
 - **Error:**
    ```json
    {
       "error": "Error message",
       "status": 400
+   }
+   ```
+
+- **Error:**
+   ```json
+   {
+      "error": "Error message",
+      "status": 500
    }
    ```
 
@@ -424,7 +472,6 @@
    - `phone_number` (string): User's phone number (must be unique).
    - `date_of_birth` (string): User's date of birth in the format `YYYY-MM-DD`.
    - `OIB` (string): User's OIB (must be unique).
-   - `password` (string): User's password.
    - `is_active` (boolean): Is employee active.
    - `is_admin` (boolean): Is employee admin.
 - **Notes:**
@@ -660,14 +707,26 @@
 
 #### Request
 
-- **Endpoint:** `/appointments?page=<page>&page_size=<page_size>`
+- **Endpoint:** `/appointments?page=<page>&page_size=<page_size>&order_by=<order_by>&order=<order>&search=<search>`
 - **Method:** `GET`
 - **Require authorization**
 - **Params:**
    - `page` (integer): Page number you want to get (default 1).
    - `page_size` (integer): Number of elements per page, max 20 (default 20).
+   - `order_by` (string): Column name to sort on.
+   - `order` (string): Ascending (`asc`) or descending (`desc`).
+   - `search` (string): String you want to search for out of all strings in table.
 - **Notes:**
    - All request parameters are optional.
+   - `order_by` if used must be one of following:
+      - `appointment_id`
+      - `date_from`
+      - `date_to`
+      - `comment`
+      - `therapy_id`
+      - `status_id`
+      - `room_num`
+      - `employee_id`
 
 #### Response
 
@@ -733,7 +792,7 @@
       "page_size": <page_size>,
       "pages": 1,
       "status": 200,
-      "elements": 5
+      "total": 5
    }
    ```
 
@@ -741,14 +800,25 @@
    - `400 Bad Request`
       - If `page` or `page_size` are not integers.
       - If `page_size` is not between 1 and 20.
+      - If `order_by`, `order` or `search` is not a string.
    - `404 Not Found`
       - If page does not exist.
+   - `500 Internal Server Error`
+      - If there is a problem with server.
 
 - **Error:**
    ```json
    {
       "error": "Error message",
       "status": 400
+   }
+   ```
+
+- **Error:**
+   ```json
+   {
+      "error": "Error message",
+      "status": 500
    }
    ```
 
@@ -1067,14 +1137,26 @@
 
 #### Request
 
-- **Endpoint:** `/appointments/by-therapy/<therapy_id>?page=<page>&page_size=<page_size>`
+- **Endpoint:** `/appointments/by-therapy/<therapy_id>?page=<page>&page_size=<page_size>&order_by=<order_by>&order=<order>&search=<search>`
 - **Method:** `GET`
 - **Require authorization**
 - **Params:**
    - `page` (integer): Page number you want to get (default 1).
    - `page_size` (integer): Number of elements per page, max 20 (default 20).
+   - `order_by` (string): Column name to sort on.
+   - `order` (string): Ascending (`asc`) or descending (`desc`).
+   - `search` (string): String you want to search for out of all strings in table.
 - **Notes:**
    - All request parameters are optional.
+   - `order_by` if used must be one of following:
+      - `appointment_id`
+      - `date_from`
+      - `date_to`
+      - `comment`
+      - `therapy_id`
+      - `status_id`
+      - `room_num`
+      - `employee_id`
 
 #### Response
 
@@ -1140,7 +1222,7 @@
       "page_size": <page_size>,
       "pages": 1,
       "status": 200,
-      "elements": 5
+      "total": 5
    }
    ```
 
@@ -1148,8 +1230,11 @@
    - `400 Bad Request`
       - If `page` or `page_size` are not integers.
       - If `page_size` is not between 1 and 20.
+      - If `order_by`, `order` or `search` is not a string.
    - `404 Not Found`
       - If page does not exist.
+   - `500 Internal Server Error`
+      - If there is a problem with server.
 
 - **Error:**
    ```json
@@ -1159,18 +1244,38 @@
    }
    ```
 
+- **Error:**
+   ```json
+   {
+      "error": "Error message",
+      "status": 500
+   }
+   ```
+
 ### Get all appointments by employee
 
 #### Request
 
-- **Endpoint:** `/appointments/by-employee/<user_id>?page=<page>&page_size=<page_size>`
+- **Endpoint:** `/appointments/by-employee/<user_id>?page=<page>&page_size=<page_size>&order_by=<order_by>&order=<order>&search=<search>`
 - **Method:** `GET`
 - **Require authorization**
 - **Params:**
    - `page` (integer): Page number you want to get (default 1).
    - `page_size` (integer): Number of elements per page, max 20 (default 20).
+   - `order_by` (string): Column name to sort on.
+   - `order` (string): Ascending (`asc`) or descending (`desc`).
+   - `search` (string): String you want to search for out of all strings in table.
 - **Notes:**
    - All request parameters are optional.
+   - `order_by` if used must be one of following:
+      - `appointment_id`
+      - `date_from`
+      - `date_to`
+      - `comment`
+      - `therapy_id`
+      - `status_id`
+      - `room_num`
+      - `employee_id`
 
 #### Response
 
@@ -1236,7 +1341,7 @@
       "page_size": <page_size>,
       "pages": 1,
       "status": 200,
-      "elements": 5
+      "total": 5
    }
    ```
 
@@ -1244,8 +1349,11 @@
    - `400 Bad Request`
       - If `page` or `page_size` are not integers.
       - If `page_size` is not between 1 and 20.
+      - If `order_by`, `order` or `search` is not a string.
    - `404 Not Found`
       - If page does not exist.
+   - `500 Internal Server Error`
+      - If there is a problem with server.
 
 - **Error:**
    ```json
@@ -1255,18 +1363,38 @@
    }
    ```
 
+- **Error:**
+   ```json
+   {
+      "error": "Error message",
+      "status": 500
+   }
+   ```
+
 ### Get all appointments by patient
 
 #### Request
 
-- **Endpoint:** `/appointments/by-patient/<user_id>?page=<page>&page_size=<page_size>`
+- **Endpoint:** `/appointments/by-patient/<user_id>?page=<page>&page_size=<page_size>&order_by=<order_by>&order=<order>&search=<search>`
 - **Method:** `GET`
 - **Require authorization**
 - **Params:**
    - `page` (integer): Page number you want to get (default 1).
    - `page_size` (integer): Number of elements per page, max 20 (default 20).
+   - `order_by` (string): Column name to sort on.
+   - `order` (string): Ascending (`asc`) or descending (`desc`).
+   - `search` (string): String you want to search for out of all strings in table.
 - **Notes:**
    - All request parameters are optional.
+   - `order_by` if used must be one of following:
+      - `appointment_id`
+      - `date_from`
+      - `date_to`
+      - `comment`
+      - `therapy_id`
+      - `status_id`
+      - `room_num`
+      - `employee_id`
 
 #### Response
 
@@ -1332,7 +1460,7 @@
       "page_size": <page_size>,
       "pages": 1,
       "status": 200,
-      "elements": 5
+      "total": 5
    }
    ```
 
@@ -1340,8 +1468,11 @@
    - `400 Bad Request`
       - If `page` or `page_size` are not integers.
       - If `page_size` is not between 1 and 20.
+      - If `order_by`, `order` or `search` is not a string.
    - `404 Not Found`
       - If page does not exist.
+   - `500 Internal Server Error`
+      - If there is a problem with server.
 
 - **Error:**
    ```json
@@ -1351,18 +1482,32 @@
    }
    ```
 
+- **Error:**
+   ```json
+   {
+      "error": "Error message",
+      "status": 500
+   }
+   ```
+
 ### Get all statuses
 
 #### Request
 
-- **Endpoint:** `/statuses?page=<page>&page_size=<page_size>`
+- **Endpoint:** `/statuses?page=<page>?page=<page>&page_size=<page_size>&order_by=<order_by>&order=<order>&search=<search>`
 - **Method:** `GET`
 - **Require authorization**
 - **Params:**
    - `page` (integer): Page number you want to get (default 1).
    - `page_size` (integer): Number of elements per page, max 20 (default 20).
+   - `order_by` (string): Column name to sort on.
+   - `order` (string): Ascending (`asc`) or descending (`desc`).
+   - `search` (string): String you want to search for out of all strings in table.
 - **Notes:**
    - All request parameters are optional.
+   - `order_by` if used must be one of following:
+      - `status_id`
+      - `status_name`
 
 #### Response
 
@@ -1384,7 +1529,7 @@
       "page_size": <page_size>,
       "pages": 1,
       "status": 200,
-      "elements": 5
+      "total": 5
    }
    ```
 
@@ -1392,14 +1537,25 @@
    - `400 Bad Request`
       - If `page` or `page_size` are not integers.
       - If `page_size` is not between 1 and 20.
+      - If `order_by`, `order` or `search` is not a string.
    - `404 Not Found`
       - If page does not exist.
+   - `500 Internal Server Error`
+      - If there is a problem with server.
 
 - **Error:**
    ```json
    {
       "error": "Error message",
       "status": 400
+   }
+   ```
+
+- **Error:**
+   ```json
+   {
+      "error": "Error message",
+      "status": 500
    }
    ```
 
@@ -1578,14 +1734,21 @@
 
 #### Request
 
-- **Endpoint:** `/devices?page=<page>&page_size=<page_size>`
+- **Endpoint:** `/devices?page=<page>&page_size=<page_size>&order_by=<order_by>&order=<order>&search=<search>`
 - **Method:** `GET`
 - **Require authorization**
 - **Params:**
    - `page` (integer): Page number you want to get (default 1).
    - `page_size` (integer): Number of elements per page, max 20 (default 20).
+   - `order_by` (string): Column name to sort on.
+   - `order` (string): Ascending (`asc`) or descending (`desc`).
+   - `search` (string): String you want to search for out of all strings in table.
 - **Notes:**
    - All request parameters are optional.
+   - `order_by` if used must be one of following:
+      - `device_id`
+      - `room_num`
+      - `device_type_id`
 
 #### Response
 
@@ -1616,7 +1779,7 @@
       "page_size": <page_size>,
       "pages": 1,
       "status": 200,
-      "elements": 5
+      "total": 5
    }
    ```
 
@@ -1624,14 +1787,25 @@
    - `400 Bad Request`
       - If `page` or `page_size` are not integers.
       - If `page_size` is not between 1 and 20.
+      - If `order_by`, `order` or `search` is not a string.
    - `404 Not Found`
       - If page does not exist.
+   - `500 Internal Server Error`
+      - If there is a problem with server.
 
 - **Error:**
    ```json
    {
       "error": "Error message",
       "status": 400
+   }
+   ```
+
+- **Error:**
+   ```json
+   {
+      "error": "Error message",
+      "status": 500
    }
    ```
 
@@ -1837,14 +2011,21 @@
 
 #### Request
 
-- **Endpoint:** `/devices/by-type/<device_type_id>?page=<page>&page_size=<page_size>`
+- **Endpoint:** `/devices/by-type/<device_type_id>?page=<page>&page_size=<page_size>&order_by=<order_by>&order=<order>&search=<search>`
 - **Method:** `GET`
 - **Require authorization**
 - **Params:**
    - `page` (integer): Page number you want to get (default 1).
    - `page_size` (integer): Number of elements per page, max 20 (default 20).
+   - `order_by` (string): Column name to sort on.
+   - `order` (string): Ascending (`asc`) or descending (`desc`).
+   - `search` (string): String you want to search for out of all strings in table.
 - **Notes:**
    - All request parameters are optional.
+   - `order_by` if used must be one of following:
+      - `device_id`
+      - `room_num`
+      - `device_type_id`
 
 #### Response
 
@@ -1875,7 +2056,7 @@
       "page_size": <page_size>,
       "pages": 1,
       "status": 200,
-      "elements": 5
+      "total": 5
    }
    ```
 
@@ -1883,8 +2064,11 @@
    - `400 Bad Request`
       - If `page` or `page_size` are not integers.
       - If `page_size` is not between 1 and 20.
+      - If `order_by`, `order` or `search` is not a string.
    - `404 Not Found`
       - If page does not exist.
+   - `500 Internal Server Error`
+      - If there is a problem with server.
 
 - **Error:**
    ```json
@@ -1894,18 +2078,33 @@
    }
    ```
 
+- **Error:**
+   ```json
+   {
+      "error": "Error message",
+      "status": 500
+   }
+   ```
+
 ### Get all device types
 
 #### Request
 
-- **Endpoint:** `/device-types?page=<page>&page_size=<page_size>`
+- **Endpoint:** `/device-types?page=<page>&page_size=<page_size>&order_by=<order_by>&order=<order>&search=<search>`
 - **Method:** `GET`
 - **Require authorization**
 - **Params:**
    - `page` (integer): Page number you want to get (default 1).
    - `page_size` (integer): Number of elements per page, max 20 (default 20).
+   - `order_by` (string): Column name to sort on.
+   - `order` (string): Ascending (`asc`) or descending (`desc`).
+   - `search` (string): String you want to search for out of all strings in table.
 - **Notes:**
    - All request parameters are optional.
+   - `order_by` if used must be one of following:
+      - `device_type_id`
+      - `device_type_name`
+      - `device_type_descr`
 
 #### Response
 
@@ -1928,7 +2127,7 @@
       "page_size": <page_size>,
       "pages": 1,
       "status": 200,
-      "elements": 5
+      "total": 5
    }
    ```
 
@@ -1936,14 +2135,25 @@
    - `400 Bad Request`
       - If `page` or `page_size` are not integers.
       - If `page_size` is not between 1 and 20.
+      - If `order_by`, `order` or `search` is not a string.
    - `404 Not Found`
       - If page does not exist.
+   - `500 Internal Server Error`
+      - If there is a problem with server.
 
 - **Error:**
    ```json
    {
       "error": "Error message",
       "status": 400
+   }
+   ```
+
+- **Error:**
+   ```json
+   {
+      "error": "Error message",
+      "status": 500
    }
    ```
 
@@ -2141,14 +2351,21 @@
 
 #### Request
 
-- **Endpoint:** `/rooms?page=<page>&page_size=<page_size>`
+- **Endpoint:** `/rooms?page=<page>&page_size=<page_size>&order_by=<order_by>&order=<order>&search=<search>`
 - **Method:** `GET`
 - **Require authorization**
 - **Params:**
    - `page` (integer): Page number you want to get (default 1).
    - `page_size` (integer): Number of elements per page, max 20 (default 20).
+   - `order_by` (string): Column name to sort on.
+   - `order` (string): Ascending (`asc`) or descending (`desc`).
+   - `search` (string): String you want to search for out of all strings in table.
 - **Notes:**
    - All request parameters are optional.
+   - `order_by` if used must be one of following:
+      - `room_num`
+      - `capacity`
+      - `in_use`
 
 #### Response
 
@@ -2190,7 +2407,7 @@
       "page_size": <page_size>,
       "pages": 1,
       "status": 200,
-      "elements": 5
+      "total": 5
    }
    ```
 
@@ -2198,14 +2415,25 @@
    - `400 Bad Request`
       - If `page` or `page_size` are not integers.
       - If `page_size` is not between 1 and 20.
+      - If `order_by`, `order` or `search` is not a string.
    - `404 Not Found`
       - If page does not exist.
+   - `500 Internal Server Error`
+      - If there is a problem with server.
 
 - **Error:**
    ```json
    {
       "error": "Error message",
       "status": 400
+   }
+   ```
+
+- **Error:**
+   ```json
+   {
+      "error": "Error message",
+      "status": 500
    }
    ```
 
@@ -2448,14 +2676,26 @@
 
 #### Request
 
-- **Endpoint:** `/therapies?page=<page>&page_size=<page_size>`
+- **Endpoint:** `/therapies?page=<page>&page_size=<page_size>&order_by=<order_by>&order=<order>&search=<search>`
 - **Method:** `GET`
 - **Require authorization**
 - **Params:**
    - `page` (integer): Page number you want to get (default 1).
    - `page_size` (integer): Number of elements per page, max 20 (default 20).
+   - `order_by` (string): Column name to sort on.
+   - `order` (string): Ascending (`asc`) or descending (`desc`).
+   - `search` (string): String you want to search for out of all strings in table.
 - **Notes:**
    - All request parameters are optional.
+   - `order_by` if used must be one of following:
+      - `therapy_id`
+      - `doctor_id`
+      - `disease_descr`
+      - `req_treatment`
+      - `date_from`
+      - `date_to`
+      - `patient_id`
+      - `therapy_type_id`
 
 #### Response
 
@@ -2524,7 +2764,7 @@
       "page_size": <page_size>,
       "pages": 1,
       "status": 200,
-      "elements": 5
+      "total": 5
    }
    ```
 
@@ -2532,14 +2772,25 @@
    - `400 Bad Request`
       - If `page` or `page_size` are not integers.
       - If `page_size` is not between 1 and 20.
+      - If `order_by`, `order` or `search` is not a string.
    - `404 Not Found`
       - If page does not exist.
+   - `500 Internal Server Error`
+      - If there is a problem with server.
 
 - **Error:**
    ```json
    {
       "error": "Error message",
       "status": 400
+   }
+   ```
+
+- **Error:**
+   ```json
+   {
+      "error": "Error message",
+      "status": 500
    }
    ```
 
@@ -2886,14 +3137,26 @@
 
 #### Request
 
-- **Endpoint:** `/therapies/by-patient/<user_id>?page=<page>&page_size=<page_size>`
+- **Endpoint:** `/therapies/by-patient/<user_id>?page=<page>&page_size=<page_size>&order_by=<order_by>&order=<order>&search=<search>`
 - **Method:** `GET`
 - **Require authorization**
 - **Params:**
    - `page` (integer): Page number you want to get (default 1).
    - `page_size` (integer): Number of elements per page, max 20 (default 20).
+   - `order_by` (string): Column name to sort on.
+   - `order` (string): Ascending (`asc`) or descending (`desc`).
+   - `search` (string): String you want to search for out of all strings in table.
 - **Notes:**
    - All request parameters are optional.
+   - `order_by` if used must be one of following:
+      - `therapy_id`
+      - `doctor_id`
+      - `disease_descr`
+      - `req_treatment`
+      - `date_from`
+      - `date_to`
+      - `patient_id`
+      - `therapy_type_id`
 
 #### Response
 
@@ -2967,7 +3230,7 @@
       "page_size": <page_size>,
       "pages": 1,
       "status": 200,
-      "elements": 5
+      "total": 5
    }
    ```
 
@@ -2975,14 +3238,25 @@
    - `400 Bad Request`
       - If `page` or `page_size` are not integers.
       - If `page_size` is not between 1 and 20.
+      - If `order_by`, `order` or `search` is not a string.
    - `404 Not Found`
       - If page does not exist.
+   - `500 Internal Server Error`
+      - If there is a problem with server.
 
 - **Error:**
    ```json
    {
       "error": "Error message",
       "status": 400
+   }
+   ```
+
+- **Error:**
+   ```json
+   {
+      "error": "Error message",
+      "status": 500
    }
    ```
 
@@ -2990,14 +3264,26 @@
 
 #### Request
 
-- **Endpoint:** `/therapies/by-type/<therapy_type_id>?page=<page>&page_size=<page_size>`
+- **Endpoint:** `/therapies/by-type/<therapy_type_id>?page=<page>&page_size=<page_size>&order_by=<order_by>&order=<order>&search=<search>`
 - **Method:** `GET`
 - **Require authorization**
 - **Params:**
    - `page` (integer): Page number you want to get (default 1).
    - `page_size` (integer): Number of elements per page, max 20 (default 20).
+   - `order_by` (string): Column name to sort on.
+   - `order` (string): Ascending (`asc`) or descending (`desc`).
+   - `search` (string): String you want to search for out of all strings in table.
 - **Notes:**
    - All request parameters are optional.
+   - `order_by` if used must be one of following:
+      - `therapy_id`
+      - `doctor_id`
+      - `disease_descr`
+      - `req_treatment`
+      - `date_from`
+      - `date_to`
+      - `patient_id`
+      - `therapy_type_id`
 
 #### Response
 
@@ -3071,7 +3357,7 @@
       "page_size": <page_size>,
       "pages": 1,
       "status": 200,
-      "elements": 5
+      "total": 5
    }
    ```
 
@@ -3079,8 +3365,11 @@
    - `400 Bad Request`
       - If `page` or `page_size` are not integers.
       - If `page_size` is not between 1 and 20.
+      - If `order_by`, `order` or `search` is not a string.
    - `404 Not Found`
       - If page does not exist.
+   - `500 Internal Server Error`
+      - If there is a problem with server.
 
 - **Error:**
    ```json
@@ -3090,18 +3379,33 @@
    }
    ```
 
+- **Error:**
+   ```json
+   {
+      "error": "Error message",
+      "status": 500
+   }
+   ```
+
 ### Get all therapy types
 
 #### Request
 
-- **Endpoint:** `/therapy-types?page=<page>&page_size=<page_size>`
+- **Endpoint:** `/therapy-types?page=<page>&page_size=<page_size>&order_by=<order_by>&order=<order>&search=<search>`
 - **Method:** `GET`
 - **Require authorization**
 - **Params:**
    - `page` (integer): Page number you want to get (default 1).
    - `page_size` (integer): Number of elements per page, max 20 (default 20).
+   - `order_by` (string): Column name to sort on.
+   - `order` (string): Ascending (`asc`) or descending (`desc`).
+   - `search` (string): String you want to search for out of all strings in table.
 - **Notes:**
    - All request parameters are optional.
+   - `order_by` if used must be one of following:
+      - `therapy_type_id`
+      - `therapy_type_name`
+      - `therapy_type_descr`
 
 #### Response
 
@@ -3124,7 +3428,7 @@
       "page_size": <page_size>,
       "pages": 1,
       "status": 200,
-      "elements": 5
+      "total": 5
    }
    ```
 
@@ -3132,14 +3436,25 @@
    - `400 Bad Request`
       - If `page` or `page_size` are not integers.
       - If `page_size` is not between 1 and 20.
+      - If `order_by`, `order` or `search` is not a string.
    - `404 Not Found`
       - If page does not exist.
+   - `500 Internal Server Error`
+      - If there is a problem with server.
 
 - **Error:**
    ```json
    {
       "error": "Error message",
       "status": 400
+   }
+   ```
+
+- **Error:**
+   ```json
+   {
+      "error": "Error message",
+      "status": 500
    }
    ```
 

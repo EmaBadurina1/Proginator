@@ -250,7 +250,7 @@ const UserAdd = () => {
                response.message,
                { position: toast.POSITION.BOTTOM_RIGHT }
             );
-            navigate("/home"); // kasnije skociti na rutu sa svim korisnicima
+            navigate("/user-accounts");
          }
       } catch (error) {
          if(error.response && error.response.status === 400) {
@@ -413,6 +413,15 @@ const UserAdd = () => {
                   />
                </div>
                <div className="form-row submit">
+                  <Button
+                     className="submit-btn"
+                     variant="contained"
+                     size="medium"
+                     color="error"
+                     onClick={() => navigate("/user-accounts")}
+                  >
+                     Odustani
+                  </Button>
                   <Button
                      type="submit"
                      className="submit-btn"

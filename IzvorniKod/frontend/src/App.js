@@ -30,9 +30,13 @@ import UserAccount from "./pages/UserAccount";
 import MyTherapies from "./pages/MyTherapies";
 import CreateTherapy from "./pages/CreateTherapy";
 import MyTherapy from "./pages/MyTherapy";
-import DataDisplay from "./components/DataDisplay";
+import NewAppointment from "./pages/NewAppointment";
 import ChangePassword from "./pages/ChangePassword";
 import AlreadyLoggedIn from "./pages/AlreadyLoggedIn";
+import DataPreview from "./pages/DataPreview";
+import UserAccounts from "./pages/UserAccounts";
+import Devices from "./pages/Devices";
+import Rooms from "./pages/Rooms";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(true);
@@ -164,6 +168,36 @@ function App() {
           }
         />
         <Route
+          path="/user-accounts"
+          element={
+            <ProtectedRoute>
+              <AdminRoute>
+                <UserAccounts />
+              </AdminRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/devices"
+          element={
+            <ProtectedRoute>
+              <AdminRoute>
+                <Devices />
+              </AdminRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/rooms"
+          element={
+            <ProtectedRoute>
+              <AdminRoute>
+                <Rooms />
+              </AdminRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/attendance/:appointmentId"
           element={
             <ProtectedRoute>
@@ -277,15 +311,19 @@ function App() {
           }
         />
         <Route
+          path="/new-appointment"
+          element={
+            <ProtectedRoute>
+              <PatientRoute>
+                <NewAppointment />
+              </PatientRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/data-display"
           element={
-            <DataDisplay
-              url={"/therapy-types"}
-              columns={["Terapija", "Opis"]}
-              options={["therapy_type_name", "therapy_type_descr"]}
-              identificator={"therapy_type_id"}
-              dataName="therapy_types"
-            />
+            <DataPreview/>
           }
         />
         <Route path="*" element={<NotFound />} />

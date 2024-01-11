@@ -90,9 +90,9 @@ const AppointmentRequestsPreview = () => {
   };
 
   return (
-    <div className="main-container">
-      <div className="header2">
-        <div className="title-div3">
+    <div className="main-container5_1">
+      <div className="header5_1">
+        <div className="title-div5_1">
           <h2>Zahtjevi za termine - svi pacijenti</h2>
         </div>
         <TextField
@@ -104,7 +104,7 @@ const AppointmentRequestsPreview = () => {
             ),
           }}
           autoComplete="false"
-          className="pretraga"
+          className="pretraga5_1"
           label="Pretraga"
           variant="outlined"
           name="pretraga"
@@ -116,7 +116,7 @@ const AppointmentRequestsPreview = () => {
       <TableContainer>
         <Table>
           <TableHead>
-            <TableRow className="prviRed2">
+            <TableRow className="prviRed5_1">
               <TableCell style={cellStyle3}>Ime</TableCell>
               <TableCell style={cellStyle3}>Prezime</TableCell>
               <TableCell style={cellStyle3}>Željeni termin</TableCell>
@@ -148,11 +148,11 @@ const AppointmentRequestsPreview = () => {
                     {appointment.status.status_name !== "Odrađen" && 
                       appointment.status.status_name !== "Propušten" &&
                       appointment.status.status_name === "Na čekanju" && (
-                        <div className="ev1">
+                        <div className="ev5_1">
                           {appointment.status.status_name}
                         </div>
                       )}
-                    <div className="button-container">
+                    <div className="button-container5_1">
                       {appointment.status.status_name !== "Odrađen" && 
                       appointment.status.status_name !== "Propušten" &&
                         appointment.status.status_name === "Na čekanju" && (
@@ -161,7 +161,7 @@ const AppointmentRequestsPreview = () => {
                               <Button
                                 variant="contained"
                                 size="medium"
-                                className="reg-btn3"
+                                className="gumb5_1"
                                 style={buttonStyle3}
                               >
                                 Promijeni
@@ -177,7 +177,7 @@ const AppointmentRequestsPreview = () => {
                               <Button
                                 variant="contained"
                                 size="medium"
-                                className="reg-btn4"
+                                className="gumb5_2"
                                 style={buttonStyle4}
                               >
                                 Odbij
@@ -191,7 +191,7 @@ const AppointmentRequestsPreview = () => {
                         appointment.status.status_name !== "Propušten" &&
                         appointment.status.status_name !== "Na čekanju" && (
                           <div className="button-container2">
-                            <div className="ev1">
+                            <div className="ev5_1">
                               {appointment.status.status_name}
                             </div>
                             <div>
@@ -199,7 +199,7 @@ const AppointmentRequestsPreview = () => {
                                 <Button
                                   variant="contained"
                                   size="medium"
-                                  className="reg-btn3"
+                                  className="gumb5_1"
                                   style={buttonStyle3}
                                 >
                                   Promijeni
