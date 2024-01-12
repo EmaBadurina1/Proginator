@@ -106,8 +106,9 @@ def register_patient():
     ]
     for field in MBO_fields:
         if patient[field] != request.json[field]:
+            print(patient[field], request.json[field])
             return jsonify({
-                "error": "Podaci nisu ispravni",
+                "error": "Podaci nisu ispravni: MBO ne odgovara ostalim podacima",
                 "status": 400
             }), 400
 
@@ -152,54 +153,37 @@ def register_patient():
 @auth_validation
 @require_any_role("admin", "patient")
 def update_patient(user_id):
-    patient = Patient.query.get(user_id)
-    if patient:
-        # patient can only update his own data || BILO BI DOBRO DA SE OVO RIJEŠI U AUTH VALIDATION
-        if session['role'] == 'patient' and session['user_id'] != user_id:
-            return jsonify({
-                "error": "Nemate pravo pristupa ovim podacima",
-                "status": 403
-            }), 403
-        
-        update_fields = {}
-
-        if 'email' in request.json:
-            update_fields['email'] = request.json['email']
-        if 'phone_number' in request.json:
-            update_fields['phone_number'] = request.json['phone_number']
-
-        if not update_fields:
-            return jsonify({
-                "error": "Nema podataka za ažuriranje",
-                "status": 400
-            }), 400
-        
-        try:
-            patient.update(**request.json)
-            db.session.commit()
-        except (ValueError, IntegrityError, DataError) as e:
-            db.session.rollback()
-            return jsonify({
-                "error": f"Neispravan format podataka: {e}",
-                "status": 400
-            }), 400
-        except Exception as e:
-            db.session.rollback()
-            return jsonify({
-                "error": "Došlo je do pogreške prilikom spremanja podataka",
-                "status": 500
-            }), 500
+    # patient can only update his own data || BILO BI DOBRO DA SE OVO RIJEŠI U AUTH VALIDATION
+    if session['role'] == 'patient' and session['user_id'] != user_id:
         return jsonify({
-            "data": {
-                "patient": patient.to_dict()
-            },
-            "status": 200
-        }), 200
-    else:
+            "error": "Nemate pravo pristupa ovim podacima",
+            "status": 403
+        }), 403
+    
+    patient = Patient.query.get(user_id)
+
+    # patient is not found
+    if not patient:
         return jsonify({
             "error": f"Pacijent nije pronađen",
             "status": 404
         }), 404
+    
+    update_fields = {}
+
+    if 'email' in request.json:
+        update_fields['email'] = request.json['email']
+    if 'phone_number' in request.json:
+        update_fields['phone_number'] = request.json['phone_number']
+
+    # check if there are any fields to update
+    if not update_fields:
+        return jsonify({
+            "error": "Nema podataka za ažuriranje",
+            "status": 400
+        }), 400
+    
+    update(patient, update_fields)
 
 # delete patient with id=user_id
 @accounts_bp.route('/patients/<int:user_id>', methods=['DELETE'])
@@ -209,7 +193,7 @@ def delete_patient(user_id):
     patient = Patient.query.get(user_id)
 
     if patient:
-        db.session.delete(patient)
+        db.session.delete(patient) # would be better to set is_active=False
         db.session.commit()
         return jsonify({
             "message": "Pacijent izbrisan",
@@ -277,6 +261,7 @@ def register_employee():
             "status": 400
         }), 400
     
+    # check if email, phone_number or OIB are already in use
     email = request.json['email']
     phone_number = request.json['phone_number']
     OIB = request.json['OIB']
@@ -303,44 +288,20 @@ def register_employee():
     for key in required_fields:
         data[key] = request.json[key]
 
-    try:
-        employee = Employee(**data)
-        db.session.add(employee)
-        db.session.commit()
-        return jsonify({
-            "data": {
-                "employee": employee.to_dict()
-            }, 
-            "message": f"Zaposlenik dodan: {employee.name} {employee.surname}",
-            "status": 201
-        }), 201
-    
-    except IntegrityError as e:
-        db.session.rollback()
-        return jsonify({
-            "error": "Podaci nisu jedinstveni",
-            "status": 400
-        }), 400
-    except DataError as e:
-        db.session.rollback()
-        return jsonify({
-            "error": "Neispravan format podataka",
-            "status": 400
-        }), 400
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({
-            "error": "Došlo je do pogreške prilikom spremanja podataka",
-            "status": 500
-        }), 500
-    finally:
-        db.session.close()
+    create(fields=required_fields, Model=Employee)
 
 # update employee with id=user_id
 @accounts_bp.route('/employees/<int:user_id>', methods=['PATCH'])
 @auth_validation
 @require_any_role("admin", "doctor")
 def update_employee(user_id):
+    # doctor can only update his own data
+    if session['role'] == 'doctor' and session['user_id'] != user_id:
+        return jsonify({
+            "error": "Nemate pravo pristupa ovim podacima",
+            "status": 403
+        }), 403
+    
     return update(id=user_id, Model=Employee)
 
 # delete employee with id=user_id
@@ -350,18 +311,19 @@ def update_employee(user_id):
 def delete_employee(user_id):
     employee = Employee.query.get(user_id)
 
-    if employee:
-        db.session.delete(employee)
-        db.session.commit()
-        return jsonify({
-            "message": "Zaposlenik izbrisan",
-            "status": 200
-        }), 200
-    else:
+    if not employee:
         return jsonify({
             "error": f"Zaposlenik nije pronađen",
             "status": 404
         }), 404
+        
+    db.session.delete(employee)
+    db.session.commit()
+    return jsonify({
+        "message": "Zaposlenik izbrisan",
+        "status": 200
+    }), 200
+        
     
 @accounts_bp.route('/doctors', methods=['GET'])
 @auth_validation

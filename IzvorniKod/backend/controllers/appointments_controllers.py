@@ -1,8 +1,14 @@
+from sqlalchemy import and_, not_, or_
 from controllers.crud_template import *
 from models import *
 from auth import auth_validation, require_any_role
 from sqlalchemy.orm import joinedload
 import psycopg2
+from flask import request, jsonify, session
+from db import db
+from datetime import datetime, timedelta
+
+from utils.appointments_util import appointment_overlapping
 
 # setup blueprint
 from flask import Blueprint
@@ -28,6 +34,60 @@ def get_appointment(appointment_id):
 @require_any_role('patient')
 def create_appointment():
     required_fields = ['date_from', 'therapy_id']
+    missing_fields = validate_required_fields(request.json, required_fields)
+
+    if missing_fields:
+        error_message = f"Nedostajuća polja: {', '.join(missing_fields)}"
+        return jsonify({
+            "error": error_message,
+            "status": 400
+        }), 400
+
+    # get patient and duration from therapy with database session
+    patient_id = db.session.query(Therapy.patient_id).filter_by(therapy_id=request.json['therapy_id']).first().patient_id
+
+    # patient can only create his appointments
+    if session['role'] == 'patient' and patient_id != session['user_id']:
+        return jsonify({
+            "error": "Forbidden",
+            "status": 403
+        }), 403
+    
+    # check if appointment is in the past
+    if datetime.strptime(request.json['date_from'], '%Y-%m-%d %H:%M') < datetime.now():
+        return jsonify({
+            "error": "Termin ne može biti u prošlosti",
+            "status": 400
+        }), 400
+    try:
+        new_date_from = datetime.strptime(request.json['date_from'], '%Y-%m-%d %H:%M')
+    except Exception as e:
+        return jsonify({
+            "error": "Wrong date format",
+            "status": 400
+        }), 400
+
+    if 'date_to' in request.json:
+        try:
+            new_date_to = datetime.strptime(request.json['date_to'], '%Y-%m-%d %H:%M')
+        except Exception as e:
+            return jsonify({
+                "error": "Wrong date format",
+                "status": 400
+            }), 400
+    else:
+        new_date_to = new_date_from + timedelta(minutes=60)
+        request.json['date_to'] = new_date_to.strftime('%Y-%m-%d %H:%M')
+
+    # check if appointment overlaps with any other appointment
+    overlapping = appointment_overlapping(patient_id, new_date_from, new_date_to)
+
+    if overlapping:
+        return jsonify({
+            "error": "Termin se preklapa s drugim terminom",
+            "status": 400
+        }), 400
+    
     return create(required_fields=required_fields, Model=Appointment)
 
 # update appointment with id=appointment_id
@@ -58,7 +118,7 @@ def get_by_therapy(therapy_id):
 
         if page_size > 20 or page_size < 1:
             return jsonify({
-                "error": "Page size must be between 1 and 20",
+                "error": "Broj elemenata po stranici mora biti između 1 i 20",
                 "status": 400
             }), 400
 
@@ -103,7 +163,7 @@ def get_by_therapy(therapy_id):
 
         if page > appointments.pages or page < 1:
             return jsonify({
-                'error': 'Requested page does not exist',
+                'error': 'Zatražena stranica ne postoji',
                 'status': 404
             }), 404
 
@@ -125,7 +185,7 @@ def get_by_therapy(therapy_id):
       }), 500
     except Exception as e:
         return jsonify({
-            "error": "Page and page size must be integers and order, order_by and search must be strings",
+            "error": "Stranica i broj elemenata po stranici moraju biti cijeli brojevi",
             "status": 400
         }), 400
 
@@ -143,7 +203,7 @@ def get_by_patient(user_id):
 
         if page_size > 20 or page_size < 1:
             return jsonify({
-                "error": "Page size must be between 1 and 20",
+                "error": "Broj elemenata po stranici mora biti između 1 i 20",
                 "status": 400
             }), 400
 
@@ -215,7 +275,7 @@ def get_by_patient(user_id):
       }), 500
     except Exception as e:
         return jsonify({
-            "error": "Page and page size must be integers and order, order_by and search must be strings",
+            "error": "Stranica i broj elemenata po stranici moraju biti cijeli brojevi",
             "status": 400
         }), 400
 
@@ -233,7 +293,7 @@ def get_by_employee(user_id):
 
         if page_size > 20 or page_size < 1:
             return jsonify({
-                "error": "Page size must be between 1 and 20",
+                "error": "Broj elemenata po stranici mora biti između 1 i 20",
                 "status": 400
             }), 400
 
@@ -278,7 +338,7 @@ def get_by_employee(user_id):
 
         if page > appointments.pages or page < 1:
             return jsonify({
-                'error': 'Requested page does not exist',
+                'error': 'Tražena stranica ne postoji',
                 'status': 404
             }), 404
 
@@ -299,7 +359,7 @@ def get_by_employee(user_id):
       }), 500
     except Exception as e:
         return jsonify({
-            "error": "Page and page size must be integers and order, order_by and search must be strings",
+            "error": "Stranica i broj elemenata po stranici moraju biti cijeli brojevi",
             "status": 400
         }), 400
     

@@ -1,7 +1,7 @@
 from flask import request, jsonify, session
 from sqlalchemy.sql import exists
 from db import db
-from models import *
+from models import User, Patient, Employee
 from auth import auth_validation
 from utils.utils import *
 
@@ -15,7 +15,7 @@ def login():
    # check if user is already logged in
    if 'user_id' in session:
       return jsonify({
-         "error": "User is already logged in",
+         "error": "Već ste prijavljeni",
          "status": 400
       }), 400
    
@@ -42,12 +42,12 @@ def login():
          "data": {
             "user": dict
          },
-         "message": "Login successful",
+         "message": "Prijava uspješna",
          "status": 200
       }), 200
    else:
       return jsonify({
-         "error": "Invalid username or password",
+         "error": "Pogrešna email adresa ili lozinka",
          "status": 401
       }), 401
     
@@ -58,7 +58,7 @@ def logout():
    session.pop('user_id', None)
    session.pop('role', None)
    return jsonify({
-      "message": "Logout successful",
+      "message": "Odjava uspješna",
       "status": 200
    }), 200
 
@@ -82,7 +82,7 @@ def change_password(user_id):
    
    if request.json["new_password"] != request.json["new_password_rep"]:
       return jsonify({
-         "error": "Passwords are not the same",
+         "error": "Lozinke se ne podudaraju",
          "status": 400
       }), 400
    
@@ -90,7 +90,7 @@ def change_password(user_id):
 
    if not user.check_password(request.json["old_password"]):
       return jsonify({
-         "error": "Wrong password",
+         "error": "Pogrešna lozinka",
          "status": 400
       }), 400
    
@@ -98,6 +98,6 @@ def change_password(user_id):
    db.session.commit()
 
    return jsonify({
-      "message": "Password changed",
+      "message": "Lozinka uspješno promijenjena",
       "status": 200
    }), 200
