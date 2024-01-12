@@ -1,0 +1,32 @@
+.my-therapy h2, .my-therapy h3 {
+   text-align: center;
+   padding: 0;
+   margin: 10px 10px 5px 10px;
+}
+
+.my-therapy .circural-progress {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   padding: 20px;
+}
+
+.my-therapy .date-interval {
+   text-align: center;
+   margin-bottom: 8px;
+   color: #928b8b;
+}
+
+.my-therapy .data {
+   max-width: 600px;
+   display: flex;
+   flex-direction: row;
+   justify-content: flex-start;
+   flex-wrap: wrap;
+}
+
+.my-therapy .data-conteiner {
+   display: flex;
+   justify-content: center;
+   margin: 20px;
+}

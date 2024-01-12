@@ -53,13 +53,13 @@ def update_room(room_num):
         except (ValueError, IntegrityError, DataError) as e:
             db.session.rollback()
             return jsonify({
-                "error": f"Invalid input: {str(e)}",
+                "error": f"Neispravan unos podataka: {e}",
                 "status": 400
             }), 400
         except Exception as e:
             db.session.rollback()
             return jsonify({
-                "error": "There was a problem storing your data",
+                "error": "Došlo je do pogreške prilikom spremanja podataka",
                 "status": 400
             }), 400
         return jsonify({
@@ -85,11 +85,11 @@ def delete_room(room_num):
         db.session.delete(room)
         db.session.commit()
         return jsonify({
-            "message": "Deleted",
+            "message": "Soba uspješno obrisana",
             "status": 200
         }), 200
     else:
         return jsonify({
-            "error": f"No room: {room_num}",
+            "error": f"Soba ne postoji",
             "status": 404
         }), 404
