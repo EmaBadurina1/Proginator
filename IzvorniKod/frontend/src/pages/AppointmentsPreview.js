@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import EmployeeService from "../services/employeeService";
 import { toast } from "react-toastify";
 import "./AppointmentsPreview.css";
+import { IconButton } from "@mui/material";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 
 const AppointmentsPreview = () => {
   const [data, setData] = useState(null);
@@ -13,6 +15,11 @@ const AppointmentsPreview = () => {
   const url = `/appointments/by-patient/${patientId}`;
   const nav = useNavigate();
   const [patient, setPatient] = useState(null);
+
+  const iconButtonStyle = {
+    backgroundColor: "black",
+    color: "white",
+  };
 
   useEffect(() => {
     const fetchPatient = async () => {
@@ -34,19 +41,19 @@ const AppointmentsPreview = () => {
 
   return (
     <div>
+      <div className="iconButtonDiv2_1">
+          <IconButton style={iconButtonStyle} onClick={() => nav("/patient-preview")}>
+            <ArrowBackIosNewIcon></ArrowBackIosNewIcon>
+          </IconButton>
+        </div>
       <div className="title-div2_1">
+
         <h2>
           Pacijent {patient && patient.name} {patient && patient.surname}
         </h2>
       </div>
-      <DataDisplay
-        url={url} // url from where to fetch data
-        setData={setData} // function for setting data declared with useState() hook
-        tableHead={tableHead} // array of objects representing table header
-        //buttonLabel="Dodaj terapiju" // text on button/link
-        //buttonUrl="/home" // link to adding new element page
-      >
-        {/* adding table rows as children to DataDisplay component */}
+
+      <DataDisplay url={url} setData={setData} tableHead={tableHead}>
         {data !== null &&
           data.data.appointments.map((appointment) => (
             <TableRow
@@ -55,13 +62,24 @@ const AppointmentsPreview = () => {
                 if (appointment.status) {
                   if (appointment.status.status_id === 2) {
                     nav(`/attendance/${appointment.appointment_id}`);
-                  } else {
+                  } else if (
+                    appointment.status.status_id === 3 ||
+                    appointment.status.status_id === 4 ||
+                    appointment.status.status_id === 5
+                  ) {
                     nav(`/attendance-display/${appointment.appointment_id}`);
+                  } else {
+                    toast.error(
+                      "Termin je na čekanju te još nije evidentiran!",
+                      {
+                        position: toast.POSITION.TOP_RIGHT,
+                      }
+                    );
                   }
                 }
               }}
             >
-              <TableCell>{appointment.therapy.date_from}</TableCell>
+              <TableCell>{appointment.date_from}</TableCell>
               <TableCell>
                 {appointment.therapy.therapy_type.therapy_type_name}
               </TableCell>

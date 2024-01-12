@@ -14,6 +14,9 @@
 .title-div6_1 {
     margin-left: 3em;
 }
+.date-picker6_1, .time-picker6_1 {
+    width: 15em;
+}
 
 .big-div6_1 {
     display: grid;
@@ -42,13 +45,15 @@
 }
 .gumb6_1 {
     height: 2.5em;
-    color: black;
-    background-color: orange;
     border-radius: 0.5em;
     width: 13em;
+
 }
-.button-div6_1 {
-    margin-bottom: 6em;
+.gumb6_2 {
+    height: 2.5em;
+    border-radius: 0.5em;
+    width: 13em;
+
 }
 
 .big-div6_3{
@@ -58,10 +63,28 @@
 .big-div6_4 {
     margin-left: 2em;
     margin-bottom: 2em;
+    margin-right: 2em;
 }
 .big-div6_5 {
     margin-left: 2em;
     margin-bottom: 2em;
+    margin-right: 2em;
+}
+.button-div-container6_1 {
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
+.button-div6_1 {
+    width: 20%;
+    margin-right: 5em;
+    margin-right: auto;
+}
+.button-div6_2 {
+    width: 15em;
+    margin-right: 5em;
+    margin-left: auto;
+    display: grid;
+    grid-template-columns: 50% 50%;
 }
 
 @media (max-width: 1024px) {
@@ -70,5 +93,23 @@
       grid-template-areas: 
       "div1"
       "div2";
+    }
+    .border-container6_1 {
+        margin-top: 1em;
+        border: 0.1em solid black;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .button-div-container6_1 {
+        display: grid;
+        grid-template-columns: 100%;
+    }
+    .button-div6_2 {
+        display: grid;
+        grid-template-columns: 100%;
+        margin-left: 1.7em;
+        margin-bottom: 2em;
     }
 }

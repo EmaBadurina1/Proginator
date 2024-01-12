@@ -12,7 +12,7 @@ import Button from "@mui/material/Button";
 import TherapyInfo from "../components/TherapyInfo";
 import { useParams } from "react-router-dom";
 import EmployeeService from "../services/employeeService";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -24,10 +24,6 @@ const buttonStyle = {
   display: "block",
 };
 
-const textInputStyle = {
-  marginTop: "0.5em",
-};
-
 const komentarStyle = {
   width: "70%",
 };
@@ -37,6 +33,7 @@ const AttendanceDisplay = () => {
   const [appointment, setAppointment] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState("");
   const nav = useNavigate();
+  const toastShownRef = useRef(false);
 
   useEffect(() => {
     const fetchAppointment = async () => {
@@ -45,6 +42,12 @@ const AttendanceDisplay = () => {
         if (resp.success) {
           setAppointment(resp.data);
           setSelectedStatus(resp.data.status.status_name);
+          if (resp.data.status.status_id === 1 && !toastShownRef.current) {
+            toast.error("Termin je na čekanju te još nije evidentiran!", {
+              position: toast.POSITION.TOP_RIGHT,
+            });
+            toastShownRef.current = true;
+          }
         } else {
           console.log("greska");
         }
@@ -93,24 +96,14 @@ const AttendanceDisplay = () => {
               </FormControl>
             </div>
             <div className="small-div4_2">
-              Soba:
-              <br></br>
-              <TextField
-                autoComplete="false"
-                className="soba-text4_1"
-                label={
-                  appointment && appointment.status.status_name !== "Otkazan"
-                    ? appointment.room.room_num
-                    : "/"
-                }
-                variant="outlined"
-                name="soba"
-                style={textInputStyle}
-                InputProps={{
-                  readOnly: true,
-                }}
-                disabled
-              />
+              <h5>
+                Soba:{" "}
+                {appointment &&
+                appointment.room &&
+                appointment.status.status_name !== "Otkazan"
+                  ? appointment.room.room_num
+                  : "/"}
+              </h5>
             </div>
           </div>
           <div className="mid-div4_2">

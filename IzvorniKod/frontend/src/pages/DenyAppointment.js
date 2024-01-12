@@ -8,7 +8,7 @@ import AppointmentInfo from "../components/AppointmentInfo";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import EmployeeService from "../services/employeeService";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import TextField from "@mui/material/TextField";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -17,27 +17,25 @@ const komentarStyle = {
   width: "100%",
 };
 const komentarDivStyle = {
-  marginLeft: "auto",
+  marginLeft: "1.8em",
   marginRight: "2em",
-  width: "40%",
+  width: "50%",
   marginBottom: "2em",
 };
 const buttonStyle1 = {
   backgroundColor: "orange",
   width: "18em",
-  float: "left",
   marginLeft: "2em",
 };
 const buttonStyle2 = {
   backgroundColor: "gray",
   width: "8em",
-  float: "left",
+
 };
 const buttonStyle3 = {
   backgroundColor: "blue",
   marginRight: "2em",
   marginLeft: "auto",
-  float: "right",
 };
 const iconButtonStyle = {
   backgroundColor: "black",
@@ -50,6 +48,7 @@ const DenyAppointment = () => {
   const [appointment, setAppointment] = useState(null);
   const [comment, setComment] = useState("");
   const nav = useNavigate();
+  const toastShownRef = useRef(false);
 
   const isFilled = () => {
     if (comment === "") return false;
@@ -57,6 +56,16 @@ const DenyAppointment = () => {
   };
 
   const updateAppointment = async () => {
+    if (
+      appointment &&
+      (appointment.status.status_id === 3 || appointment.status.status_id === 5)
+    ) {
+      toast.error("Ne mogu se otkazati već odrađeni ili propušteni termini!", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      return false;
+    }
+
     try {
       let filled = isFilled();
       if (!filled) {
@@ -75,7 +84,10 @@ const DenyAppointment = () => {
     };
 
     try {
-      const resp = await EmployeeService.updateAppointment(appointmentId, updatedData);
+      const resp = await EmployeeService.updateAppointment(
+        appointmentId,
+        updatedData
+      );
       if (resp.success) {
         setAppointment(resp.data);
         return true;
@@ -97,6 +109,19 @@ const DenyAppointment = () => {
         const resp = await EmployeeService.getAppointmentById(appointmentId);
         if (resp.success) {
           setAppointment(resp.data);
+          if (
+            (resp.data.status.status_id === 3 ||
+              resp.data.status.status_id === 5) &&
+            !toastShownRef.current
+          ) {
+            toast.error(
+              "Ne mogu se otkazati već odrađeni ili propušteni termini!",
+              {
+                position: toast.POSITION.TOP_RIGHT,
+              }
+            );
+            toastShownRef.current = true;
+          }
         } else {
           console.log("greska");
         }
@@ -169,29 +194,33 @@ const DenyAppointment = () => {
               </Link>
             </div>
             <div className="button-div7_2">
-              <Link to={"../appointment-requests-preview"}>
-                <Button
-                  variant="contained"
-                  size="medium"
-                  className="gumb7_1"
-                  style={buttonStyle2}
-                >
-                  Odustani
-                </Button>
-              </Link>
-              {appointment && (
-                <Button
-                  variant="contained"
-                  size="medium"
-                  className="gumb7_1"
-                  style={buttonStyle3}
-                  onClick={() => {
-                    provjeraUspjehaUpdatea();
-                  }}
-                >
-                  Potvrdi
-                </Button>
-              )}
+              <div className="small-button-div7_1">
+                <Link to={"../appointment-requests-preview"}>
+                  <Button
+                    variant="contained"
+                    size="medium"
+                    className="gumb7_1"
+                    style={buttonStyle2}
+                  >
+                    Odustani
+                  </Button>
+                </Link>
+              </div>
+              <div className="small-button-div7_2">
+                {appointment && (
+                  <Button
+                    variant="contained"
+                    size="medium"
+                    className="gumb7_1"
+                    style={buttonStyle3}
+                    onClick={() => {
+                      provjeraUspjehaUpdatea();
+                    }}
+                  >
+                    Potvrdi
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
         </div>

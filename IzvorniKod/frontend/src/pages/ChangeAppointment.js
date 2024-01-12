@@ -6,7 +6,7 @@ import { IconButton } from "@mui/material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import Button from "@mui/material/Button";
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import EmployeeService from "../services/employeeService";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
@@ -22,6 +22,7 @@ const ChangeAppointment = () => {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const nav = useNavigate();
+  const toastShownRef = useRef(false);
 
   const iconButtonStyle = {
     backgroundColor: "black",
@@ -29,11 +30,20 @@ const ChangeAppointment = () => {
     float: "left",
   };
 
-  const buttonStyle = {
-    backgroundColor: "orange",
-    float: "right",
-    marginRight: "5em",
-    marginBottom: "2em",
+  const buttonStyle1 = {
+    backgroundColor: "blue",
+
+  };
+  const buttonStyle2 = {
+    backgroundColor: "red",
+    color: "white",
+    marginLeft: "2em",
+    marginBottom: "1em"
+  };
+  const buttonStyle3 = {
+    backgroundColor: "gray",
+    width: "8em",
+    marginBottom: "1em"
   };
 
   const isFilled = () => {
@@ -51,8 +61,10 @@ const ChangeAppointment = () => {
   };
 
   const updateAppointment = async () => {
-
-    if (appointment && (appointment.status.status_id === 3 || appointment.status.status_id === 5)) {
+    if (
+      appointment &&
+      (appointment.status.status_id === 3 || appointment.status.status_id === 5)
+    ) {
       toast.error("Ne može se promijeniti propušten ili odrađen termin!", {
         position: toast.POSITION.TOP_RIGHT,
       });
@@ -74,7 +86,7 @@ const ChangeAppointment = () => {
     const timeAsDate = new Date(time);
 
     const hour = timeAsDate.getHours();
-    const minute = '00';
+    const minute = "00";
 
     const formattedDate = `${date} ${hour}:${minute}`;
     const formattedDate2 = `${date} ${hour + 1}:${minute}`;
@@ -106,12 +118,24 @@ const ChangeAppointment = () => {
   };
 
   useEffect(() => {
-
     const fetchAppointment = async () => {
       try {
         const resp = await EmployeeService.getAppointmentById(appointmentId);
         if (resp.success) {
           setAppointment(resp.data);
+          if (
+            (resp.data.status.status_id === 3 ||
+              resp.data.status.status_id === 5) &&
+            !toastShownRef.current
+          ) {
+            toast.error(
+              "Ne može se promijeniti propušten ili odrađen termin!",
+              {
+                position: toast.POSITION.TOP_RIGHT,
+              }
+            );
+            toastShownRef.current = true;
+          }
         } else {
           console.log("greska");
         }
@@ -164,6 +188,7 @@ const ChangeAppointment = () => {
                   label="Datum terapije"
                   onChange={onChangeDate}
                   minDate={DateTime.local()}
+                  className="date-picker6_1"
                 />
               </DemoContainer>
             </LocalizationProvider>
@@ -173,25 +198,60 @@ const ChangeAppointment = () => {
               <DemoContainer components={["TimePicker"]}>
                 <TimePicker
                   label="Vrijeme terapije"
+                  className="time-picker6_1"
                   onChange={(newTime) => setTime(newTime)}
                 />
               </DemoContainer>
             </LocalizationProvider>
           </div>
-          <div className="button-div6_1">
-            {appointment && (
-              <Button
-                variant="contained"
-                size="medium"
-                className="gumb6_1"
-                style={buttonStyle}
-                onClick={() => {
-                  provjeraUspjehaUpdatea();
-                }}
-              >
-                Premjesti
-              </Button>
-            )}
+          <div className="button-div-container6_1">
+            <div className="button-div6_1">
+              {appointment && (
+                <Button
+                  variant="contained"
+                  size="medium"
+                  className="gumb6_2"
+                  style={buttonStyle2}
+                  onClick={() => {
+                    nav(`/deny-appointment/${appointment.appointment_id}`);
+                  }}
+                >
+                  Otkaži termin
+                </Button>
+              )}
+            </div>
+            <div className="button-div6_2">
+              <div className="small-button-div6_1">
+                {appointment && (
+                  <Button
+                    variant="contained"
+                    size="medium"
+                    className="gumb6_3"
+                    style={buttonStyle3}
+                    onClick={() => {
+                      nav("/appointment-requests-preview");
+                    }}
+                  >
+                    Odustani
+                  </Button>
+                )}
+              </div>
+              <div className="small-button-div6_2">
+                {appointment && (
+                  <Button
+                    variant="contained"
+                    size="medium"
+                    className="gumb6_1"
+                    style={buttonStyle1}
+                    onClick={() => {
+                      provjeraUspjehaUpdatea();
+                    }}
+                  >
+                    Potvrdi
+                  </Button>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>

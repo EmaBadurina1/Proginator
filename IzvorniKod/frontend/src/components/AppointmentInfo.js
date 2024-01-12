@@ -14,7 +14,7 @@ const AppointmentInfo = (props) => {
     <div className="appointment-info">
       <p><span style={bolded}>IME PACIJENTA:</span> {appointment.therapy.patient.name} </p>
       <p><span style={bolded}>PREZIME PACIJENTA:</span> {appointment.therapy.patient.surname}  </p>
-      <p><span style={bolded}>DATUM I VRIJEME:</span> {appointment.date_from} </p>
+      <p><span style={bolded}>TRENUTNI DATUM I VRIJEME:</span> {appointment.date_from} </p>
       
     </div>
   );

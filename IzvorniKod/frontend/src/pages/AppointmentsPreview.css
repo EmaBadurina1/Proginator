@@ -10,7 +10,7 @@
 
 .title-div2_1 {
     margin-left: 3em;
-    width: 20em;
+    width: 60em;
     margin-top: 1em;
 }
 
@@ -43,6 +43,8 @@
     margin-bottom: 0.5em;
 }
 .iconButtonDiv2_1 {
-    margin-left: 3em;
+    float: left;
+    margin-left: 1em;
+    margin-right: 2em;
 }
 

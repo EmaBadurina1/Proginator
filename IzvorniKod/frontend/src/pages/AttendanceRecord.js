@@ -18,10 +18,17 @@ import { useNavigate } from "react-router-dom";
 
 const buttonStyle = {
   backgroundColor: "purple",
-  marginLeft: "auto",
-  marginRight: "4em",
+  marginLeft: "3em",
+  marginRight: "2em",
   marginBottom: "1em",
-  display: "block",
+};
+
+const buttonStyle2 = {
+  backgroundColor: "gray",
+  width: "8em",
+  marginBottom: "1em",
+  marginLeft: "3em",
+  marginRight: "2em"
 };
 
 const komentarStyle = {
@@ -41,7 +48,7 @@ const AttendanceRecord = () => {
     return true;
   };
 
-  const updateAppointment = async () =>  {
+  const updateAppointment = async () => {
     try {
       let filled = isFilled();
       if (!filled) {
@@ -60,7 +67,10 @@ const AttendanceRecord = () => {
     };
 
     try {
-      const resp = await EmployeeService.updateAppointment(appointmentId, updatedData);
+      const resp = await EmployeeService.updateAppointment(
+        appointmentId,
+        updatedData
+      );
       if (resp.success) {
         setAppointment(resp.data);
         return true;
@@ -74,7 +84,7 @@ const AttendanceRecord = () => {
       });
       return false;
     }
-  }
+  };
 
   useEffect(() => {
     const fetchAppointment = async () => {
@@ -96,11 +106,11 @@ const AttendanceRecord = () => {
 
   const provjeraUspjehaUpdatea = async () => {
     const updBool = await updateAppointment();
-    console.log('updBool:', updBool);
-    if(updBool) {
+    console.log("updBool:", updBool);
+    if (updBool) {
       nav(`/appointments-preview/${appointment.therapy.patient.user_id}`);
     }
-  }
+  };
 
   return (
     <div className="main-container3_1">
@@ -140,6 +150,16 @@ const AttendanceRecord = () => {
                 </RadioGroup>
               </FormControl>
             </div>
+            <div className="small-div3_2">
+              <h5>
+                Soba:{" "}
+                {appointment &&
+                appointment.room &&
+                appointment.status.status_name !== "Otkazan"
+                  ? appointment.room.room_num
+                  : "/"}
+              </h5>
+            </div>
           </div>
           <div className="mid-div3_2">
             {appointment && appointment.therapy && (
@@ -162,19 +182,36 @@ const AttendanceRecord = () => {
           />
         </div>
 
-        {appointment && (
-          <Button
-            variant="contained"
-            size="medium"
-            className="gumb3_1"
-            style={buttonStyle}
-            onClick={() => {
-              provjeraUspjehaUpdatea();
-            }}
-          >
-            Predaj evidenciju
-          </Button>
-        )}
+        <div className="button-div3_1">
+          {appointment && (
+            <Button
+              variant="contained"
+              size="medium"
+              className="gumb3_1"
+              style={buttonStyle2}
+              onClick={() => {
+                nav(
+                  `/appointments-preview/${appointment.therapy.patient.user_id}`
+                );
+              }}
+            >
+              Odustani
+            </Button>
+          )}
+          {appointment && (
+            <Button
+              variant="contained"
+              size="medium"
+              className="gumb3_2"
+              style={buttonStyle}
+              onClick={() => {
+                provjeraUspjehaUpdatea();
+              }}
+            >
+              Predaj evidenciju
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );

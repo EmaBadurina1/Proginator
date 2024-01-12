@@ -17,11 +17,10 @@ const PatientPreview = () => {
         <h2>Svi pacijenti</h2>
       </div>
       <DataDisplay
-        url="/patients" // url from where to fetch data
-        setData={setData} // function for setting data declared with useState() hook
-        tableHead={tableHead} // array of objects representing table header
+        url="/patients" 
+        setData={setData} 
+        tableHead={tableHead} 
       >
-        {/* adding table rows as children to DataDisplay component */}
         {data !== null &&
           data.data.patients.map((patient) => (
             <TableRow

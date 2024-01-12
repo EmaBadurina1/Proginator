@@ -3,6 +3,7 @@ import DataDisplay from "../components/DataDisplay";
 import { TableCell, TableRow } from "@mui/material";
 import "./AppointmentRequestsPreview.css";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const AppointmentRequestsPreview = () => {
   const [data, setData] = useState(null);
@@ -17,16 +18,21 @@ const AppointmentRequestsPreview = () => {
         <h2>Zahtjevi za termine - svi pacijenti</h2>
       </div>
       <DataDisplay
-         url="/appointments" // url from where to fetch data
-         setData={setData} // function for setting data declared with useState() hook
-         tableHead={tableHead} // array of objects representing table header
-         //buttonLabel="Dodaj terapiju" // text on button/link
-         //buttonUrl="/home" // link to adding new element page
+         url="/appointments" 
+         setData={setData}
+         tableHead={tableHead} 
       >
-         {/* adding table rows as children to DataDisplay component */}
          { data !== null && data.data.appointments.map(appointment => (
             <TableRow 
-              onClick={() => {nav(`../change-appointment/${appointment.appointment_id}`)}}
+              onClick={() => {
+               if (appointment.status.status_id === 3 || appointment.status.status_id === 5) {
+                  toast.error("Ne može se promijeniti propušten ili odrađen termin!", {
+                    position: toast.POSITION.TOP_RIGHT,
+                  });
+               } else {
+                  nav(`../change-appointment/${appointment.appointment_id}`)
+               }
+            }}
               key={appointment.appointment_id}
             >
                <TableCell>{appointment.therapy.patient.name}</TableCell>
