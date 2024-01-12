@@ -1,8 +1,7 @@
-import { useEffect, useState, React, useContext, useRef } from "react";
+import { useEffect, useState, React } from "react";
 import { useParams } from "react-router-dom";
 import { TableRow, TableCell, CircularProgress } from "@mui/material";
 import { toast } from "react-toastify";
-import { LoginContext } from "../contexts/LoginContext";
 import { parseDateTime, parseDate } from "../services/utils";
 import axiosInstance from "../axiosInstance";
 import DataDisplay from "../components/DataDisplay";
@@ -12,23 +11,19 @@ import AppointmentDialog from "../components/AppointmentDialog";
 
 
 const MyTherapy = () => {
-    const context = useContext(LoginContext);
-
-    const user_id = useRef({ value: context.userData.user_id });
-
-    const { patientId } = useParams();
-
     const [therapy, setTherapy] = useState(null);
     const [appointments, setAppointments] = useState(null);
     const [loading, setLoading] = useState(true);
     const [open, setOpen] = useState(false);
     const [content, setContent] = useState(null);
 
+    const { therapy_id } = useParams();
+
     useEffect(() => {
         setLoading(true);
         const getTherapy = async () => {
             try {
-                const res = await axiosInstance.get("/therapies/" + user_id.current.value, {
+                const res = await axiosInstance.get("/therapies/" + therapy_id, {
                     "page": 1,
                     "page_size": 20
                 });
@@ -43,7 +38,7 @@ const MyTherapy = () => {
         }
         getTherapy();
 
-    }, [patientId]);
+    }, [therapy_id]);
 
     const openDialog = (content) => {
         setContent(content);
