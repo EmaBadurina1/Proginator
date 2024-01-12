@@ -1,47 +1,31 @@
-import "./AppointmentsPreview.css";
-import {
-    TableContainer,
-    Table,
-    TableBody,
-    TableHead,
-    TableRow,
-    CircularProgress,
-} from "@mui/material";
-import TableCell from "@mui/material/TableCell";
-import { useParams } from "react-router-dom";
 import { useEffect, useState, React, useContext, useRef } from "react";
-import { LoginContext } from "../contexts/LoginContext";
-import axiosInstance from "../axiosInstance";
+import { useParams } from "react-router-dom";
+import { TableRow, TableCell, CircularProgress } from "@mui/material";
 import { toast } from "react-toastify";
-import Button from "@mui/material/Button";
-import { Link } from "react-router-dom";
+import { LoginContext } from "../contexts/LoginContext";
+import { parseDateTime, parseDate } from "../services/utils";
+import axiosInstance from "../axiosInstance";
+import DataDisplay from "../components/DataDisplay";
+import DataBox from "../components/DataBox";
+import "./MyTherapy.css";
+import AppointmentDialog from "../components/AppointmentDialog";
 
 
 const MyTherapy = () => {
-    const { patientId } = useParams();
     const context = useContext(LoginContext);
+
     const user_id = useRef({ value: context.userData.user_id });
-    //const setAppointments = useState(null);
-    //const setPatient = useState(null);
+
+    const { patientId } = useParams();
+
     const [therapy, setTherapy] = useState(null);
+    const [appointments, setAppointments] = useState(null);
     const [loading, setLoading] = useState(true);
-
-    const cellStyle3 = {
-        textAlign: "center",
-        border: "0.2em solid black",
-        color: "white",
-    };
-
-    const cellStyle4 = {
-        textAlign: "center",
-        border: "0.1em solid black",
-    };
-
-    const buttonStyle = {
-        backgroundColor: "purple",
-    };
+    const [open, setOpen] = useState(false);
+    const [content, setContent] = useState(null);
 
     useEffect(() => {
+        setLoading(true);
         const getTherapy = async () => {
             try {
                 const res = await axiosInstance.get("/therapies/" + user_id.current.value, {
@@ -61,55 +45,129 @@ const MyTherapy = () => {
 
     }, [patientId]);
 
-    return (
-        <div className="main-container">
-            <div className="title-div">
-                <h2>
-                    Moja terapija
-                </h2>
-            </div>
-            <Link to="/new-appointment" >
-                <Button
-                    variant="contained"
-                    size="large"
-                    className="reg-btn"
-                    style={buttonStyle}
-                >
-                    NARUČI SE
-                </Button>
-            </Link>
+    const openDialog = (content) => {
+        setContent(content);
+        setOpen(true);
+    }
 
-            <TableContainer>
-                <Table>
-                    <TableHead>
-                        <TableRow className="prviRed2">
-                            <TableCell style={cellStyle3}>Od</TableCell>
-                            <TableCell style={cellStyle3}>Do</TableCell>
-                            <TableCell style={cellStyle3}>Soba</TableCell>
-                            <TableCell style={cellStyle3}>Vaš liječnik</TableCell>
-                            <TableCell style={cellStyle3}>Komentar</TableCell>
-                            <TableCell style={cellStyle3}>Status</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {loading && <CircularProgress></CircularProgress>}
-                        {!loading && therapy.appointments.map((appointment) => (
-                            <TableRow key={appointment.appointment_id}>
-                                <TableCell style={cellStyle4}>{appointment.date_from}</TableCell>
-                                <TableCell style={cellStyle4}>{appointment.date_to}</TableCell>
-                                <TableCell style={cellStyle4}>{appointment.room === null ? "" : appointment.room.room_num}</TableCell>
-                                <TableCell style={cellStyle4}>
-                                    {appointment.employee === null ? "" : appointment.employee.name + ' ' + appointment.employee.surname}
+    return (
+        <div className="my-therapy">
+            <h2>
+                Moja terapija
+            </h2>
+            {loading &&
+                <div className="circural-progress">
+                    <CircularProgress />
+                </div>
+            }
+            {!loading && (
+                <>
+                <div className="date-interval">
+                    <span>
+                        {parseDate(therapy.date_from)}
+                    </span>
+                    <span> - </span>
+                    <span>
+                        {therapy.date_to === null
+                            ? ("Traje")
+                            : (parseDate(therapy.date_to))
+                        }
+                    </span>
+                </div>
+                <div className="data-conteiner">
+                    <div className="data">
+                        <DataBox label="Vrsta" tooltip="Vrsta terapije" big={false}>
+                            {therapy.therapy_type === null
+                                ? ("Nema vrste")
+                                : (therapy.therapy_type.therapy_type_name)
+                            }
+                        </DataBox>
+                        <DataBox label="Liječnik" tooltip="Liječnik koji je uputio na rehabilitaciju" big={false}>
+                            {therapy.doctor === null
+                                ? ("Nema doktora")
+                                : ("dr. " + therapy.doctor.name + " " + therapy.doctor.surname)
+                            }
+                        </DataBox>
+                        <DataBox label="Opis" tooltip="Opis oboljenja pacijenta" big={true}>
+                            {therapy.disease_descr === null || therapy.disease_descr === ""
+                                ? ("Nema opisa")
+                                : (therapy.disease_descr)
+                            }
+                        </DataBox>
+                        <DataBox label="Zaht. tretman" tooltip="Zahtjevani postupak liječenja pacijenta" big={true}>
+                            {therapy.req_treatment === null || therapy.req_treatment === ""
+                                ? ("Nema zahtjeva")
+                                : (therapy.req_treatment)
+                            }
+                        </DataBox>
+                    </div>
+                </div>
+                <div>
+                    <h3>Termini</h3>
+                    <DataDisplay
+                        url={"/appointments/by-therapy/" + therapy.therapy_id}
+                        setData={setAppointments}
+                        tableHead={tableHead}
+                        buttonLabel="Dodaj termin"
+                        buttonUrl="/new-appointment"
+                    >
+                        { appointments !== null && appointments.data.appointments.map(appointment => (
+                            <TableRow
+                                key={appointment.appointment_id}
+                                onClick={() => openDialog(appointment)}
+                            >
+                                <TableCell>{parseDateTime(appointment.date_from)}</TableCell>
+                                <TableCell className="hide-sm">{parseDateTime(appointment.date_to)}</TableCell>
+                                <TableCell>
+                                    {appointment.room &&
+                                    appointment.room.room_num}
                                 </TableCell>
-                                <TableCell style={cellStyle4}>{appointment.comment}</TableCell>
-                                <TableCell style={cellStyle4}>{appointment.status.status_name}</TableCell>
+                                <TableCell className="hide-sm">
+                                    {appointment.status &&
+                                    appointment.status.status_name}
+                                </TableCell>
                             </TableRow>
                         ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                    </DataDisplay>
+                </div>
+                {open && (
+                    <AppointmentDialog
+                        open={open}
+                        setOpen={setOpen}
+                        appointment={content}
+                    />
+                )}
+                </>
+            )}
         </div>
     );
 };
 
 export default MyTherapy;
+
+const tableHead = [
+    {
+        name: "Od",
+        orderBy: "date_from",
+        align: "left",
+        classes: "show-sm" 
+    },
+    {
+        name: "Do",
+        orderBy: "date_to",
+        align: "left",
+        classes: "hide-sm" 
+    },
+    {
+        name: "Soba",
+        orderBy: "room_num",
+        align: "left",
+        classes: "show-sm"  
+    },
+    {
+        name: "Status",
+        orderBy: "status_id",
+        align: "left",
+        classes: "hide-sm" 
+    }
+]
