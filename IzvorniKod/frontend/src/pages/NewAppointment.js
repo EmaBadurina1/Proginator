@@ -25,7 +25,7 @@ const NewAppointment = () => {
 
     return (
         <div className="container-div2">
-            <form action={onSubmit}>
+            <form onSubmit={onSubmit}>
                 <div className="mini-container3">
                     <div className="title-div3">
                         <h2>Novi termin</h2>
