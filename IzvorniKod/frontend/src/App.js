@@ -334,7 +334,11 @@ function App() {
         <Route
           path="/data-display"
           element={
-            <DataPreview/>
+            <ProtectedRoute>
+              <AdminRoute>
+                <DataPreview/>
+              </AdminRoute>
+            </ProtectedRoute>
           }
         />
         <Route path="*" element={<NotFound />} />

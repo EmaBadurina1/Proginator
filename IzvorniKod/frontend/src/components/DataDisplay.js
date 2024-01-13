@@ -157,12 +157,13 @@ const DataDisplay = (props) => {
             </div>
             <Table aria-label="simple table">
                <TableHead>
-                  <TableRow>
+                  <TableRow className="table-head">
                      {props.tableHead.map(column => (
                         <TableCell
                            align={column.align}
                            key={column.name}
                            sortDirection={orderBy === column.orderBy ? order : false}
+                           className={column.classes}
                         >
                            <TableSortLabel
                               active={orderBy === column.orderBy}
@@ -234,7 +235,8 @@ DataDisplay.propTypes = {
       PropTypes.shape({
          name: PropTypes.string.isRequired,
          orderBy: PropTypes.string.isRequired,
-         align: PropTypes.oneOf(['left', 'right', 'center']).isRequired
+         align: PropTypes.oneOf(['left', 'right', 'center']).isRequired,
+         classes: PropTypes.string.isRequired
       })
    ).isRequired,
    buttonUrl: PropTypes.string.isRequired,
