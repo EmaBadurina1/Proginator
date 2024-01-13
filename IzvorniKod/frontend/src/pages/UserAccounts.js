@@ -3,22 +3,29 @@ import "./UserAccounts.css";
 import DataDisplay from "../components/DataDisplay";
 import Container from "@mui/material/Container";
 import { Box, Grid, Typography } from "@mui/material";
-import Button from "@mui/material/Button";
-import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { TableRow, TableCell } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
+import UserDialog from "../components/UserDialog";
+import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
+import CheckIcon from '@mui/icons-material/Check';
 
 const UserAccounts = () => {
   const [data, setData] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [content, setContent] = useState(null);
 
   useEffect(() => {}, [data]);
 
-  const nav = useNavigate();
+  const openDialog = (content) => {
+    setContent(content);
+    setOpen(true);
+  };
 
-  const handleDelete = async (id) => {
-    console.log(id);
+  const formatDate = (inputString) => {
+    const inputDate = new Date(inputString);
+    const options = { day: 'numeric', month: 'numeric', year: 'numeric' };
+  
+    return inputDate.toLocaleDateString('hr-HR', options);
   };
 
   return (
@@ -52,37 +59,23 @@ const UserAccounts = () => {
           {/* adding table rows as children to DataDisplay component */}
           {data !== null &&
             data.data.employees.map((employee) => (
-              <TableRow key={employee.user_id}>
+              <TableRow
+                key={employee.user_id}
+                onClick={() => openDialog(employee)}
+              >
                 <TableCell>{employee.name}</TableCell>
                 <TableCell>{employee.surname}</TableCell>
-                <TableCell>{employee.OIB}</TableCell>
-                <TableCell>{employee.date_of_birth}</TableCell>
-                <TableCell>{employee.email}</TableCell>
-                <TableCell>{employee.phone_number}</TableCell>
-                <TableCell>{employee.is_admin}</TableCell>
-                <TableCell>{employee.is_active}</TableCell>
-                <TableCell>
-                  <Button
-                    variant="outlined"
-                    color="success"
-                    size="small"
-                    onClick={() => nav(`/edit-user/${employee.user_id}`)}
-                  >
-                    <EditIcon />
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    color="error"
-                    size="small"
-                    onClick={() => handleDelete(employee.user_id)}
-                  >
-                    <DeleteIcon />
-                  </Button>
-                </TableCell>
+                <TableCell className="hide-sm">{employee.OIB}</TableCell>
+                <TableCell className="hide-sm">{formatDate(employee.date_of_birth)}</TableCell>
+                <TableCell className="hide-sm">{employee.email}</TableCell>
+                <TableCell className="hide-sm">{employee.phone_number}</TableCell>
+                <TableCell className="hide-sm">{employee.is_admin ? "DA" : "NE"}</TableCell>
+                <TableCell>{employee.is_active ? <CheckIcon/> : <RemoveCircleIcon/>}</TableCell>
               </TableRow>
             ))}
         </DataDisplay>
       </Box>
+      {open && <UserDialog open={open} setOpen={setOpen} employee={content} />}
     </Container>
   );
 };
@@ -94,44 +87,48 @@ const tableHead = [
     name: "Ime",
     orderBy: "name",
     align: "left",
+    classes: "show-sm" 
   },
   {
     name: "Prezime",
     orderBy: "surname",
     align: "left",
+    classes: "show-sm" 
   },
   {
     name: "OIB",
     orderBy: "OIB",
     align: "left",
+    classes: "hide-sm" 
   },
   {
     name: "Datum rođenja",
     orderBy: "date_of_birth",
     align: "left",
+    classes: "hide-sm" 
   },
   {
     name: "E-mail",
     orderBy: "email",
     align: "left",
+    classes: "hide-sm" 
   },
   {
     name: "Broj telefona",
     orderBy: "phone_number",
     align: "left",
+    classes: "hide-sm" 
   },
   {
     name: "Administrator?",
     orderBy: "is_admin",
     align: "left",
+    classes: "hide-sm" 
   },
   {
     name: "Aktivan?",
     orderBy: "is_active",
     align: "left",
-  },
-  {
-    name: "Akcije",
-    align: "center",
+    classes: "show-sm" 
   },
 ];
