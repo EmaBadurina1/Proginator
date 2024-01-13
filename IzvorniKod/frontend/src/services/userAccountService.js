@@ -11,7 +11,7 @@ class UserAccountService {
           });
          return {success:true, user_data:response.data.data.employee};
       } catch (error) {
-         toast.error("Dogodila se greška! " + error.response.data.error, {
+         toast.error("Dogodila se greška! " + (error.response.data.error !== undefined ? error.response.data.error : ""), {
             position: toast.POSITION.BOTTOM_RIGHT,
           });
           return {success:false};
@@ -26,7 +26,7 @@ class UserAccountService {
           });
           return {success:true, user_data:response.data.data.patient};
       } catch (error) {
-         toast.error("Dogodila se greška! " + error.response.data.error, {
+         toast.error("Dogodila se greška! " + (error.response.data.error !== undefined ? error.response.data.error : ""), {
             position: toast.POSITION.BOTTOM_RIGHT,
           });
           return {success:false};
@@ -46,7 +46,7 @@ class UserAccountService {
           });
          return response.data;
       } catch (error) {
-         toast.error("Dogodila se greška! " + error.response.data.error, {
+         toast.error("Dogodila se greška! " + (error.response.data.error !== undefined ? error.response.data.error : ""), {
             position: toast.POSITION.BOTTOM_RIGHT,
           });
       }
@@ -57,7 +57,7 @@ class UserAccountService {
          const response = await axiosInstance.get(`/employees/${userId}`);
          return response.data.data.employee;
       } catch (error) {
-         toast.error("Dogodila se greška! " + error.response.data.error, {
+         toast.error("Dogodila se greška! " + (error.response.data.error !== undefined ? error.response.data.error : ""), {
             position: toast.POSITION.BOTTOM_RIGHT,
           });
       }
@@ -71,7 +71,7 @@ class UserAccountService {
           });
          return response.data;
       } catch (error) {
-         toast.error("Dogodila se greška! " + error.response.data.error, {
+         toast.error("Dogodila se greška! " + (error.response.data.error !== undefined ? error.response.data.error : ""), {
             position: toast.POSITION.BOTTOM_RIGHT,
           });
       }
