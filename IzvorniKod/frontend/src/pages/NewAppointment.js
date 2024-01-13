@@ -1,5 +1,5 @@
 import { React, useState } from "react";
-import "./ChangeAppointment.css";
+import "./NewAppointment.css"
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
@@ -9,13 +9,6 @@ const NewAppointment = () => {
         "therapy_id": null,
         "date_from": null
     });
-
-    const buttonStyle = {
-        backgroundColor: "orange",
-        float: "right",
-        marginRight: "5em",
-        marginBottom: "2em",
-    };
 
 
     const onChangeDate = (date) => {
@@ -35,7 +28,7 @@ const NewAppointment = () => {
             <form action={onSubmit}>
                 <div className="mini-container3">
                     <div className="title-div3">
-                        <h2>Zahtjev za novim terminom</h2>
+                        <h2>Novi termin</h2>
                     </div>
                     <div className="border-container2">
                         <br></br>
@@ -60,7 +53,7 @@ const NewAppointment = () => {
                             variant="contained"
                             size="medium"
                             className="reg-btn"
-                            style={buttonStyle}
+
                         >
                             Pošalji
                         </Button>
