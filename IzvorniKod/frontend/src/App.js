@@ -38,6 +38,8 @@ import UserAccounts from "./pages/UserAccounts";
 import Devices from "./pages/Devices";
 import Rooms from "./pages/Rooms";
 import UserEdit from "./pages/UserEdit";
+import RoomAdd from "./pages/RoomAdd";
+import RoomEdit from "./pages/RoomEdit";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(true);
@@ -286,6 +288,26 @@ function App() {
             <ProtectedRoute>
               <AdminRoute>
                 <UserEdit />
+              </AdminRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/new-room"
+          element={
+            <ProtectedRoute>
+              <AdminRoute>
+                <RoomAdd />
+              </AdminRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/edit-room/:roomId"
+          element={
+            <ProtectedRoute>
+              <AdminRoute>
+                <RoomEdit />
               </AdminRoute>
             </ProtectedRoute>
           }
