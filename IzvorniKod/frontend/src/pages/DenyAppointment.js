@@ -13,76 +13,84 @@ import TextField from "@mui/material/TextField";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
-const komentarStyle = {
-  width: "100%",
-};
-const komentarDivStyle = {
-  marginLeft: "1.8em",
-  marginRight: "2em",
-  width: "50%",
-  marginBottom: "2em",
-};
-const buttonStyle1 = {
-  backgroundColor: "orange",
-  width: "18em",
-  marginLeft: "2em",
-};
-const buttonStyle2 = {
-  backgroundColor: "gray",
-  width: "8em",
-
-};
-const buttonStyle3 = {
-  backgroundColor: "blue",
-  marginRight: "2em",
-  marginLeft: "auto",
-};
-const iconButtonStyle = {
-  backgroundColor: "black",
-  color: "white",
-  float: "left",
-};
-
 const DenyAppointment = () => {
+  //inicijalizacija varijabli
   const { appointmentId } = useParams();
   const [appointment, setAppointment] = useState(null);
   const [comment, setComment] = useState("");
   const nav = useNavigate();
   const toastShownRef = useRef(false);
 
+  //stilovi
+  const komentarStyle = {
+    width: "100%",
+  };
+  const komentarDivStyle = {
+    marginLeft: "1.8em",
+    marginRight: "2em",
+    width: "50%",
+    marginBottom: "2em",
+  };
+  const buttonStyle1 = {
+    backgroundColor: "orange",
+    width: "18em",
+    marginLeft: "2em",
+  };
+  const buttonStyle2 = {
+    backgroundColor: "gray",
+    width: "8em",
+  };
+  const buttonStyle3 = {
+    backgroundColor: "blue",
+    marginRight: "2em",
+    marginLeft: "auto",
+  };
+  const iconButtonStyle = {
+    backgroundColor: "black",
+    color: "white",
+    float: "left",
+  };
+
+  //funkcija koja provjerava je li komentar prazan
   const isFilled = () => {
     if (comment === "") return false;
     return true;
   };
 
+  //funkcija za ažuriranje termina
   const updateAppointment = async () => {
+    //ako termin nije zakazan ili na čekanju, onemogućavanje otkazivanje termina
     if (
       appointment &&
-      (appointment.status.status_id === 3 || appointment.status.status_id === 5)
+      !(
+        appointment.status.status_id === 1 || appointment.status.status_id === 2
+      )
     ) {
-      toast.error("Ne mogu se otkazati već odrađeni ili propušteni termini!", {
-        position: toast.POSITION.TOP_RIGHT,
-      });
+      toast.error(
+        "Ne mogu se otkazati termini koji nisu zakazani ili na čekanju!",
+        {
+          position: toast.POSITION.TOP_RIGHT,
+        }
+      );
       return false;
     }
 
-    try {
-      let filled = isFilled();
-      if (!filled) {
-        throw new Error("Komentar je" + filled);
-      }
-    } catch (err) {
+    //onemogućavanje otkazivanja termina sa praznim komentarom
+    let filled = isFilled();
+    if (!filled) {
       toast.error("Treba unijeti komentar!", {
         position: toast.POSITION.TOP_RIGHT,
       });
       return false;
     }
 
+    //ažurirani podatci
     const updatedData = {
       comment: comment,
       status_id: 4,
     };
 
+    //ažuriranje termina
     try {
       const resp = await EmployeeService.updateAppointment(
         appointmentId,
@@ -92,7 +100,9 @@ const DenyAppointment = () => {
         setAppointment(resp.data);
         return true;
       } else {
-        console.error("greska", resp.message);
+        toast.error("Greska!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
         return false;
       }
     } catch (err) {
@@ -103,6 +113,7 @@ const DenyAppointment = () => {
     }
   };
 
+  //fetchanje appointmenta pri renderu
   useEffect(() => {
     const fetchAppointment = async () => {
       try {
@@ -110,12 +121,14 @@ const DenyAppointment = () => {
         if (resp.success) {
           setAppointment(resp.data);
           if (
-            (resp.data.status.status_id === 3 ||
-              resp.data.status.status_id === 5) &&
+            !(
+              resp.data.status.status_id === 1 ||
+              resp.data.status.status_id === 2
+            ) &&
             !toastShownRef.current
           ) {
             toast.error(
-              "Ne mogu se otkazati već odrađeni ili propušteni termini!",
+              "Ne mogu se otkazati termini koji nisu zakazani ili na čekanju!",
               {
                 position: toast.POSITION.TOP_RIGHT,
               }
@@ -123,7 +136,9 @@ const DenyAppointment = () => {
             toastShownRef.current = true;
           }
         } else {
-          console.log("greska");
+          toast.error("Greska!", {
+            position: toast.POSITION.TOP_RIGHT,
+          });
         }
       } catch (err) {
         toast.error(`API Error:${err.response.data}`, {
@@ -134,6 +149,7 @@ const DenyAppointment = () => {
     fetchAppointment();
   }, [appointmentId]);
 
+  //funkcija koja provjerava je li otkazivanje termina uspjelo
   const provjeraUspjehaUpdatea = async () => {
     const updBool = await updateAppointment();
     console.log("updBool:", updBool);
@@ -195,16 +211,17 @@ const DenyAppointment = () => {
             </div>
             <div className="button-div7_2">
               <div className="small-button-div7_1">
-                <Link to={"../appointment-requests-preview"}>
-                  <Button
-                    variant="contained"
-                    size="medium"
-                    className="gumb7_1"
-                    style={buttonStyle2}
-                  >
-                    Odustani
-                  </Button>
-                </Link>
+                <Button
+                  variant="contained"
+                  size="medium"
+                  className="gumb7_1"
+                  style={buttonStyle2}
+                  onClick={() => {
+                    nav(-1);
+                  }}
+                >
+                  Odustani
+                </Button>
               </div>
               <div className="small-button-div7_2">
                 {appointment && (

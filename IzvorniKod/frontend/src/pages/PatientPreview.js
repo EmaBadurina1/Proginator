@@ -1,11 +1,11 @@
 import { React, useEffect, useState } from "react";
 import DataDisplay from "../components/DataDisplay";
 import { TableCell, TableRow } from "@mui/material";
-//import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import "./PatientPreview.css";
 
 const PatientPreview = () => {
+  //inicijalizacija varijabli
   const [data, setData] = useState(null);
   const nav = useNavigate();
 
@@ -24,7 +24,7 @@ const PatientPreview = () => {
         {data !== null &&
           data.data.patients.map((patient) => (
             <TableRow
-              onClick={() => {nav(`../appointments-preview/${patient.user_id}`)}}
+              onClick={() => {nav(`/appointments-preview/${patient.user_id}`)}}
               key={patient.user_id}
             >
               <TableCell>{patient.name}</TableCell>

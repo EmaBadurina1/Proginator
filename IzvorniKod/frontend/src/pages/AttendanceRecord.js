@@ -12,60 +12,72 @@ import Button from "@mui/material/Button";
 import TherapyInfo from "../components/TherapyInfo";
 import { useParams } from "react-router-dom";
 import EmployeeService from "../services/employeeService";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
-const buttonStyle = {
-  backgroundColor: "purple",
-  marginLeft: "3em",
-  marginRight: "2em",
-  marginBottom: "1em",
-};
-
-const buttonStyle2 = {
-  backgroundColor: "gray",
-  width: "8em",
-  marginBottom: "1em",
-  marginLeft: "3em",
-  marginRight: "2em"
-};
-
-const komentarStyle = {
-  width: "70%",
-};
-
 const AttendanceRecord = () => {
+  //inicijalizacija varijabli
   const { appointmentId } = useParams();
   const [appointment, setAppointment] = useState(null);
   const [comment, setComment] = useState("");
   const [statusId, setStatusId] = useState("");
   const nav = useNavigate();
+  const toastShownRef = useRef(false);
 
+  //stilovi
+  const buttonStyle = {
+    backgroundColor: "purple",
+    marginLeft: "3em",
+    marginRight: "2em",
+    marginBottom: "1em",
+  };
+
+  const buttonStyle2 = {
+    backgroundColor: "gray",
+    width: "8em",
+    marginBottom: "1em",
+    marginLeft: "3em",
+    marginRight: "2em",
+  };
+
+  const komentarStyle = {
+    width: "70%",
+  };
+
+  //funkcija koja provjerava jesu komentar ili status prazni
   const isFilled = () => {
     if (comment === "") return false;
     if (statusId === "") return false;
     return true;
   };
 
+  //funkcija za ažuriranje termina
   const updateAppointment = async () => {
-    try {
-      let filled = isFilled();
-      if (!filled) {
-        throw new Error("Status ili komentar je" + filled);
-      }
-    } catch (err) {
+    //ako je termin otkazan, odrađen, propušten ili na čekanju, onemogući evidenciju termina
+    if (appointment && !(appointment.status.status_id === 2)) {
+      toast.error("Termin je već evidentiran ili je na čekanju!", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      return false;
+    }
+
+    //ako su komentar ili status prazni, onemogućiti evidenciju termina
+    let filled = isFilled();
+    if (!filled) {
       toast.error("Treba odabrati status i unijeti komentar!", {
         position: toast.POSITION.TOP_RIGHT,
       });
       return false;
     }
 
+    //ažurirani podatci
     const updatedData = {
       comment: comment,
       status_id: statusId,
     };
 
+    //ažuriranje termina
     try {
       const resp = await EmployeeService.updateAppointment(
         appointmentId,
@@ -75,7 +87,9 @@ const AttendanceRecord = () => {
         setAppointment(resp.data);
         return true;
       } else {
-        console.error("greska", resp.message);
+        toast.error("Greska!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
         return false;
       }
     } catch (err) {
@@ -86,14 +100,23 @@ const AttendanceRecord = () => {
     }
   };
 
+  //fetchanje termina pri renderu
   useEffect(() => {
     const fetchAppointment = async () => {
       try {
         const resp = await EmployeeService.getAppointmentById(appointmentId);
         if (resp.success) {
           setAppointment(resp.data);
+          if (!(resp.data.status.status_id === 2) && !toastShownRef.current) {
+            toast.error("Termin je već evidentiran ili je na čekanju", {
+              position: toast.POSITION.TOP_RIGHT,
+            });
+            toastShownRef.current = true;
+          }
         } else {
-          console.log("greska");
+          toast.error("Greska!", {
+            position: toast.POSITION.TOP_RIGHT,
+          });
         }
       } catch (err) {
         toast.error(`API Error:${err.response.data}`, {
@@ -104,11 +127,12 @@ const AttendanceRecord = () => {
     fetchAppointment();
   }, [appointmentId]);
 
+  //funkcija koja provjerava je li evidencija uspjela
   const provjeraUspjehaUpdatea = async () => {
     const updBool = await updateAppointment();
     console.log("updBool:", updBool);
     if (updBool) {
-      nav(`/appointments-preview/${appointment.therapy.patient.user_id}`);
+      nav(-1);
     }
   };
 
@@ -190,9 +214,7 @@ const AttendanceRecord = () => {
               className="gumb3_1"
               style={buttonStyle2}
               onClick={() => {
-                nav(
-                  `/appointments-preview/${appointment.therapy.patient.user_id}`
-                );
+                nav(-1);
               }}
             >
               Odustani

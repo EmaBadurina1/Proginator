@@ -10,17 +10,21 @@ import { IconButton } from "@mui/material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 
 const AppointmentsPreview = () => {
+
+  //inicijalizacija varijabli
   const [data, setData] = useState(null);
   const { patientId } = useParams();
   const url = `/appointments/by-patient/${patientId}`;
   const nav = useNavigate();
   const [patient, setPatient] = useState(null);
 
+  //stilovi
   const iconButtonStyle = {
     backgroundColor: "black",
     color: "white",
   };
 
+  //fetchanje pacijenta pri renderu
   useEffect(() => {
     const fetchPatient = async () => {
       try {
@@ -28,7 +32,9 @@ const AppointmentsPreview = () => {
         if (resp.success) {
           setPatient(resp.data);
         } else {
-          console.log("greska");
+          toast.error("Greska!", {
+            position: toast.POSITION.TOP_RIGHT,
+          });
         }
       } catch (err) {
         toast.error(`API Error:${err.response.data}`, {
@@ -42,7 +48,7 @@ const AppointmentsPreview = () => {
   return (
     <div>
       <div className="iconButtonDiv2_1">
-          <IconButton style={iconButtonStyle} onClick={() => nav("/patient-preview")}>
+          <IconButton style={iconButtonStyle} onClick={() => nav(-1)}>
             <ArrowBackIosNewIcon></ArrowBackIosNewIcon>
           </IconButton>
         </div>
@@ -60,34 +66,13 @@ const AppointmentsPreview = () => {
               key={appointment.appointment_id}
               onClick={() => {
                 if (appointment.status) {
-                  if (appointment.status.status_id === 2) {
-                    nav(`/attendance/${appointment.appointment_id}`);
-                  } else if (
-                    appointment.status.status_id === 3 ||
-                    appointment.status.status_id === 4 ||
-                    appointment.status.status_id === 5
-                  ) {
-                    nav(`/attendance-display/${appointment.appointment_id}`);
-                  } else {
-                    toast.error(
-                      "Termin je na čekanju te još nije evidentiran!",
-                      {
-                        position: toast.POSITION.TOP_RIGHT,
-                      }
-                    );
-                  }
+                  nav(`/appointment-options/${appointment.appointment_id}`);
                 }
               }}
             >
               <TableCell>{appointment.date_from}</TableCell>
               <TableCell>
                 {appointment.therapy.therapy_type.therapy_type_name}
-              </TableCell>
-              <TableCell>
-                {appointment.employee &&
-                  appointment.employee.name +
-                    " " +
-                    appointment.employee.surname}
               </TableCell>
               <TableCell>
                 {appointment.status && appointment.status.status_name}
@@ -108,18 +93,13 @@ const tableHead = [
     align: "left",
   },
   {
-    name: "Terapija",
-    orderBy: "therapy_name",
+    name: "Vrsta terapije",
+    orderBy: "therapy_id",
     align: "left",
   },
   {
-    name: "Doktor",
-    orderBy: "surname",
-    align: "left",
-  },
-  {
-    name: "Ishod",
-    orderBy: "status_name",
+    name: "Status termina",
+    orderBy: "status_id",
     align: "left",
   },
 ];

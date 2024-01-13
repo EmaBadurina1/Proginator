@@ -37,6 +37,7 @@ import DataPreview from "./pages/DataPreview";
 import UserAccounts from "./pages/UserAccounts";
 import Devices from "./pages/Devices";
 import Rooms from "./pages/Rooms";
+import AppointmentOptions from "./pages/AppointmentOptions";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(true);
@@ -227,6 +228,16 @@ function App() {
             <ProtectedRoute>
               <EmployeeRoute>
                 <AppointmentsPreview />
+              </EmployeeRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/appointment-options/:appointmentId"
+          element={
+            <ProtectedRoute>
+              <EmployeeRoute>
+                <AppointmentOptions />
               </EmployeeRoute>
             </ProtectedRoute>
           }

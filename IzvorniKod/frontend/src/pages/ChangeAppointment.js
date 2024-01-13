@@ -17,6 +17,8 @@ import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
 
 const ChangeAppointment = () => {
+
+  //inicijalizacija varijabli
   const { appointmentId } = useParams();
   const [appointment, setAppointment] = useState(null);
   const [date, setDate] = useState("");
@@ -24,6 +26,7 @@ const ChangeAppointment = () => {
   const nav = useNavigate();
   const toastShownRef = useRef(false);
 
+  //stilovi
   const iconButtonStyle = {
     backgroundColor: "black",
     color: "white",
@@ -32,35 +35,29 @@ const ChangeAppointment = () => {
 
   const buttonStyle1 = {
     backgroundColor: "blue",
-
   };
   const buttonStyle2 = {
     backgroundColor: "red",
     color: "white",
     marginLeft: "2em",
-    marginBottom: "1em"
+    marginBottom: "1em",
   };
   const buttonStyle3 = {
     backgroundColor: "gray",
     width: "8em",
-    marginBottom: "1em"
+    marginBottom: "1em",
   };
 
+  //funkcija koja provjerava jesu datum ili vrijeme prazni
   const isFilled = () => {
     if (date === "") return false;
     if (time === "") return false;
     return true;
   };
 
-  const provjeraUspjehaUpdatea = async () => {
-    const updBool = await updateAppointment();
-    console.log("updBool:", updBool);
-    if (updBool) {
-      nav(-1);
-    }
-  };
-
+  //funkcija za ažuriranje termina
   const updateAppointment = async () => {
+    //ako je termin odrađen ili propušten, onemogućavanje promjene datuma termina
     if (
       appointment &&
       (appointment.status.status_id === 3 || appointment.status.status_id === 5)
@@ -71,18 +68,16 @@ const ChangeAppointment = () => {
       return false;
     }
 
-    try {
-      let filled = isFilled();
-      if (!filled) {
-        throw new Error("Datum ili vrijeme je" + filled);
-      }
-    } catch (err) {
+    //onemogućavanje ažuriranja datuma termina sa praznim komentarom
+    let filled = isFilled();
+    if (!filled) {
       toast.error("Treba unijeti datum i vrijeme!", {
         position: toast.POSITION.TOP_RIGHT,
       });
       return false;
     }
 
+    //formatiranje datuma i vremena da bude u ispravnom formatu za ažuriranje termina
     const timeAsDate = new Date(time);
 
     const hour = timeAsDate.getHours();
@@ -91,12 +86,14 @@ const ChangeAppointment = () => {
     const formattedDate = `${date} ${hour}:${minute}`;
     const formattedDate2 = `${date} ${hour + 1}:${minute}`;
 
+    //ažurirani podatci
     const updatedData = {
       date_from: formattedDate,
       date_to: formattedDate2,
-      status_id: 2,
+      status_id: 1,
     };
 
+    //ažuriranje termina
     try {
       const resp = await EmployeeService.updateAppointment(
         appointmentId,
@@ -106,7 +103,9 @@ const ChangeAppointment = () => {
         setAppointment(resp.data);
         return true;
       } else {
-        console.error("greska", resp.message);
+        toast.error("Greska!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
         return false;
       }
     } catch (err) {
@@ -117,6 +116,7 @@ const ChangeAppointment = () => {
     }
   };
 
+  //fetchanje appointmenta po renderu
   useEffect(() => {
     const fetchAppointment = async () => {
       try {
@@ -137,10 +137,12 @@ const ChangeAppointment = () => {
             toastShownRef.current = true;
           }
         } else {
-          console.log("greska");
+          toast.error("Greska!", {
+            position: toast.POSITION.TOP_RIGHT,
+          });
         }
       } catch (err) {
-        toast.error("Greska!", {
+        toast.error(`API Error:${err.response.data}`, {
           position: toast.POSITION.TOP_RIGHT,
         });
       }
@@ -148,6 +150,16 @@ const ChangeAppointment = () => {
     fetchAppointment();
   }, [appointmentId]);
 
+    //funkcija koja provjerava je li ažuriranje termina uspjelo
+    const provjeraUspjehaUpdatea = async () => {
+      const updBool = await updateAppointment();
+      console.log("updBool:", updBool);
+      if (updBool) {
+        nav(-1);
+      }
+    };
+
+  //prilikom odabiranja datuma termina, ažuriraj varijablu date
   function onChangeDate(date) {
     let value = date.toFormat("yyyy-MM-dd");
     setDate(value);
@@ -213,7 +225,14 @@ const ChangeAppointment = () => {
                   className="gumb6_2"
                   style={buttonStyle2}
                   onClick={() => {
-                    nav(`/deny-appointment/${appointment.appointment_id}`);
+                    if (appointment.status && (appointment.status.status_id === 1
+                       || appointment.status.status_id === 2)) {
+                      nav(`/deny-appointment/${appointment.appointment_id}`);
+                    } else {
+                      toast.error("Ne mogu se otkazati termini koji nisu zakazani ili na čekanju!", {
+                        position: toast.POSITION.TOP_RIGHT,
+                      });
+                    }
                   }}
                 >
                   Otkaži termin
@@ -229,7 +248,7 @@ const ChangeAppointment = () => {
                     className="gumb6_3"
                     style={buttonStyle3}
                     onClick={() => {
-                      nav("/appointment-requests-preview");
+                      nav(-1);
                     }}
                   >
                     Odustani

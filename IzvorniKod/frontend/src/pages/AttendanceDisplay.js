@@ -16,6 +16,7 @@ import { useEffect, useState, useRef } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
+//stilovi
 const buttonStyle = {
   backgroundColor: "purple",
   marginLeft: "auto",
@@ -29,12 +30,15 @@ const komentarStyle = {
 };
 
 const AttendanceDisplay = () => {
+
+  //inicijalizacija varijabli
   const { appointmentId } = useParams();
   const [appointment, setAppointment] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState("");
   const nav = useNavigate();
   const toastShownRef = useRef(false);
 
+  //fetchanje termina pri renderu
   useEffect(() => {
     const fetchAppointment = async () => {
       try {
@@ -43,13 +47,21 @@ const AttendanceDisplay = () => {
           setAppointment(resp.data);
           setSelectedStatus(resp.data.status.status_name);
           if (resp.data.status.status_id === 1 && !toastShownRef.current) {
-            toast.error("Termin je na čekanju te još nije evidentiran!", {
+            toast.error("Termin je na čekanju!", {
+              position: toast.POSITION.TOP_RIGHT,
+            });
+            toastShownRef.current = true;
+          }
+          if (resp.data.status.status_id === 2 && !toastShownRef.current) {
+            toast.error("Termin je zakazan!", {
               position: toast.POSITION.TOP_RIGHT,
             });
             toastShownRef.current = true;
           }
         } else {
-          console.log("greska");
+          toast.error("Greska!", {
+            position: toast.POSITION.TOP_RIGHT,
+          });
         }
       } catch (err) {
         toast.error(`API Error:${err.response.data}`, {
@@ -137,9 +149,7 @@ const AttendanceDisplay = () => {
             className="gumb4_1"
             style={buttonStyle}
             onClick={() => {
-              nav(
-                `/appointments-preview/${appointment.therapy.patient.user_id}`
-              );
+              nav(-1);
             }}
           >
             Povratak
