@@ -32,8 +32,8 @@ const Rooms = () => {
           <Grid item xs={12} sm={6}>
             <Typography
               variant="h4"
-              align="start"
-              className="mb-4"
+              align="left"
+              className="mb-2"
               gutterBottom
             >
               Popis soba
@@ -55,8 +55,8 @@ const Rooms = () => {
                 onClick={() => openDialog(room)}
               >
                 <TableCell>{room.room_num}</TableCell>
-                <TableCell>{room.in_use}</TableCell>
-                <TableCell>{room.capacity}</TableCell>
+                <TableCell>{room.in_use ? "Dostupna" : "Nedostupna"}</TableCell>
+                <TableCell className="hide-sm">{room.capacity}</TableCell>
               </TableRow>
             ))}
         </DataDisplay>
@@ -76,7 +76,7 @@ const tableHead = [
     classes: "show-sm" 
   },
   {
-    name: "Soba Zauzeta",
+    name: "Dostupnost",
     orderBy: "in_use",
     align: "left",
     classes: "show-sm" 
@@ -85,6 +85,6 @@ const tableHead = [
     name: "Kapacitet sobe",
     orderBy: "capacity",
     align: "left",
-    classes: "show-sm" 
+    classes: "hide-sm" 
   },
 ];

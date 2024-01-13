@@ -41,8 +41,8 @@ const UserAccounts = () => {
           <Grid item xs={12} sm={6}>
             <Typography
               variant="h4"
-              align="start"
-              className="mb-4"
+              align="left"
+              className="mb-2"
               gutterBottom
             >
               Djelatnici - korisnički računi

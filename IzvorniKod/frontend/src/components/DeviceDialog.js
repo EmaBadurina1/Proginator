@@ -9,9 +9,9 @@ import {
 import PropTypes from "prop-types";
 import "./RoomDialog.css";
 import { useNavigate } from "react-router-dom";
-import RoomService from "../services/roomService";
+import DeviceService from "../services/deviceService";
 
-const RoomDialog = ({ room, open, setOpen }) => {
+const DeviceDialog = ({ device, open, setOpen }) => {
   const handleClose = () => {
     setOpen(false);
   };
@@ -19,12 +19,12 @@ const RoomDialog = ({ room, open, setOpen }) => {
   const handleDelete = async (id) => {
     // Show a confirmation dialog
     const isConfirmed = window.confirm(
-      "Jeste li sigurni da želite izbrisati ovu sobu?"
+      "Jeste li sigurni da želite izbrisati ovaj uređaj?"
     );
 
     // If the user confirms, call the onDelete callback
     if (isConfirmed) {
-      await RoomService.deleteRoom(id);
+      await DeviceService.deleteDevice(id);
     }
   };
 
@@ -38,18 +38,28 @@ const RoomDialog = ({ room, open, setOpen }) => {
       aria-labelledby="scroll-dialog-title"
       aria-describedby="scroll-dialog-description"
     >
-      <DialogTitle id="scroll-dialog-title">Soba</DialogTitle>
+      <DialogTitle id="scroll-dialog-title">Uređaj</DialogTitle>
       <DialogContent>
         <div className="dialog-content">
           <span>
-            <strong>Broj sobe:</strong> {room.room_num}
+            <strong>ID:</strong> {device.device_id}
           </span>
           <span>
-            <strong>Kapacitet:</strong> {room.capacity}
+            <strong>Soba u kojoj se uređaj nalazi:</strong> {device.room.room_num}
           </span>
           <span>
-            <strong>Dostupna:</strong> {room.in_use ? "DA" : "NE"}
+            <strong>Dostupnost sobe:</strong> {device.room.in_use ? "Dostupna" : "Nedostupna"}
           </span>
+          <span>
+            <strong>Kapacitet sobe:</strong> {device.room.capacity}
+          </span>
+            <span>
+               <strong>Tip uređaja:</strong> {device.device_type.device_type_name}
+            </span>
+            <span>
+               <strong>Opis uređaja:</strong> {device.device_type.device_type_descr}
+            </span>
+          
         </div>
       </DialogContent>
       <DialogActions>
@@ -57,7 +67,7 @@ const RoomDialog = ({ room, open, setOpen }) => {
           variant="contained"
           color="primary"
           size="small"
-          onClick={() => nav(`/edit-room/${room.room_num}`)}
+          onClick={() => nav(`/edit-device/${device.device_id}`)}
         >
           Uredi
         </Button>
@@ -65,7 +75,7 @@ const RoomDialog = ({ room, open, setOpen }) => {
           variant="contained"
           color="error"
           size="small"
-          onClick={() => handleDelete(room.room_num)}
+          onClick={() => handleDelete(device.device_id)}
         >
           Izbriši
         </Button>
@@ -75,10 +85,10 @@ const RoomDialog = ({ room, open, setOpen }) => {
   );
 };
 
-export default RoomDialog;
+export default DeviceDialog;
 
-RoomDialog.propTypes = {
+DeviceDialog.propTypes = {
   setOpen: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
-  room: PropTypes.object.isRequired,
+  device: PropTypes.object.isRequired,
 };
