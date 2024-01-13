@@ -11,7 +11,7 @@ class UserAccountService {
           });
          return {success:true, user_data:response.data.data.employee};
       } catch (error) {
-         toast.error("Dogodila se greška! " + error.response.error, {
+         toast.error("Dogodila se greška! " + error.response.data.error, {
             position: toast.POSITION.BOTTOM_RIGHT,
           });
           return {success:false};
@@ -26,7 +26,7 @@ class UserAccountService {
           });
           return {success:true, user_data:response.data.data.patient};
       } catch (error) {
-         toast.error("Dogodila se greška! " + error.response.error, {
+         toast.error("Dogodila se greška! " + error.response.data.error, {
             position: toast.POSITION.BOTTOM_RIGHT,
           });
           return {success:false};
@@ -46,7 +46,7 @@ class UserAccountService {
           });
          return response.data;
       } catch (error) {
-         toast.error("Dogodila se greška! " + error.response.error, {
+         toast.error("Dogodila se greška! " + error.response.data.error, {
             position: toast.POSITION.BOTTOM_RIGHT,
           });
       }
@@ -57,12 +57,24 @@ class UserAccountService {
          const response = await axiosInstance.get(`/employees/${userId}`);
          return response.data.data.employee;
       } catch (error) {
-         toast.error("Dogodila se greška! " + error.response.error, {
+         toast.error("Dogodila se greška! " + error.response.data.error, {
             position: toast.POSITION.BOTTOM_RIGHT,
           });
       }
    }
 
-   
+   async deleteEmployee(userId){
+      try {
+         const response = await axiosInstance.delete(`/employees/${userId}`);
+         toast.success("Uspješno ste izbrisali korisnika!", {
+            position: toast.POSITION.BOTTOM_RIGHT,
+          });
+         return response.data;
+      } catch (error) {
+         toast.error("Dogodila se greška! " + error.response.data.error, {
+            position: toast.POSITION.BOTTOM_RIGHT,
+          });
+      }
+   }
 }
 export default new UserAccountService();
