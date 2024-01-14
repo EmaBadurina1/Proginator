@@ -1,3 +1,23 @@
+.container-div2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.mini-container3 {
+    display: flex;
+    flex-direction: column;
+    border: 3px solid #3498db;
+    border-radius: 8px;
+    padding: 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 100%;
+    margin: 100px auto;
+}
+
 .main-container6_1 {
     margin-top: 3em;
 }
@@ -15,7 +35,8 @@
 }
 
 .title-div6_1 {
-    margin-left: 3em;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .big-div6_1 {
@@ -46,13 +67,11 @@
     margin-left: 3em;
 }
 
+/* 
 .gumb6_1 {
-    height: 2.5em;
-    color: black;
-    background-color: orange;
-    border-radius: 0.5em;
-    width: 13em;
-}
+    display: center;
+
+} */
 
 .button-div6_1 {
     margin-bottom: 6em;

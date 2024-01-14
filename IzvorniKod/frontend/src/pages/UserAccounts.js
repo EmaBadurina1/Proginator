@@ -3,20 +3,33 @@ import "./UserAccounts.css";
 import DataDisplay from "../components/DataDisplay";
 import Container from "@mui/material/Container";
 import { Box, Grid, Typography } from "@mui/material";
-import Button from "@mui/material/Button";
-import AddIcon from "@mui/icons-material/Add";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { TableRow, TableCell } from "@mui/material";
+import UserDialog from "../components/UserDialog";
+import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
+import CheckIcon from '@mui/icons-material/Check';
 
 const UserAccounts = () => {
+  const [data, setData] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [content, setContent] = useState(null);
 
-   const nav = useNavigate();
+  useEffect(() => {}, [data]);
 
-   const handleAddUser = () => {
-      nav("/add-users");
-   }
+  const openDialog = (content) => {
+    setContent(content);
+    setOpen(true);
+  };
+
+  const formatDate = (inputString) => {
+    const inputDate = new Date(inputString);
+    const options = { day: 'numeric', month: 'numeric', year: 'numeric' };
+  
+    return inputDate.toLocaleDateString('hr-HR', options);
+  };
 
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth="xl">
       <Box
         sx={{
           boxShadow: 2,
@@ -28,52 +41,94 @@ const UserAccounts = () => {
           <Grid item xs={12} sm={6}>
             <Typography
               variant="h4"
-              align="start"
-              className="mb-4"
+              align="left"
+              className="mb-2"
               gutterBottom
             >
               Djelatnici - korisnički računi
             </Typography>
           </Grid>
-          <Grid item xs={12} sm={6} sx={{ textAlign: "end" }}>
-            <Button
-              key="addUserBtn"
-              color="success"
-              variant="contained"
-              size="medium"
-              className="mt-1"
-              onClick={handleAddUser}
-            >
-              <AddIcon />
-              Novi račun
-            </Button>
-          </Grid>
         </Grid>
         <DataDisplay
-          url={"/employees"}
-          columns={[
-            "Ime",
-            "Prezime",
-            "OIB",
-            "Datum rođenja",
-            "E-mail",
-            "Broj telefona",
-            "Akcije",
-          ]}
-          options={[
-            "name",
-            "surname",
-            "OIB",
-            "date_of_birth",
-            "email",
-            "phone_number",
-          ]}
-          identificator={"user_id"}
-          dataName="employees"
-        />
+          url="/employees" // url from where to fetch data
+          setData={setData} // function for setting data declared with useState() hook
+          tableHead={tableHead} // array of objects representing table header
+          buttonLabel="Novi račun" // text on button/link
+          buttonUrl="/new-user" // link to adding new element page
+        >
+          {/* adding table rows as children to DataDisplay component */}
+          {data !== null &&
+            data.data.employees.map((employee) => (
+              <TableRow
+                key={employee.user_id}
+                onClick={() => openDialog(employee)}
+              >
+                <TableCell>{employee.name}</TableCell>
+                <TableCell>{employee.surname}</TableCell>
+                <TableCell className="hide-sm">{employee.OIB}</TableCell>
+                <TableCell className="hide-sm">{formatDate(employee.date_of_birth)}</TableCell>
+                <TableCell className="hide-sm">{employee.email}</TableCell>
+                <TableCell className="hide-sm">{employee.phone_number}</TableCell>
+                <TableCell className="hide-sm">{employee.is_admin ? "DA" : "NE"}</TableCell>
+                <TableCell>{employee.is_active ? <CheckIcon/> : <RemoveCircleIcon/>}</TableCell>
+              </TableRow>
+            ))}
+        </DataDisplay>
       </Box>
+      {open && <UserDialog open={open} setOpen={setOpen} employee={content} />}
     </Container>
   );
 };
 
 export default UserAccounts;
+
+const tableHead = [
+  {
+    name: "Ime",
+    orderBy: "name",
+    align: "left",
+    classes: "show-sm" 
+  },
+  {
+    name: "Prezime",
+    orderBy: "surname",
+    align: "left",
+    classes: "show-sm" 
+  },
+  {
+    name: "OIB",
+    orderBy: "OIB",
+    align: "left",
+    classes: "hide-sm" 
+  },
+  {
+    name: "Datum rođenja",
+    orderBy: "date_of_birth",
+    align: "left",
+    classes: "hide-sm" 
+  },
+  {
+    name: "E-mail",
+    orderBy: "email",
+    align: "left",
+    classes: "hide-sm" 
+  },
+  {
+    name: "Broj telefona",
+    orderBy: "phone_number",
+    align: "left",
+    classes: "hide-sm" 
+  },
+  {
+    name: "Administrator?",
+    orderBy: "is_admin",
+    align: "left",
+    classes: "hide-sm" 
+  },
+  {
+    name: "Aktivan?",
+    orderBy: "is_active",
+    align: "left",
+    classes: "show-sm" 
+  },
+];

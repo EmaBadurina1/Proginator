@@ -40,6 +40,11 @@ import Rooms from "./pages/Rooms";
 import Registrated from "./pages/Registrated";
 import ConfirmEmail from "./pages/ConfirmEmail";
 import ResetPassword from "./pages/ResetPassword";
+import UserEdit from "./pages/UserEdit";
+import RoomAdd from "./pages/RoomAdd";
+import RoomEdit from "./pages/RoomEdit";
+import DeviceAdd from "./pages/DeviceAdd";
+import DeviceEdit from "./pages/DeviceEdit";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(true);
@@ -273,11 +278,61 @@ function App() {
           }
         />
         <Route
-          path="/add-users"
+          path="/new-user"
           element={
             <ProtectedRoute>
               <AdminRoute>
                 <UserAdd />
+              </AdminRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/edit-user/:userId"
+          element={
+            <ProtectedRoute>
+              <AdminRoute>
+                <UserEdit />
+              </AdminRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/new-room"
+          element={
+            <ProtectedRoute>
+              <AdminRoute>
+                <RoomAdd />
+              </AdminRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/edit-room/:roomId"
+          element={
+            <ProtectedRoute>
+              <AdminRoute>
+                <RoomEdit />
+              </AdminRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/new-device"
+          element={
+            <ProtectedRoute>
+              <AdminRoute>
+                <DeviceAdd />
+              </AdminRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/edit-device/:deviceId"
+          element={
+            <ProtectedRoute>
+              <AdminRoute>
+                <DeviceEdit />
               </AdminRoute>
             </ProtectedRoute>
           }
