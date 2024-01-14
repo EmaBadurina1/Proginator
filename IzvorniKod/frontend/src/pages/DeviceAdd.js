@@ -18,8 +18,7 @@ const DeviceAdd = () => {
   const [values, setValues] = useState({
     device_type_id: "",
     device_type_name: "",
-    room_num: "",
-    room_capacity: "",
+    room: {room_num: "", capacity: ""},
   });
 
   const [deviceTypes, setDeviceTypes] = useState([]);
@@ -41,13 +40,13 @@ const DeviceAdd = () => {
   /* Object for highlighting the error fields */
   const [errors, setErrors] = useState({
     device_type_id: false,
-    room_num: false,
+    room: false,
   });
 
   /* Object for error description on error fields */
   const [helperText, setHelperText] = useState({
     device_type_id: "",
-    room_num: "",
+    room: "",
   });
 
   /* Disable submit button if form is not filled correctly */
@@ -62,7 +61,7 @@ const DeviceAdd = () => {
   useEffect(() => {
     const isFilled = () => {
       if (values.device_type_id === "") return false;
-      if (values.room_num === "") return false;
+      if (values.room === "") return false;
       return true;
     };
 
@@ -137,7 +136,7 @@ const DeviceAdd = () => {
 
     const data = {
       device_type_id: values.device_type_id,
-      room_num: values.room_num,
+      room_num: values.room.room_num,
     };
 
     resp = await DeviceService.addDevice(data);
@@ -152,12 +151,6 @@ const DeviceAdd = () => {
   const quitEdit = () => {
     nav("/devices");
   };
-
-  const handleRoomChange = (e) => {
-    const value = e.target.value;
-    console.log(value);
-    setValues({ ...values, room_num: value.room_num, room_capacity: value.room_capacity });
-  }
 
   return (
     <>
@@ -213,12 +206,13 @@ const DeviceAdd = () => {
                 <Select
                   sx={{ width: "100%", padding: "0", margin: "0!important" }}
                   labelId="room-num-label"
-                  value={values.room_num}
+                  value={values.room.room_num == "" ? "" : values.room}
                   label="Soba"
-                  name="room_num"
-                  error={errors.room_num}
-                  helperText={helperText.room_num}
-                  onChange={handleRoomChange}
+                  name="room"
+                  error={errors.room}
+                  helperText={helperText.room}
+                  defaultValue={""}
+                  onChange={handleChange}
                 >
                   <MenuItem value="">
                     <em>Odaberite sobu</em>
@@ -238,11 +232,9 @@ const DeviceAdd = () => {
                   className="reg-form-input"
                   label="Kapacitet sobe"
                   variant="outlined"
-                  name="room_capacity"
-                  onChange={handleChange}
-                  error={errors.room_capacity}
-                  helperText={helperText.room_capacity}
-                  value={values.room_capacity}
+                  name="room.capacity"
+                  disabled={true}
+                  value={values.room.capacity}
                 />
               </Grid>
 
