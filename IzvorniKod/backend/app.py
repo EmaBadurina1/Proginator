@@ -5,6 +5,7 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 from controllers import *
 from db import db
+from mail import mail
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -28,8 +29,15 @@ app.config["SESSION_COOKIE_SAMESITE"] = "None"
 app.config["SESSION_COOKIE_SECURE"] = True
 app.config["CORS_HEADERS"] = "Content-Type"
 app.config["SESSION_PROTECTION"] = "strong"
+app.config["MAIL_SERVER"] = os.getenv("MAIL_SERVER")
+app.config["MAIL_PORT"] = os.getenv("MAIL_PORT")
+app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME")
+app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD")
+app.config["MAIL_USE_TLS"] = False
+app.config["MAIL_USE_SSL"] = True
 
 db.init_app(app)
+mail.init_app(app)
 
 if __name__ == "__main__":
     app.run()

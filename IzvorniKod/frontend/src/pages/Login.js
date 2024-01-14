@@ -148,6 +148,9 @@ const Login = ({ onLogin }) => {
               }}
             />
           </div>
+          <div>
+            <Link to="/reset-password">Zaboravili ste lozinku?</Link>
+          </div>
           <div className="login-form-row">
             <FormControlLabel
               className="login-form-checkbox"

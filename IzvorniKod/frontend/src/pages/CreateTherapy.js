@@ -1,4 +1,4 @@
-import { useState, React, useEffect, useContext } from "react";
+import { useState, React, useEffect, useContext, useRef } from "react";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
@@ -17,19 +17,20 @@ const CreateTherapy = () => {
         "therapy_type_id": null,
         "doctor_id": null,
         "disease_descr": "",
-        "patient_id": null,
+        "patient_id": context.userData.user_id,
         "date_from": null,
         "req_treatment": ""
     });
     const [submitMessage, setSubmitMessage] = useState("Popuni obrazac");
     const [disableSubmit, setDisableSubmit] = useState(true);
-    const [fetched, setFetched] = useState({
-        doctors: false,
-        types: false
-    });
     const [autocomplete, setAutocomplete] = useState({
         types: null,
         doctors: null
+    });
+
+    const fetched = useRef({
+        doctors: false,
+        types: false
     });
 
     useEffect(() => {
@@ -40,10 +41,7 @@ const CreateTherapy = () => {
                     "page_size": 20
                 });
                 setTypes(res.data.data.therapy_types);
-                setFetched(old => ({
-                    ...old,
-                    "types": true
-                }))
+                fetched.types = true
             }
             catch (err) {
                 toast.error("Dogodila se greška!", {
@@ -56,10 +54,7 @@ const CreateTherapy = () => {
             try {
                 const res = await axiosInstance.get("/doctors");
                 setDoctors(res.data.data.doctors);
-                setFetched(old => ({
-                    ...old,
-                    "doctors": true
-                }))
+                fetched.doctors = true
             }
             catch (err) {
                 toast.error("Dogodila se greška!", {
@@ -88,16 +83,7 @@ const CreateTherapy = () => {
         } else {
             setSubmitMessage("Dodaj terapiju");
         }
-    }, [types, doctors, form, fetched]);
-
-    useEffect(() => {
-        if (context.userData !== null) {
-            setForm(oldForm => ({
-                ...oldForm,
-                "patient_id": context.userData.user_id
-            }));
-        }
-    }, [context]);
+    }, [form]);
 
     const onChangeDate = (date) => {
         let value = date.toFormat("yyyy-MM-dd");
@@ -132,7 +118,6 @@ const CreateTherapy = () => {
                         <Autocomplete
                             className="autocomplete"
                             disablePortal
-                            id="combo-box-demo"
                             name="therapy_type_id"
                             disabled={!fetched.types}
                             options={types.map((e) => {
@@ -160,7 +145,6 @@ const CreateTherapy = () => {
                             className="autocomplete"
                             disablePortal
                             disableClearable
-                            id="combo-box-demo"
                             disabled={!fetched.doctors}
                             options={doctors.map((e) => {
                                 return {

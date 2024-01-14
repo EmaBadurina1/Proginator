@@ -37,6 +37,9 @@ import DataPreview from "./pages/DataPreview";
 import UserAccounts from "./pages/UserAccounts";
 import Devices from "./pages/Devices";
 import Rooms from "./pages/Rooms";
+import Registrated from "./pages/Registrated";
+import ConfirmEmail from "./pages/ConfirmEmail";
+import ResetPassword from "./pages/ResetPassword";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(true);
@@ -328,6 +331,24 @@ function App() {
                 <DataPreview/>
               </AdminRoute>
             </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/registrated/:email"
+          element={
+            <Registrated />
+          }
+        />
+        <Route
+          path="/confirm-email/:id"
+          element={
+            <ConfirmEmail />
+          }
+        />
+        <Route
+          path="/reset-password"
+          element={
+            <ResetPassword />
           }
         />
         <Route path="*" element={<NotFound />} />
