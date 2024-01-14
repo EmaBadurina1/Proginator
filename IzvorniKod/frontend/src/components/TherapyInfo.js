@@ -17,12 +17,11 @@ const TherapyInfo = (props) => {
   return (
     <div className="therapy-info" style={therapyInfoStyle}>
       <h4>Informacije o terapiji</h4>
-      <p><p style={bolded}>Vrsta terapije:</p> {therapy.therapy_type.therapy_type_name}</p> 
-      <p><p style={bolded}>Zahtjevani postupak liječenja:</p> {therapy.req_treatment}</p> 
-      <p><p style={bolded}>Datum početka:</p> {therapy.date_from}</p> 
-      <p><p style={bolded}>Opis:</p> {therapy.therapy_type.therapy_type_descr}</p> 
-      
-      <br></br>
+      <p><span style={bolded}>Vrsta terapije:</span> {therapy.therapy_type.therapy_type_name}</p> 
+      <p><span style={bolded}>Opis bolesti:</span> {therapy.disease_descr}</p> 
+      <p><span style={bolded}>Zahtjevani postupak liječenja:</span> {therapy.req_treatment}</p> 
+      <p><span style={bolded}>Datum početka:</span> {therapy.date_from}</p> 
+      <p><span style={bolded}>Opis terapije:</span> {therapy.therapy_type.therapy_type_descr}</p> 
     </div>
   );
 };
@@ -33,6 +32,7 @@ TherapyInfo.propTypes = {
       therapy_type_name: PropTypes.string,
       therapy_type_descr: PropTypes.string,
     }),
+    disease_descr: PropTypes.string,
     req_treatment: PropTypes.string,
     date_from: PropTypes.string,
   }),
