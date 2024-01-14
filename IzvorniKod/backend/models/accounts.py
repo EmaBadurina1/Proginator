@@ -19,22 +19,6 @@ class User(db.Model):
     confirmed = db.Column(db.Boolean, nullable=False, default=False)
     confirmed_on = db.Column(db.DateTime)
 
-    patients = db.relationship(
-        'Patient',
-        backref=db.backref(
-            'user',
-            passive_deletes=True
-        ) 
-    )
-
-    employees = db.relationship(
-        'Employee',
-        backref=db.backref(
-            'user',
-            passive_deletes=True
-        ) 
-    )
-
     def __init__(self, password, **kwargs):
         date_of_birth = kwargs.get('date_of_birth', None)
         # test date format and convert to datetime
