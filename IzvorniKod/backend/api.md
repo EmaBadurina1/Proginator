@@ -2694,8 +2694,9 @@
   - `room_num` (string): Room number.
   - `capacity` (string): Capacity of a room.
   - `in_use` (boolean): If room is in use.
+  - `therapy_types` (list of `therapy_type_id`'s): List of all therapy_types that are used in that are practiced in that room.
 - **Notes:**
-  - All request params are required.
+  - Request params `room_num`, `capacity`, `in_use` are required.
 
 #### Response
 
@@ -2767,6 +2768,7 @@
   - `room_num` (string): Room number.
   - `capacity` (string): Capacity of a room.
   - `in_use` (boolean): If room is in use.
+  - `therapy_types` (list of `therapy_type_id`'s): List of all therapy_types that are used in that are practiced in that room.
 - **Notes:**
   - All request params are optional.
 
