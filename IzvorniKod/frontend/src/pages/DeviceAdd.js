@@ -1,6 +1,5 @@
 import React from "react";
 import Container from "@mui/material/Container";
-import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import { useState, useEffect } from "react";
@@ -8,25 +7,45 @@ import "./UserAccount.css";
 import Box from "@mui/material/Box";
 import DeviceService from "../services/deviceService";
 import { useNavigate } from "react-router-dom";
+import InputLabel from "@mui/material/InputLabel";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import RoomService from "../services/roomService";
+import TextField from "@mui/material/TextField";
 
 const DeviceAdd = () => {
-
   const [values, setValues] = useState({
-    device_id: "",
     device_type_id: "",
+    device_type_name: "",
     room_num: "",
+    room_capacity: "",
   });
+
+  const [deviceTypes, setDeviceTypes] = useState([]);
+  const [rooms, setRooms] = useState([]);
+
+  useEffect(() => {
+    const getDeviceTypes = async () => {
+      const deviceTypesFromServer = await DeviceService.getAllDeviceTypes();
+      setDeviceTypes(deviceTypesFromServer);
+    };
+    const getRooms = async () => {
+      const roomsFromServer = await RoomService.getAllRooms();
+      setRooms(roomsFromServer);
+    }
+    getDeviceTypes();
+    getRooms();
+  }, []);
 
   /* Object for highlighting the error fields */
   const [errors, setErrors] = useState({
-    device_id: false,
     device_type_id: false,
     room_num: false,
   });
 
   /* Object for error description on error fields */
   const [helperText, setHelperText] = useState({
-    device_id: "",
     device_type_id: "",
     room_num: "",
   });
@@ -37,13 +56,11 @@ const DeviceAdd = () => {
   /* Text that is shown on submit button */
   const [submitMessage, setSubmitMessage] = useState("Unesi podatke");
 
-  const [isEditing, setIsEditing] = useState(true);
 
   const nav = useNavigate();
 
   useEffect(() => {
     const isFilled = () => {
-      if (values.device_id === "") return false;
       if (values.device_type_id === "") return false;
       if (values.room_num === "") return false;
       return true;
@@ -119,12 +136,10 @@ const DeviceAdd = () => {
     let resp;
 
     const data = {
-      device_id: values.device_id,
       device_type_id: values.device_type_id,
       room_num: values.room_num,
     };
 
-    setIsEditing(false);
     resp = await DeviceService.addDevice(data);
 
     if (resp.success) {
@@ -138,6 +153,12 @@ const DeviceAdd = () => {
     nav("/devices");
   };
 
+  const handleRoomChange = (e) => {
+    const value = e.target.value;
+    console.log(value);
+    setValues({ ...values, room_num: value.room_num, room_capacity: value.room_capacity });
+  }
+
   return (
     <>
       <Container maxWidth="sm" className="profile-form">
@@ -146,20 +167,7 @@ const DeviceAdd = () => {
           <hr />
           <form onSubmit={handleDeviceAdd}>
             <Grid container spacing={4}>
-              <Grid item xs={6}>
-                <TextField
-                  sx={{ width: "100%", padding: "0", margin: "0!important" }}
-                  autoComplete="false"
-                  className="reg-form-input"
-                  label="ID"
-                  variant="outlined"
-                  name="device_id"
-                  disabled={!isEditing}
-                  onChange={handleChange}
-                  value={values.device_id}
-                />
-              </Grid>
-              <Grid item xs={6}>
+              {/* <Grid item xs={12}>
                 <TextField
                   sx={{ width: "100%", padding: "0", margin: "0!important" }}
                   autoComplete="false"
@@ -171,20 +179,70 @@ const DeviceAdd = () => {
                   onChange={handleChange}
                   value={values.device_type_id}
                 />
+              </Grid> */}
+              <Grid item xs={12}>
+                <FormControl sx={{width: "100%", padding: "0", margin: "0!important"}}>
+                <InputLabel id="demo-simple-select-helper-label">
+                  Vrsta uređaja
+                </InputLabel>
+                <Select
+                  sx={{ width: "100%", padding: "0", margin: "0!important" }}
+                  labelId="demo-simple-select-helper-label"
+                  id="demo-simple-select-helper"
+                  value={values.device_type_id}
+                  label="Vrsta uređaja"
+                  name="device_type_id"
+                  onChange={handleChange}
+                >
+                  <MenuItem value="">
+                    <em>Odaberite vrstu</em>
+                  </MenuItem>
+                  {deviceTypes && deviceTypes.map((deviceType) => (
+                    <MenuItem key={deviceType.id} value={deviceType.device_type_id}>
+                      {deviceType.device_type_name}
+                    </MenuItem>
+                  ))}
+                </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={6}>
+                <FormControl sx={{width: "100%", padding: "0", margin: "0!important"}}>
+                <InputLabel id="room-num-label">
+                  Soba
+                </InputLabel>
+                <Select
+                  sx={{ width: "100%", padding: "0", margin: "0!important" }}
+                  labelId="room-num-label"
+                  value={values.room_num}
+                  label="Soba"
+                  name="room_num"
+                  error={errors.room_num}
+                  helperText={helperText.room_num}
+                  onChange={handleRoomChange}
+                >
+                  <MenuItem value="">
+                    <em>Odaberite sobu</em>
+                  </MenuItem>
+                  {rooms && rooms.map((room) => (
+                    <MenuItem key={room.room_num} value={room}>
+                      {room.room_num}
+                    </MenuItem>
+                  ))}
+                </Select>
+                </FormControl>
               </Grid>
               <Grid item xs={6}>
                 <TextField
                   sx={{ width: "100%", padding: "0", margin: "0!important" }}
                   autoComplete="false"
                   className="reg-form-input"
-                  label="Soba"
+                  label="Kapacitet sobe"
                   variant="outlined"
-                  name="room_num"
-                  disabled={!isEditing}
+                  name="room_capacity"
                   onChange={handleChange}
-                  error={errors.room_num}
-                  helperText={helperText.room_num}
-                  value={values.room_num}
+                  error={errors.room_capacity}
+                  helperText={helperText.room_capacity}
+                  value={values.room_capacity}
                 />
               </Grid>
 

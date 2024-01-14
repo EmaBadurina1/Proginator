@@ -55,5 +55,16 @@ class RoomService {
           });
       }
    }
+
+   async getAllRooms(){
+      try {
+         const response = await axiosInstance.get(`/rooms`);
+         return response.data.data.rooms;
+      } catch (error) {
+         toast.error("Dogodila se greška! " + (error.response.data.error !== undefined ? error.response.data.error : ""), {
+            position: toast.POSITION.BOTTOM_RIGHT,
+          });
+      }
+   }
 }
 export default new RoomService();

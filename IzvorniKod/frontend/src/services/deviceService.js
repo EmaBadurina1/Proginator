@@ -55,5 +55,16 @@ class DeviceService {
           });
       }
    }
+
+   async getAllDeviceTypes(){
+      try {
+         const response = await axiosInstance.get(`/device-types`);
+         return response.data.data.device_types;
+      } catch (error) {
+         toast.error("Dogodila se greška! " + (error.response.data.error !== undefined ? error.response.data.error : ""), {
+            position: toast.POSITION.BOTTOM_RIGHT,
+          });
+      }
+   }
 }
 export default new DeviceService();
