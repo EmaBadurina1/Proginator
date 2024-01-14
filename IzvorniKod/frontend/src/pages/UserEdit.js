@@ -1,5 +1,4 @@
 import React from "react";
-import { LoginContext } from "../contexts/LoginContext";
 import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
@@ -15,9 +14,14 @@ import { DateTime } from "luxon";
 import Box from "@mui/material/Box";
 import UserAccountService from "../services/userAccountService";
 import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import Switch from "@mui/material/Switch";
 
-const UserAccount = () => {
-  const { userData, userRole, setUserData } = React.useContext(LoginContext);
+// za sad samo za employee ili admin editanje
+const UserEdit = () => {
+  const { userId } = useParams();
+  const [userData, setUserData] = useState(null);
+  const [userRole, setUserRole] = useState("employee"); // za sad moze biti samo employee ili admin
 
   const [values, setValues] = useState({
     name: "",
@@ -27,6 +31,8 @@ const UserAccount = () => {
     date_of_birth: "",
     MBO: "",
     OIB: "",
+    is_active: false,
+    is_admin: false,
   });
 
   /* Object for highlighting the error fields */
@@ -45,16 +51,29 @@ const UserAccount = () => {
     OIB: "",
   });
 
-
   /* Disable submit button if form is not filled correctly */
   const [disableSubmit, setDisableSubmit] = useState(true);
 
   /* Text that is shown on submit button */
   const [submitMessage, setSubmitMessage] = useState("Unesi podatke");
 
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(true);
 
   const nav = useNavigate();
+
+  useEffect(() => {
+    const getUserData = async () => {
+      const response = await UserAccountService.getEmployeeById(userId);
+      setUserData(response);
+      if(response.is_admin){
+         setUserRole("admin");
+      }
+      else{
+         setUserRole("employee");
+      }
+    };
+    getUserData();
+  }, [userId]);
 
   useEffect(() => {
     // set values from user data if user data is not null
@@ -67,11 +86,13 @@ const UserAccount = () => {
       date_of_birth: new Date(userData.date_of_birth).toISOString(),
       MBO: userData.MBO,
       OIB: userData.OIB,
+      is_active: userData.is_active,
+      is_admin: userData.is_admin,
     });
   }, [userData]);
+  
 
   useEffect(() => {
-
     const isFilled = () => {
       if (values.name === "") return false;
       if (values.surname === "") return false;
@@ -99,6 +120,11 @@ const UserAccount = () => {
     /* Check if changed value is ok */
     validateInput(name, value);
   };
+
+   const handleSwitchChange = (e) => {
+      const { name, checked } = e.target;
+      setValues({ ...values, [name]: checked });
+   }
 
   /* Check if value is like regex, update
    errors and helperText after checking */
@@ -130,7 +156,12 @@ const UserAccount = () => {
  possible to check their pattern */
   const validateInput = (name, value) => {
     if (name === "OIB") {
-      checkRegex(name, value, /^[0-9]{11}$/, "OIB mora biti niz od 11 znamenki");
+      checkRegex(
+        name,
+        value,
+        /^[0-9]{11}$/,
+        "OIB mora biti niz od 11 znamenki"
+      );
     }
     if (name === "MBO") {
       checkRegex(name, value, /^[0-9]{9}$/, "MBO mora biti niz od 9 znamenki");
@@ -142,7 +173,6 @@ const UserAccount = () => {
       checkRegex(name, value, /^[\d\s\-+()/]{1,50}$/, "Pogrešan broj telefona");
     }
   };
-
 
   /* Set form object values whenever
    date input is changed */
@@ -157,20 +187,22 @@ const UserAccount = () => {
   const handleProfileChange = async (e) => {
     e.preventDefault();
     let resp;
-    
-    if(userRole === "patient"){
+
+    if (userRole === "patient") {
       const data = {
         name: values.name,
         surname: values.surname,
         email: values.email,
         phone_number: values.phone_number,
         date_of_birth: values.date_of_birth,
-        MBO: values.MBO,
+        MBO: values.MBO
       };
       setIsEditing(false);
-      resp = await UserAccountService.updatePatientProfile(userData.user_id, data);
-    }
-    else{
+      resp = await UserAccountService.updatePatientProfile(
+        userData.user_id,
+        data
+      );
+    } else {
       const data = {
         name: values.name,
         surname: values.surname,
@@ -178,21 +210,20 @@ const UserAccount = () => {
         phone_number: values.phone_number,
         date_of_birth: values.date_of_birth,
         OIB: values.OIB,
+        is_active: values.is_active,
+        is_admin: values.is_admin,
       };
       setIsEditing(false);
-      resp = await UserAccountService.updateEmployeeProfile(userData.user_id, data);
+      resp = await UserAccountService.updateEmployeeProfile(
+        userData.user_id,
+        data
+      );
     }
-    if(resp.success){
+    if (resp.success) {
       setUserData(resp.user_data);
-      localStorage.setItem("user_data", JSON.stringify(resp.user_data));
-    }
-    else{
+    } else {
       window.location.reload();
     }
-  };
-
-  const enableEdit = () => {
-    setIsEditing(true);
   };
 
   const quitEdit = () => {
@@ -204,19 +235,18 @@ const UserAccount = () => {
       phone_number: userData.phone_number,
       date_of_birth: new Date(userData.date_of_birth).toISOString(),
       MBO: userData.MBO,
-      OIB: userData.OIB
+      OIB: userData.OIB,
+      is_active: userData.is_active,
+      is_admin: userData.is_admin,
     });
+    nav("/user-accounts");
   };
-
-  const changePassword = () => {
-    nav("/change-password");
-  }
 
   return (
     <>
       <Container maxWidth="md" className="profile-form">
         <div>
-          <h1 className="mb-4">Moji korisnički podaci</h1>
+          <h1 className="mb-4">Uređivanje korisnika</h1>
           <Typography variant="h6" className="mt-2" align="right">
             {userRole == "admin"
               ? "Administrator"
@@ -227,6 +257,47 @@ const UserAccount = () => {
           <hr />
           <form onSubmit={handleProfileChange}>
             <Grid container spacing={4}>
+            {(userRole == "employee" || userRole == "admin") && (
+                <>
+                  <Grid item xs={6}>
+                    <Box display="flex" justifyContent="center">
+                      <Typography variant="h6" className="mt-2" align="center">
+                        {values.is_active ? "Aktivan" : "Neaktivan"}
+                      </Typography>
+                    </Box>
+                    <Box display="flex" justifyContent="center">
+                      <Switch
+                        checked={values.is_active}
+                        onChange={handleSwitchChange}
+                        name="is_active"
+                        disabled={!isEditing}
+                        label="Aktivan"
+                        inputProps={{ "aria-label": "controlled" }}
+                        />
+                    </Box>
+                  </Grid>
+
+                  <Grid item xs={6}>
+                    <Box display="flex" justifyContent="center">
+                      <Typography variant="h6" className="mt-2" align="center">
+                        {values.is_admin
+                          ? "Administrator"
+                          : "Nije administrator"}
+                      </Typography>
+                    </Box>
+                    <Box display="flex" justifyContent="center">
+                      <Switch
+                        checked={values.is_admin}
+                        onChange={handleSwitchChange}
+                        name="is_admin"
+                        disabled={!isEditing}
+                        label="Admin"
+                        inputProps={{ "aria-label": "controlled" }}
+                        />
+                    </Box>
+                  </Grid>
+                </>
+              )}
               <Grid item xs={6}>
                 <TextField
                   sx={{ width: "100%", padding: "0", margin: "0!important" }}
@@ -235,7 +306,7 @@ const UserAccount = () => {
                   label="Ime"
                   variant="outlined"
                   name="name"
-                  disabled={true}
+                  disabled={!isEditing}
                   onChange={handleChange}
                   value={values.name}
                 />
@@ -248,7 +319,7 @@ const UserAccount = () => {
                   label="Prezime"
                   variant="outlined"
                   name="surname"
-                  disabled={true}
+                  disabled={!isEditing}
                   onChange={handleChange}
                   value={values.surname}
                 />
@@ -261,7 +332,7 @@ const UserAccount = () => {
                   label="E-mail"
                   variant="outlined"
                   name="email"
-                  disabled={true}
+                  disabled={!isEditing}
                   onChange={handleChange}
                   error={errors.email}
                   helperText={helperText.email}
@@ -296,7 +367,7 @@ const UserAccount = () => {
                       disableFuture
                       format="dd/MM/yyyy"
                       label="Datum rođenja"
-                      disabled={true}
+                      disabled={!isEditing}
                       value={DateTime.fromISO(values.date_of_birth)}
                       onChange={onChangeDate}
                     />
@@ -313,7 +384,7 @@ const UserAccount = () => {
                     label="MBO"
                     variant="outlined"
                     name="MBO"
-                    disabled={true}
+                    disabled={!isEditing}
                     onChange={handleChange}
                     error={errors.MBO}
                     helperText={helperText.MBO}
@@ -331,7 +402,7 @@ const UserAccount = () => {
                     label="OIB"
                     variant="outlined"
                     name="OIB"
-                    disabled={true}
+                    disabled={!isEditing}
                     onChange={handleChange}
                     error={errors.OIB}
                     helperText={helperText.OIB}
@@ -342,7 +413,6 @@ const UserAccount = () => {
 
               <Grid item xs={12}>
                 <Box display="flex" justifyContent="center">
-                  {isEditing ? (
                     <>
                       <Button
                         key="cancelBtn"
@@ -366,30 +436,6 @@ const UserAccount = () => {
                         {submitMessage}
                       </Button>
                     </>
-                  ) : (
-                    <>
-                    <Button
-                      key="changePasswordBtn"
-                      color="primary"
-                      variant="contained"
-                      size="medium"
-                      className="mx-4"
-                      onClick={changePassword}
-                    >
-                      Promijeni lozinku
-                    </Button>
-                    <Button
-                      key="editBtn"
-                      color="primary"
-                      variant="contained"
-                      size="medium"
-                      className="mx-4"
-                      onClick={enableEdit}
-                    >
-                      Promijeni broj telefona
-                    </Button>
-                    </>
-                  )}
                 </Box>
               </Grid>
             </Grid>
@@ -400,4 +446,4 @@ const UserAccount = () => {
   );
 };
 
-export default UserAccount;
+export default UserEdit;

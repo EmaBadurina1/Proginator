@@ -18,6 +18,7 @@ import AuthService from "../services/authService";
 import PropTypes from 'prop-types';
 import { LoginContext } from "../contexts/LoginContext";
 
+
 const pagesPatient = ["Početna", "Moje terapije"];
 const pagesEmployee = ["Početna", "Pacijenti", "Zahtjevi"];
 const pagesAdmin = ["Početna", "Pacijenti", "Zahtjevi", "Inventar", "Prostorije", "Korisnički računi"];
@@ -31,7 +32,7 @@ const routes = {
   "Pacijenti": "/patient-preview",
   "Zahtjevi": "/appointment-requests-preview",
   "Korisnički računi": "/user-accounts",
-  "Dodavanje korisnika": "/add-users",
+  "Dodavanje korisnika": "/new-user",
   "Moje terapije": "/my-therapies",
   "Nova terapija": "/create-therapy",
   "Inventar": "/devices",

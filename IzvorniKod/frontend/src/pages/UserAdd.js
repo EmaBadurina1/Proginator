@@ -272,6 +272,7 @@ const UserAdd = () => {
    return (
       <div className="user-add">
          <div className="form">
+         <h1 className="page-title mb-4">Novi korisnički račun</h1>
             <form onSubmit={onSubmit}>
                <div className="form-row">
                   <TextField
@@ -305,8 +306,8 @@ const UserAdd = () => {
                      error={errors.email}
                      helperText={helperText.email}
                   />
-               </div>
-               <div className="form-row">
+               {/* </div>
+               <div className="form-row"> */}
                   <TextField
                      autoComplete="false"
                      className="form-input"

@@ -64,7 +64,7 @@ class AuthService {
   async register(reg_data) {
     try {
       await axiosInstance.post("/patients", reg_data);
-      toast.success("Uspješno ste se registrirali!", {
+      toast.info("Potvrdite e-mail adresu!", {
         position: toast.POSITION.BOTTOM_RIGHT,
       });
     } catch (error) {

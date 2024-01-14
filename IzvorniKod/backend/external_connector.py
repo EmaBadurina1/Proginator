@@ -39,7 +39,7 @@ def get_patient_data(MBO):
     if result:
         columns = [desc[0] for desc in c.description]
         # replace mbo with MBO
-        columns[0] = 'MBO'
+        columns[4] = 'MBO'
         # convert date_of_birth to string
         result = list(result)
         result[3] = result[3].strftime('%Y-%m-%d')

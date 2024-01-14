@@ -6,6 +6,12 @@ from sqlalchemy.exc import IntegrityError, DataError
 from utils.utils import *
 from .crud_template import *
 from flask import request, jsonify, session
+from sqlalchemy import and_
+from datetime import datetime
+from dotenv import load_dotenv
+from mail import mail
+from flask_mail import Message
+import os
 
 # setup blueprint
 from flask import Blueprint
@@ -70,6 +76,46 @@ def register_patient():
     email = request.json['email']
     phone_number = request.json['phone_number']
     MBO = request.json['MBO']
+    date_of_birth = datetime.strptime(request.json['date_of_birth'], '%Y-%m-%d').date()
+    name = request.json['name']
+    surname = request.json['surname']
+
+    not_confirmed = Patient.query.filter(
+        and_(
+            Patient.MBO == MBO,
+            Patient.date_of_birth == date_of_birth,
+            Patient.name == name,
+            Patient.surname == surname,
+            Patient.confirmed == False
+        )
+    ).first()
+
+    load_dotenv()
+
+    token = generate_token(email=email)
+    url = os.getenv("FRONTEND_URL")
+    url = url + "/confirm-email/" + token
+    msg = Message(
+        'E-mail verifikacija - RehApp',
+        sender='proginator@fastmail.com',
+        recipients=[email]
+    )
+    msg.body = "Za verifikaciju računa kliknite na poveznicu: " + url
+
+    if not_confirmed:
+        not_confirmed.phone_number = phone_number
+        not_confirmed.email = email
+        not_confirmed_user = User.query.get(not_confirmed.user_id)
+        not_confirmed_user.set_password(request.json['password'])
+        db.session.commit()
+        mail.send(msg)
+        return jsonify({
+            "data": {
+                "patient": not_confirmed.to_dict()
+            }, 
+            "message": f"Korisnik postoji, ali nije registriran",
+            "status": 200
+        }), 200
 
     query_patient = Patient.query.filter((Patient.email == email) | 
                                          (Patient.phone_number == phone_number) | 
@@ -106,7 +152,6 @@ def register_patient():
     ]
     for field in MBO_fields:
         if patient[field] != request.json[field]:
-            print(patient[field], request.json[field])
             return jsonify({
                 "error": "Podaci nisu ispravni: MBO ne odgovara ostalim podacima",
                 "status": 400
@@ -120,6 +165,7 @@ def register_patient():
         patient = Patient(**data)
         db.session.add(patient)
         db.session.commit()
+        mail.send(msg)
         return jsonify({
             "data": {
                 "patient": patient.to_dict()
@@ -288,7 +334,7 @@ def register_employee():
     for key in required_fields:
         data[key] = request.json[key]
 
-    create(fields=required_fields, Model=Employee)
+    create(required_fields=required_fields, Model=Employee)
 
 # update employee with id=user_id
 @accounts_bp.route('/employees/<int:user_id>', methods=['PATCH'])

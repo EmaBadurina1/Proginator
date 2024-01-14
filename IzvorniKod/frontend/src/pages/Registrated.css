@@ -1,0 +1,13 @@
+.registrated .conteiner {
+   text-align: center;
+   padding: 40px;
+   flex-direction: column;
+   border: 3px solid #3498db;
+   border-radius: 8px;
+}
+
+.registrated {
+   display: flex;
+   justify-content: center;
+   padding: 40px;
+}

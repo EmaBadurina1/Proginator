@@ -9,7 +9,9 @@ import "./PatientPreview.css";
 
 const MyTherapies = () => {
     const context = useContext(LoginContext);
+
     const user_id = useRef({ value: context.userData.user_id });
+    
     const [therapies, setTherapies] = useState(null);
 
     const nav = useNavigate();
@@ -31,7 +33,7 @@ const MyTherapies = () => {
                 buttonLabel="Dodaj terapiju"
                 buttonUrl="/create-therapy"
             >
-                { therapies !== null && therapies.data.therapies.map(therapy => (
+                {therapies !== null && therapies.data.therapies.map(therapy => (
                     <TableRow
                         key={therapy.therapy_id}
                         onClick={() => nav("/my-therapies/" + therapy.therapy_id)}
@@ -40,7 +42,7 @@ const MyTherapies = () => {
                         <TableCell>{parseDate(therapy.date_to)}</TableCell>
                         <TableCell>
                             {therapy.therapy_type &&
-                            therapy.therapy_type.therapy_type_name}
+                                therapy.therapy_type.therapy_type_name}
                         </TableCell>
                         <TableCell className="hide-sm">{therapy.disease_descr}</TableCell>
                         <TableCell className="hide-sm">{therapy.req_treatment}</TableCell>

@@ -1,6 +1,7 @@
 .main-container6_1 {
     margin-top: 3em;
 }
+
 .mini-container6_1 {
     margin-top: 2em;
     margin-left: 5em;
@@ -17,6 +18,7 @@
     margin-top: 1em;
     border: 0.1em solid black;
 }
+
 .title-div6_1 {
     margin-left: 3em;
 }
@@ -27,15 +29,17 @@
 .big-div6_1 {
     display: grid;
     grid-template-columns: 50% auto;
-    grid-template-areas: 
-    "div1 div2";
+    grid-template-areas:
+        "div1 div2";
 }
+
 .mid-div6_1 {
     margin-top: 2em;
     line-height: 2em;
     margin-left: 2em;
     grid-area: div1;
 }
+
 .mid-div6_2 {
     border: 0.1em solid black;
     margin-top: 1em;
@@ -49,6 +53,7 @@
 .iconButtonDiv6_1 {
     margin-left: 3em;
 }
+
 .gumb6_1 {
     height: 2.5em;
     border-radius: 0.5em;
@@ -62,7 +67,7 @@
 
 }
 
-.big-div6_3{
+.big-div6_3 {
     margin-left: 2em;
 }
 
@@ -71,6 +76,7 @@
     margin-bottom: 2em;
     margin-right: 2em;
 }
+
 .big-div6_5 {
     margin-left: 2em;
     margin-bottom: 2em;
@@ -93,12 +99,14 @@
     grid-template-columns: 50% 50%;
 }
 
+
+
 @media (max-width: 1024px) {
     .big-div6_1 {
-      grid-template-columns: 100%;
-      grid-template-areas: 
-      "div1"
-      "div2";
+        grid-template-columns: 100%;
+        grid-template-areas:
+            "div1"
+            "div2";
     }
     .border-container6_1 {
         margin-top: 1em;
