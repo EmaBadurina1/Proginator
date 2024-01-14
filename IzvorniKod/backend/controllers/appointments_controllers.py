@@ -28,6 +28,56 @@ def get_appointments():
 def get_appointment(appointment_id):
     return get_one(id=appointment_id, Model=Appointment)
 
+# get list of free appointments for therapy with id=therapy_id
+@appointments_bp.route('/free-appointments/therapy/<int:therapy_id>/date/<string:day>', methods=['GET'])
+@auth_validation
+@require_any_role('admin', 'doctor', 'patient')
+def get_free_appointments_by_day(therapy_id, day):
+    # check if therapy exists
+    therapy = Therapy.query.filter_by(therapy_id=therapy_id).first()
+    if not therapy:
+        return jsonify({
+            "error": "Terapija ne postoji",
+            "status": 404
+        }), 404
+
+    # patient can only create his appointments
+    if session['role'] == 'patient' and therapy.patient_id != session['user_id']:
+        return jsonify({
+            "error": "Forbidden",
+            "status": 403
+        }), 403
+    
+    # generate a list of hours in a day
+    hours = [f'{hour}:00' for hour in range(8, 20)]
+
+    # remove hours that overlap with other appointments, use date_from looks like day
+    date_from = datetime.strptime(day, '%Y-%m-%d')
+    date_from_next_day = date_from + timedelta(days=1)
+    therapy_ids = Therapy.query.filter(Therapy.patient_id==therapy.patient_id).with_entities(Therapy.therapy_id).all()
+    
+    therapy_ids = [x[0] for x in therapy_ids]
+    appointments = Appointment.query.filter(and_(
+        Appointment.therapy_id.in_(therapy_ids), 
+        Appointment.date_from.between(date_from, date_from_next_day)
+        )).all()
+    appointments = [appointment.date_from.strftime('%H:%M') for appointment in appointments]
+    for appointment in appointments:
+        hours.remove(appointment)
+
+    # check for room capacity, ----------> NOT IMPLEMENTED YET !!!!!!!!
+    # therapy_type_id = therapy.therapy_type_id
+    # room_for_therapy = room_for_table.query.filter_by(therapy_type_id=therapy_type_id).room_num
+    # for hour in hours:
+    #     hours[hour] = room_for_therapy
+
+    return jsonify({
+        "data": {
+            "appointments": hours
+        },
+        "status": 200
+    }), 200
+
 # create new appointment
 @appointments_bp.route('/appointments', methods=['POST'])
 @auth_validation
@@ -81,6 +131,8 @@ def create_appointment():
 
     # check if appointment overlaps with any other appointment
     overlapping = appointment_overlapping(patient_id, new_date_from, new_date_to)
+
+    # needs check for room capacity, ----------> NOT IMPLEMENTED YET !!!!!!!!
 
     if overlapping:
         return jsonify({
