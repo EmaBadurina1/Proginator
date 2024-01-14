@@ -78,6 +78,18 @@ class EmployeeService {
       return { success: false, message: "Error" };
     }
   }
+  async getAvailableHours(therapyId, date) {
+    try {
+      const res7 = await axiosInstance.get(`/free-appointments/therapy/${therapyId}/date/${date}`);
+      return { 
+        success: true, 
+        message: "Success!",
+        data: res7.data.data.appointments,
+      };
+    } catch (error) {
+      return { success: false, message: "Error" };
+    }
+  }
 }
 
 export default new EmployeeService();

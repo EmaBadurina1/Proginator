@@ -25,9 +25,12 @@ const buttonStyle = {
   marginBottom: "1em",
   display: "block",
 };
-
 const komentarStyle = {
   width: "70%",
+};
+const bolded = {
+  fontWeight: "bold",
+  display: "inline",
 };
 
 const AttendanceDisplay = () => {
@@ -120,14 +123,18 @@ const AttendanceDisplay = () => {
                   </FormControl>
                 </div>
                 <div className="small-div4_2">
-                  <h5>
-                    Soba:{" "}
+                  <p>
+                    <span style={bolded}>DATUM I VRIJEME TERMINA:</span>{" "}
+                    {appointment.date_from}{" "}
+                  </p>
+                  <p>
+                    <span style={bolded}>SOBA:</span>{" "}
                     {appointment &&
                     appointment.room &&
                     appointment.status.status_name !== "Otkazan"
                       ? appointment.room.room_num
                       : "/"}
-                  </h5>
+                  </p>
                 </div>
               </div>
               <div className="mid-div4_2">

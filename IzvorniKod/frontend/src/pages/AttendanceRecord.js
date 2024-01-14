@@ -34,7 +34,6 @@ const AttendanceRecord = () => {
     marginRight: "2em",
     marginBottom: "1em",
   };
-
   const buttonStyle2 = {
     backgroundColor: "gray",
     width: "8em",
@@ -42,9 +41,12 @@ const AttendanceRecord = () => {
     marginLeft: "3em",
     marginRight: "2em",
   };
-
   const komentarStyle = {
     width: "70%",
+  };
+  const bolded = {
+    fontWeight: "bold",
+    display: "inline",
   };
 
   //funkcija koja provjerava jesu komentar ili status prazni
@@ -186,14 +188,18 @@ const AttendanceRecord = () => {
                   </FormControl>
                 </div>
                 <div className="small-div3_2">
-                  <h5>
-                    Soba:{" "}
+                  <p>
+                    <span style={bolded}>DATUM I VRIJEME TERMINA:</span>{" "}
+                    {appointment && appointment.date_from}{" "}
+                  </p>
+                  <p>
+                    <span style={bolded}>Soba:</span>{" "}
                     {appointment &&
                     appointment.room &&
                     appointment.status.status_name !== "Otkazan"
                       ? appointment.room.room_num
                       : "/"}
-                  </h5>
+                  </p>
                 </div>
               </div>
               <div className="mid-div3_2">

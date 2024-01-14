@@ -15,11 +15,38 @@ import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
+import { useCallback } from "react";
+
+const fetchAvailableHours = async (date, appointment, setFreeAppointments) => {
+  if (!date || !appointment || !appointment.therapy) {
+    return;
+  }
+
+  try {
+    const resp = await EmployeeService.getAvailableHours(
+      appointment.therapy.therapy_id,
+      date
+    );
+    if (resp.success) {
+      setFreeAppointments(resp.data);
+      console.log(resp.data);
+    } else {
+      toast.error("Greska!", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+    }
+  } catch (err) {
+    toast.error(`API Error:${err.response.data}`, {
+      position: toast.POSITION.TOP_RIGHT,
+    });
+  }
+};
 
 const ChangeAppointment = () => {
   //inicijalizacija varijabli
   const { appointmentId } = useParams();
   const [appointment, setAppointment] = useState(null);
+  const [freeAppointments, setFreeAppointments] = useState(null);
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const nav = useNavigate();
@@ -90,7 +117,7 @@ const ChangeAppointment = () => {
     const updatedData = {
       date_from: formattedDate,
       date_to: formattedDate2,
-      status_id: 1,
+      status_id: 2,
     };
 
     //ažuriranje termina
@@ -124,7 +151,7 @@ const ChangeAppointment = () => {
         const resp = await EmployeeService.getAppointmentById(appointmentId);
         if (resp.success) {
           setAppointment(resp.data);
-          setLoading(false);
+          setLoading(false); 
           if (
             (resp.data.status.status_id === 3 ||
               resp.data.status.status_id === 5) &&
@@ -160,15 +187,28 @@ const ChangeAppointment = () => {
       nav(-1);
     }
   };
+  
 
   //prilikom odabiranja datuma termina, ažuriraj varijablu date
   function onChangeDate(date) {
     let value = date.toFormat("yyyy-MM-dd");
     setDate(value);
+    //fetchAvailableHours();
+    //console.log(freeAppointments);
   }
 
+  const fetchAvailableHoursCallback = useCallback(() => {
+    fetchAvailableHours(date, appointment, setFreeAppointments);
+  }, [date, appointment, setFreeAppointments]);
+
+  useEffect(() => {
+    if (date !== "") {
+      fetchAvailableHoursCallback();
+    }
+  }, [date, fetchAvailableHoursCallback]);
+
   return (
-    <div className="main-container6_1">
+    <div className="main-container9_1">
       {loading && (
         <div className="circural-progress">
           <CircularProgress />
@@ -176,29 +216,29 @@ const ChangeAppointment = () => {
       )}
       {!loading && (
         <div>
-          <div className="iconButtonDiv6_1">
+          <div className="iconButtonDiv9_1">
             <IconButton style={iconButtonStyle} onClick={() => nav(-1)}>
               <ArrowBackIosNewIcon></ArrowBackIosNewIcon>
             </IconButton>
           </div>
-          <div className="mini-container6_1">
-            <div className="title-div6_1">
+          <div className="mini-container9_1">
+            <div className="title-div9_1">
               <h2>Promjena termina</h2>
             </div>
-            <div className="border-container6_1">
-              <div className="big-div6_1">
-                <div className="mid-div6_1">
+            <div className="border-container9_1">
+              <div className="big-div9_1">
+                <div className="mid-div9_1">
                   {appointment && appointment.therapy && (
                     <AppointmentInfo appointment={appointment} />
                   )}
                 </div>
-                <div className="mid-div6_2">
+                <div className="mid-div9_2">
                   {appointment && appointment.therapy && (
                     <TherapyInfo therapy={appointment.therapy} />
                   )}
                 </div>
               </div>
-              <div className="big-div6_4">
+              <div className="big-div9_4">
                 <LocalizationProvider
                   dateAdapter={AdapterLuxon}
                   dateLibInstance={DateTime}
@@ -207,31 +247,38 @@ const ChangeAppointment = () => {
                     <DatePicker
                       format="dd/MM/yyyy"
                       label="Datum terapije"
-                      onChange={onChangeDate}
-                      className="date-picker6_1"
+                      onChange={(date) => onChangeDate(date)}
+                      className="date-picker9_1"
                       disablePast
                     />
                   </DemoContainer>
                 </LocalizationProvider>
               </div>
-              <div className="big-div6_5">
+              <div className="big-div9_5">
                 <LocalizationProvider dateAdapter={AdapterLuxon}>
                   <DemoContainer components={["TimePicker"]}>
                     <TimePicker
                       label="Vrijeme terapije"
-                      className="time-picker6_1"
+                      className="time-picker9_1"
                       onChange={(newTime) => setTime(newTime)}
+                      ampm={false}
+                      minTime={DateTime.local().set({ hour: 8, minute: 0 })}
+                      maxTime={DateTime.local().set({ hour: 20, minute: 0 })}
+                      hours={freeAppointments}
+                      mask="__:00"
+                      views={["hours"]}
+                      view="hours"
                     />
                   </DemoContainer>
                 </LocalizationProvider>
               </div>
-              <div className="button-div-container6_1">
-                <div className="button-div6_1">
+              <div className="button-div-container9_1">
+                <div className="button-div9_1">
                   {appointment && (
                     <Button
                       variant="contained"
                       size="medium"
-                      className="gumb6_2"
+                      className="gumb9_2"
                       style={buttonStyle2}
                       onClick={() => {
                         if (
@@ -256,13 +303,13 @@ const ChangeAppointment = () => {
                     </Button>
                   )}
                 </div>
-                <div className="button-div6_2">
-                  <div className="small-button-div6_1">
+                <div className="button-div9_2">
+                  <div className="small-button-div9_1">
                     {appointment && (
                       <Button
                         variant="contained"
                         size="medium"
-                        className="gumb6_3"
+                        className="gumb9_3"
                         style={buttonStyle3}
                         onClick={() => {
                           nav(-1);
@@ -272,12 +319,12 @@ const ChangeAppointment = () => {
                       </Button>
                     )}
                   </div>
-                  <div className="small-button-div6_2">
+                  <div className="small-button-div9_2">
                     {appointment && (
                       <Button
                         variant="contained"
                         size="medium"
-                        className="gumb6_1"
+                        className="gumb9_1"
                         style={buttonStyle1}
                         onClick={() => {
                           provjeraUspjehaUpdatea();

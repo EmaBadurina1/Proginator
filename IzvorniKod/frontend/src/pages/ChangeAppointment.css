@@ -1,8 +1,8 @@
-.main-container6_1 {
+.main-container9_1 {
     margin-top: 3em;
 }
 
-.mini-container6_1 {
+.mini-container9_1 {
     margin-top: 2em;
     margin-left: 5em;
     margin-right: 5em;
@@ -14,33 +14,33 @@
     align-items: center;
     padding: 20px;
 }
-.border-container6_1 {
+.border-container9_1 {
     margin-top: 1em;
     border: 0.1em solid black;
 }
 
-.title-div6_1 {
+.title-div9_1 {
     margin-left: 3em;
 }
-.date-picker6_1, .time-picker6_1 {
+.date-picker9_1, .time-picker9_1 {
     width: 15em;
 }
 
-.big-div6_1 {
+.big-div9_1 {
     display: grid;
     grid-template-columns: 50% auto;
     grid-template-areas:
         "div1 div2";
 }
 
-.mid-div6_1 {
+.mid-div9_1 {
     margin-top: 2em;
     line-height: 2em;
     margin-left: 2em;
     grid-area: div1;
 }
 
-.mid-div6_2 {
+.mid-div9_2 {
     border: 0.1em solid black;
     margin-top: 1em;
     margin-right: 1em;
@@ -50,48 +50,49 @@
     margin-left: 1em;
 }
 
-.iconButtonDiv6_1 {
+.iconButtonDiv9_1 {
     margin-left: 3em;
 }
 
-.gumb6_1 {
+.gumb9_1 {
     height: 2.5em;
     border-radius: 0.5em;
     width: 13em;
 
 }
-.gumb6_2 {
+.gumb9_2 {
     height: 2.5em;
     border-radius: 0.5em;
     width: 13em;
 
 }
 
-.big-div6_3 {
+.big-div9_3 {
     margin-left: 2em;
 }
 
-.big-div6_4 {
+.big-div9_4 {
     margin-left: 2em;
-    margin-bottom: 2em;
+    margin-top: 2em;
     margin-right: 2em;
 }
 
-.big-div6_5 {
+.big-div9_5 {
     margin-left: 2em;
-    margin-bottom: 2em;
+
     margin-right: 2em;
 }
-.button-div-container6_1 {
+.button-div-container9_1 {
+    margin-top: 2em;
     display: grid;
     grid-template-columns: 50% 50%;
 }
-.button-div6_1 {
+.button-div9_1 {
     width: 20%;
     margin-right: 5em;
     margin-right: auto;
 }
-.button-div6_2 {
+.button-div9_2 {
     width: 15em;
     margin-right: 5em;
     margin-left: auto;
@@ -102,13 +103,13 @@
 
 
 @media (max-width: 1024px) {
-    .big-div6_1 {
+    .big-div9_1 {
         grid-template-columns: 100%;
         grid-template-areas:
             "div1"
             "div2";
     }
-    .border-container6_1 {
+    .border-container9_1 {
         margin-top: 1em;
         border: 0.1em solid black;
     }
@@ -116,11 +117,11 @@
 
 @media (max-width: 768px) {
 
-    .button-div-container6_1 {
+    .button-div-container9_1 {
         display: grid;
         grid-template-columns: 100%;
     }
-    .button-div6_2 {
+    .button-div9_2 {
         display: grid;
         grid-template-columns: 100%;
         margin-left: 1.7em;

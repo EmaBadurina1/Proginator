@@ -20,7 +20,7 @@ const AppointmentInfo = (props) => {
         {appointment.therapy.patient.surname}{" "}
       </p>
       <p>
-        <span style={bolded}>DATUM I VRIJEME:</span> {appointment.date_from}{" "}
+        <span style={bolded}>DATUM I VRIJEME TERMINA:</span> {appointment.date_from}{" "}
       </p>
       <p>
         <span style={bolded}>DOKTOR: </span>{" "}
@@ -32,8 +32,8 @@ const AppointmentInfo = (props) => {
         {appointment && appointment.status && appointment.status.status_name}
       </p>
       <p>
-        <span style={bolded}>KOMENTAR: </span>{" "}
-        {appointment && appointment.comment}
+        <span style={bolded}>SOBA: </span>{" "}
+        {appointment && appointment.room && appointment.room.room_num}
       </p>
     </div>
   );
@@ -55,6 +55,9 @@ AppointmentInfo.propTypes = {
     }),
     status: PropTypes.shape({
       status_name: PropTypes.string,
+    }),
+    room: PropTypes.shape({
+      room_num: PropTypes.string,
     }),
   }),
 };
