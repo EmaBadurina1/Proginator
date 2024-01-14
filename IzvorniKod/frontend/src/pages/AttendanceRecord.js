@@ -6,6 +6,7 @@ import {
   FormLabel,
   RadioGroup,
   Radio,
+  CircularProgress,
 } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -24,6 +25,7 @@ const AttendanceRecord = () => {
   const [statusId, setStatusId] = useState("");
   const nav = useNavigate();
   const toastShownRef = useRef(false);
+  const [loading, setLoading] = useState(true);
 
   //stilovi
   const buttonStyle = {
@@ -102,11 +104,13 @@ const AttendanceRecord = () => {
 
   //fetchanje termina pri renderu
   useEffect(() => {
+    setLoading(true);
     const fetchAppointment = async () => {
       try {
         const resp = await EmployeeService.getAppointmentById(appointmentId);
         if (resp.success) {
           setAppointment(resp.data);
+          setLoading(false);
           if (!(resp.data.status.status_id === 2) && !toastShownRef.current) {
             toast.error("Termin je već evidentiran ili je na čekanju", {
               position: toast.POSITION.TOP_RIGHT,
@@ -138,103 +142,112 @@ const AttendanceRecord = () => {
 
   return (
     <div className="main-container3_1">
-      <h2>
-        Pacijent {appointment && appointment.therapy.patient.name}{" "}
-        {appointment && appointment.therapy.patient.surname} - evidencija
-        dolaska na termin
-      </h2>
-      <div className="mini-container3_1">
-        <div className="big-div3_1">
-          <div className="mid-div3_1">
-            <div className="small-div3_1">
-              <FormControl>
-                <FormLabel id="blabla">Evidencija</FormLabel>
-                <RadioGroup
-                  aria-labelledby="blabla"
-                  value={statusId}
-                  onChange={(e) => {
-                    setStatusId(e.target.value);
+      {loading && (
+        <div className="circural-progress">
+          <CircularProgress />
+        </div>
+      )}
+      {!loading && (
+        <div>
+          <h2>
+            Pacijent {appointment && appointment.therapy.patient.name}{" "}
+            {appointment && appointment.therapy.patient.surname} - evidencija
+            dolaska na termin
+          </h2>
+          <div className="mini-container3_1">
+            <div className="big-div3_1">
+              <div className="mid-div3_1">
+                <div className="small-div3_1">
+                  <FormControl>
+                    <FormLabel id="blabla">Evidencija</FormLabel>
+                    <RadioGroup
+                      aria-labelledby="blabla"
+                      value={statusId}
+                      onChange={(e) => {
+                        setStatusId(e.target.value);
+                      }}
+                    >
+                      <FormControlLabel
+                        value={3}
+                        control={<Radio />}
+                        label="Termin je odrađen"
+                      />
+                      <FormControlLabel
+                        value={5}
+                        control={<Radio />}
+                        label="Termin je propušten"
+                      />
+                      <FormControlLabel
+                        value={4}
+                        control={<Radio />}
+                        label="Termin je otkazan"
+                      />
+                    </RadioGroup>
+                  </FormControl>
+                </div>
+                <div className="small-div3_2">
+                  <h5>
+                    Soba:{" "}
+                    {appointment &&
+                    appointment.room &&
+                    appointment.status.status_name !== "Otkazan"
+                      ? appointment.room.room_num
+                      : "/"}
+                  </h5>
+                </div>
+              </div>
+              <div className="mid-div3_2">
+                {appointment && appointment.therapy && (
+                  <TherapyInfo therapy={appointment.therapy} />
+                )}
+              </div>
+            </div>
+            <div className="big-div3_2">
+              <TextField
+                autoComplete="false"
+                className="komentar-text3_1"
+                label="Komentari"
+                variant="outlined"
+                name="komentar"
+                value={comment}
+                multiline
+                rows={4}
+                style={komentarStyle}
+                onChange={(e) => setComment(e.target.value)}
+              />
+            </div>
+
+            <div className="button-div3_1">
+              {appointment && (
+                <Button
+                  variant="contained"
+                  size="medium"
+                  className="gumb3_1"
+                  style={buttonStyle2}
+                  onClick={() => {
+                    nav(-1);
                   }}
                 >
-                  <FormControlLabel
-                    value={3}
-                    control={<Radio />}
-                    label="Termin je odrađen"
-                  />
-                  <FormControlLabel
-                    value={5}
-                    control={<Radio />}
-                    label="Termin je propušten"
-                  />
-                  <FormControlLabel
-                    value={4}
-                    control={<Radio />}
-                    label="Termin je otkazan"
-                  />
-                </RadioGroup>
-              </FormControl>
-            </div>
-            <div className="small-div3_2">
-              <h5>
-                Soba:{" "}
-                {appointment &&
-                appointment.room &&
-                appointment.status.status_name !== "Otkazan"
-                  ? appointment.room.room_num
-                  : "/"}
-              </h5>
+                  Odustani
+                </Button>
+              )}
+              {appointment && (
+                <Button
+                  variant="contained"
+                  size="medium"
+                  className="gumb3_2"
+                  style={buttonStyle}
+                  onClick={() => {
+                    provjeraUspjehaUpdatea();
+                  }}
+                >
+                  Predaj evidenciju
+                </Button>
+              )}
             </div>
           </div>
-          <div className="mid-div3_2">
-            {appointment && appointment.therapy && (
-              <TherapyInfo therapy={appointment.therapy} />
-            )}
-          </div>
         </div>
-        <div className="big-div3_2">
-          <TextField
-            autoComplete="false"
-            className="komentar-text3_1"
-            label="Komentari"
-            variant="outlined"
-            name="komentar"
-            value={comment}
-            multiline
-            rows={4}
-            style={komentarStyle}
-            onChange={(e) => setComment(e.target.value)}
-          />
-        </div>
-
-        <div className="button-div3_1">
-          {appointment && (
-            <Button
-              variant="contained"
-              size="medium"
-              className="gumb3_1"
-              style={buttonStyle2}
-              onClick={() => {
-                nav(-1);
-              }}
-            >
-              Odustani
-            </Button>
-          )}
-          {appointment && (
-            <Button
-              variant="contained"
-              size="medium"
-              className="gumb3_2"
-              style={buttonStyle}
-              onClick={() => {
-                provjeraUspjehaUpdatea();
-              }}
-            >
-              Predaj evidenciju
-            </Button>
-          )}
-        </div>
-      </div>
+      )}
     </div>
   );
 };

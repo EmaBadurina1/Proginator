@@ -30,8 +30,8 @@ const PatientPreview = () => {
               <TableCell>{patient.name}</TableCell>
               <TableCell>{patient.surname}</TableCell>
               <TableCell>{patient.MBO}</TableCell>
-              <TableCell>{patient.email}</TableCell>
-              <TableCell>{patient.phone_number}</TableCell>
+              <TableCell className="hide-sm">{patient.email}</TableCell>
+              <TableCell className="hide-sm">{patient.phone_number}</TableCell>
             </TableRow>
           ))}
       </DataDisplay>
@@ -46,25 +46,30 @@ const tableHead = [
     name: "Ime",
     orderBy: "name",
     align: "left",
+    classes: "show-sm"
   },
   {
     name: "Prezime",
     orderBy: "surname",
     align: "left",
+    classes: "show-sm"
   },
   {
     name: "MBO",
     orderBy: "MBO",
     align: "left",
+    classes: "show-sm"
   },
   {
     name: "E-mail adresa",
     orderBy: "email",
     align: "left",
+    classes: "hide-sm"
   },
   {
     name: "Broj telefona",
     orderBy: "phone_number",
     align: "left",
+    classes: "hide-sm"
   },
 ];

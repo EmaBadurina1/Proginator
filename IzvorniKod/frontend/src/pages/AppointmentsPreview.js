@@ -10,7 +10,6 @@ import { IconButton } from "@mui/material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 
 const AppointmentsPreview = () => {
-
   //inicijalizacija varijabli
   const [data, setData] = useState(null);
   const { patientId } = useParams();
@@ -47,18 +46,18 @@ const AppointmentsPreview = () => {
 
   return (
     <div>
-      <div className="iconButtonDiv2_1">
+      <div className="button-title-div">
+        <div className="iconButtonDiv2_1">
           <IconButton style={iconButtonStyle} onClick={() => nav(-1)}>
             <ArrowBackIosNewIcon></ArrowBackIosNewIcon>
           </IconButton>
         </div>
-      <div className="title-div2_1">
-
-        <h2>
-          Pacijent {patient && patient.name} {patient && patient.surname}
-        </h2>
+        <div className="title-div2_1">
+          <h2>
+            Pacijent {patient && patient.name} {patient && patient.surname}
+          </h2>
+        </div>
       </div>
-
       <DataDisplay url={url} setData={setData} tableHead={tableHead}>
         {data !== null &&
           data.data.appointments.map((appointment) => (
@@ -74,7 +73,7 @@ const AppointmentsPreview = () => {
               <TableCell>
                 {appointment.therapy.therapy_type.therapy_type_name}
               </TableCell>
-              <TableCell>
+              <TableCell className="hide-sm">
                 {appointment.status && appointment.status.status_name}
               </TableCell>
             </TableRow>
@@ -91,15 +90,18 @@ const tableHead = [
     name: "Datum i vrijeme",
     orderBy: "date_from",
     align: "left",
+    classes: "show-sm",
   },
   {
     name: "Vrsta terapije",
     orderBy: "therapy_id",
     align: "left",
+    classes: "show-sm",
   },
   {
     name: "Status termina",
     orderBy: "status_id",
     align: "left",
+    classes: "hide-sm",
   },
 ];

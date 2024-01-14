@@ -3,7 +3,7 @@ import "./DenyAppointment.css";
 import TherapyInfo from "../components/TherapyInfo";
 import Button from "@mui/material/Button";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import { IconButton } from "@mui/material";
+import { IconButton, CircularProgress } from "@mui/material";
 import AppointmentInfo from "../components/AppointmentInfo";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -20,6 +20,7 @@ const DenyAppointment = () => {
   const [comment, setComment] = useState("");
   const nav = useNavigate();
   const toastShownRef = useRef(false);
+  const [loading, setLoading] = useState(true);
 
   //stilovi
   const komentarStyle = {
@@ -115,11 +116,13 @@ const DenyAppointment = () => {
 
   //fetchanje appointmenta pri renderu
   useEffect(() => {
+    setLoading(true);
     const fetchAppointment = async () => {
       try {
         const resp = await EmployeeService.getAppointmentById(appointmentId);
         if (resp.success) {
           setAppointment(resp.data);
+          setLoading(false);
           if (
             !(
               resp.data.status.status_id === 1 ||
@@ -160,88 +163,97 @@ const DenyAppointment = () => {
 
   return (
     <div className="main-container7_1">
-      <div className="iconButtonDiv7_1">
-        <IconButton style={iconButtonStyle} onClick={() => nav(-1)}>
-          <ArrowBackIosNewIcon></ArrowBackIosNewIcon>
-        </IconButton>
-      </div>
-      <div className="mini-container7_1">
-        <div className="title-div7_1">
-          <h2>Odbijanje zahtjeva za terminom</h2>
+      {loading && (
+        <div className="circural-progress">
+          <CircularProgress />
         </div>
-        <div className="border-container7_1">
-          <div className="big-div7_1">
-            <div className="mid-div7_1">
-              {appointment && appointment.therapy && (
-                <AppointmentInfo appointment={appointment} />
-              )}
-            </div>
-            <div className="mid-div7_2">
-              {appointment && appointment.therapy && (
-                <TherapyInfo therapy={appointment.therapy} />
-              )}
-            </div>
+      )}
+      {!loading && (
+        <div>
+          <div className="iconButtonDiv7_1">
+            <IconButton style={iconButtonStyle} onClick={() => nav(-1)}>
+              <ArrowBackIosNewIcon></ArrowBackIosNewIcon>
+            </IconButton>
           </div>
-          <div className="big-div7_2" style={komentarDivStyle}>
-            <TextField
-              autoComplete="false"
-              className="komentar-text"
-              label="Komentar za pacijenta"
-              variant="outlined"
-              name="komentar"
-              multiline
-              rows={4}
-              style={komentarStyle}
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-            />
-          </div>
-          <div className="button-div-container7_1">
-            <div className="button-div7_1">
-              <Link to={`/change-appointment/${appointmentId}`}>
-                <Button
-                  variant="contained"
-                  size="medium"
-                  className="gumb7_1"
-                  style={buttonStyle1}
-                >
-                  Premjesti ovaj termin
-                </Button>
-              </Link>
+          <div className="mini-container7_1">
+            <div className="title-div7_1">
+              <h2>Odbijanje zahtjeva za terminom</h2>
             </div>
-            <div className="button-div7_2">
-              <div className="small-button-div7_1">
-                <Button
-                  variant="contained"
-                  size="medium"
-                  className="gumb7_1"
-                  style={buttonStyle2}
-                  onClick={() => {
-                    nav(-1);
-                  }}
-                >
-                  Odustani
-                </Button>
+            <div className="border-container7_1">
+              <div className="big-div7_1">
+                <div className="mid-div7_1">
+                  {appointment && appointment.therapy && (
+                    <AppointmentInfo appointment={appointment} />
+                  )}
+                </div>
+                <div className="mid-div7_2">
+                  {appointment && appointment.therapy && (
+                    <TherapyInfo therapy={appointment.therapy} />
+                  )}
+                </div>
               </div>
-              <div className="small-button-div7_2">
-                {appointment && (
-                  <Button
-                    variant="contained"
-                    size="medium"
-                    className="gumb7_1"
-                    style={buttonStyle3}
-                    onClick={() => {
-                      provjeraUspjehaUpdatea();
-                    }}
-                  >
-                    Potvrdi
-                  </Button>
-                )}
+              <div className="big-div7_2" style={komentarDivStyle}>
+                <TextField
+                  autoComplete="false"
+                  className="komentar-text"
+                  label="Komentar za pacijenta"
+                  variant="outlined"
+                  name="komentar"
+                  multiline
+                  rows={4}
+                  style={komentarStyle}
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                />
+              </div>
+              <div className="button-div-container7_1">
+                <div className="button-div7_1">
+                  <Link to={`/change-appointment/${appointmentId}`}>
+                    <Button
+                      variant="contained"
+                      size="medium"
+                      className="gumb7_1"
+                      style={buttonStyle1}
+                    >
+                      Premjesti ovaj termin
+                    </Button>
+                  </Link>
+                </div>
+                <div className="button-div7_2">
+                  <div className="small-button-div7_1">
+                    <Button
+                      variant="contained"
+                      size="medium"
+                      className="gumb7_1"
+                      style={buttonStyle2}
+                      onClick={() => {
+                        nav(-1);
+                      }}
+                    >
+                      Odustani
+                    </Button>
+                  </div>
+                  <div className="small-button-div7_2">
+                    {appointment && (
+                      <Button
+                        variant="contained"
+                        size="medium"
+                        className="gumb7_1"
+                        style={buttonStyle3}
+                        onClick={() => {
+                          provjeraUspjehaUpdatea();
+                        }}
+                      >
+                        Potvrdi
+                      </Button>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

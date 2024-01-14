@@ -7,6 +7,12 @@
     margin-right: 5em;
     margin-bottom: 2em;
 }
+.circural-progress {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
 .border-container7_1 {
     margin-top: 1em;
     border: 0.1em solid black;

@@ -2,7 +2,7 @@ import { React } from "react";
 import "./AppointmentOptions.css";
 import AppointmentInfo from "../components/AppointmentInfo";
 import TherapyInfo from "../components/TherapyInfo";
-import { IconButton } from "@mui/material";
+import { IconButton, CircularProgress } from "@mui/material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import Button from "@mui/material/Button";
 import { useParams } from "react-router-dom";
@@ -16,6 +16,7 @@ const AppointmentOptions = () => {
   const { appointmentId } = useParams();
   const [appointment, setAppointment] = useState(null);
   const nav = useNavigate();
+  const [loading, setLoading] = useState(true);
 
   //stilovi
   const buttonStyle1 = {
@@ -38,11 +39,13 @@ const AppointmentOptions = () => {
 
   //fetchanje appointmenta pri renderu
   useEffect(() => {
+    setLoading(true);
     const fetchAppointment = async () => {
       try {
         const resp = await EmployeeService.getAppointmentById(appointmentId);
         if (resp.success) {
           setAppointment(resp.data);
+          setLoading(false);
         } else {
           toast.error("Greska!", {
             position: toast.POSITION.TOP_RIGHT,
@@ -59,101 +62,116 @@ const AppointmentOptions = () => {
 
   return (
     <div className="main-container8_1">
-      <div className="iconButtonDiv8_1">
-        <IconButton style={iconButtonStyle} onClick={() => nav(-1)}>
-          <ArrowBackIosNewIcon></ArrowBackIosNewIcon>
-        </IconButton>
-      </div>
-      <div className="mini-container8_1">
-        <div className="title-div8_1">
-          <h2>Akcije za termin</h2>
+      {loading && (
+        <div className="circural-progress">
+          <CircularProgress />
         </div>
-        <div className="border-container8_1">
-          <div className="big-div8_1">
-            <div className="mid-div8_1">
-              {appointment && appointment.therapy && (
-                <AppointmentInfo appointment={appointment} />
-              )}
+      )}
+      {!loading && (
+        <div>
+          <div className="iconButtonDiv8_1">
+            <IconButton style={iconButtonStyle} onClick={() => nav(-1)}>
+              <ArrowBackIosNewIcon></ArrowBackIosNewIcon>
+            </IconButton>
+          </div>
+          <div className="mini-container8_1">
+            <div className="title-div8_1">
+              <h2>Akcije za termin</h2>
             </div>
-            <div className="mid-div8_2">
-              {appointment && appointment.therapy && (
-                <TherapyInfo therapy={appointment.therapy} />
-              )}
+            <div className="border-container8_1">
+              <div className="big-div8_1">
+                <div className="mid-div8_1">
+                  {appointment && appointment.therapy && (
+                    <AppointmentInfo appointment={appointment} />
+                  )}
+                </div>
+                <div className="mid-div8_2">
+                  {appointment && appointment.therapy && (
+                    <TherapyInfo therapy={appointment.therapy} />
+                  )}
+                </div>
+              </div>
+              <div className="button-div-container8_1">
+                <div className="akcije-div">Dostupne akcije:</div>
+                {appointment &&
+                  (appointment.status.status_id === 3 ||
+                    appointment.status.status_id === 4 ||
+                    appointment.status.status_id === 5) && (
+                    <div className="button-div8_1">
+                      <Button
+                        variant="contained"
+                        size="medium"
+                        className="gumb8_1"
+                        style={buttonStyle1}
+                        onClick={() => {
+                          nav(
+                            `/attendance-display/${appointment.appointment_id}`
+                          );
+                        }}
+                      >
+                        Prikaži evidenciju
+                      </Button>
+                    </div>
+                  )}
+                {appointment && appointment.status.status_id === 2 && (
+                  <div className="button-div8_2">
+                    <Button
+                      variant="contained"
+                      size="medium"
+                      className="gumb8_2"
+                      style={buttonStyle2}
+                      onClick={() => {
+                        nav(`/attendance/${appointment.appointment_id}`);
+                      }}
+                    >
+                      Evidentiraj
+                    </Button>
+                  </div>
+                )}
+                {appointment &&
+                  (appointment.status.status_id === 1 ||
+                    appointment.status.status_id === 2 ||
+                    appointment.status.status_id === 4) && (
+                    <div className="button-div8_3">
+                      <Button
+                        variant="contained"
+                        size="medium"
+                        className="gumb8_3"
+                        style={buttonStyle3}
+                        onClick={() => {
+                          nav(
+                            `/change-appointment/${appointment.appointment_id}`
+                          );
+                        }}
+                      >
+                        Promjeni termin
+                      </Button>
+                    </div>
+                  )}
+                {appointment &&
+                  (appointment.status.status_id === 1 ||
+                    appointment.status.status_id === 2) && (
+                    <div className="button-div8_4">
+                      <Button
+                        variant="contained"
+                        size="medium"
+                        className="gumb8_4"
+                        style={buttonStyle4}
+                        onClick={() => {
+                          nav(
+                            `/deny-appointment/${appointment.appointment_id}`
+                          );
+                        }}
+                      >
+                        Otkaži termin
+                      </Button>
+                    </div>
+                  )}
+              </div>
             </div>
           </div>
-          <div className="button-div-container8_1">
-            <div className="akcije-div">Dostupne akcije:</div>
-            <div className="button-div8_1">
-              {appointment &&
-                (appointment.status.status_id === 3 ||
-                  appointment.status.status_id === 4 ||
-                  appointment.status.status_id === 5) && (
-                  <Button
-                    variant="contained"
-                    size="medium"
-                    className="gumb8_1"
-                    style={buttonStyle1}
-                    onClick={() => {
-                      nav(`/attendance-display/${appointment.appointment_id}`);
-                    }}
-                  >
-                    Prikaži evidenciju
-                  </Button>
-                )}
-            </div>
-            <div className="button-div8_2">
-              {appointment && appointment.status.status_id === 2 && (
-                <Button
-                  variant="contained"
-                  size="medium"
-                  className="gumb8_2"
-                  style={buttonStyle2}
-                  onClick={() => {
-                    nav(`/attendance/${appointment.appointment_id}`);
-                  }}
-                >
-                  Evidentiraj
-                </Button>
-              )}
-            </div>
-            <div className="button-div8_3">
-              {appointment &&
-                (appointment.status.status_id === 1 ||
-                  appointment.status.status_id === 2 ||
-                  appointment.status.status_id === 4) && (
-                  <Button
-                    variant="contained"
-                    size="medium"
-                    className="gumb8_3"
-                    style={buttonStyle3}
-                    onClick={() => {
-                      nav(`/change-appointment/${appointment.appointment_id}`);
-                    }}
-                  >
-                    Promjeni termin
-                  </Button>
-                )}
-            </div>
-            <div className="button-div8_4">
-              {appointment &&
-                (appointment.status.status_id === 1 ||
-                  appointment.status.status_id === 2) && (
-                  <Button
-                    variant="contained"
-                    size="medium"
-                    className="gumb8_4"
-                    style={buttonStyle4}
-                    onClick={() => {
-                      nav(`/deny-appointment/${appointment.appointment_id}`);
-                    }}
-                  >
-                    Otkaži termin
-                  </Button>
-                )}
-            </div>
-          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

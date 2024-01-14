@@ -2,7 +2,7 @@ import { React } from "react";
 import "./ChangeAppointment.css";
 import AppointmentInfo from "../components/AppointmentInfo";
 import TherapyInfo from "../components/TherapyInfo";
-import { IconButton } from "@mui/material";
+import { IconButton, CircularProgress } from "@mui/material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import Button from "@mui/material/Button";
 import { useParams } from "react-router-dom";
@@ -17,7 +17,6 @@ import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
 
 const ChangeAppointment = () => {
-
   //inicijalizacija varijabli
   const { appointmentId } = useParams();
   const [appointment, setAppointment] = useState(null);
@@ -25,6 +24,7 @@ const ChangeAppointment = () => {
   const [time, setTime] = useState("");
   const nav = useNavigate();
   const toastShownRef = useRef(false);
+  const [loading, setLoading] = useState(true);
 
   //stilovi
   const iconButtonStyle = {
@@ -118,11 +118,13 @@ const ChangeAppointment = () => {
 
   //fetchanje appointmenta po renderu
   useEffect(() => {
+    setLoading(true);
     const fetchAppointment = async () => {
       try {
         const resp = await EmployeeService.getAppointmentById(appointmentId);
         if (resp.success) {
           setAppointment(resp.data);
+          setLoading(false);
           if (
             (resp.data.status.status_id === 3 ||
               resp.data.status.status_id === 5) &&
@@ -150,14 +152,14 @@ const ChangeAppointment = () => {
     fetchAppointment();
   }, [appointmentId]);
 
-    //funkcija koja provjerava je li ažuriranje termina uspjelo
-    const provjeraUspjehaUpdatea = async () => {
-      const updBool = await updateAppointment();
-      console.log("updBool:", updBool);
-      if (updBool) {
-        nav(-1);
-      }
-    };
+  //funkcija koja provjerava je li ažuriranje termina uspjelo
+  const provjeraUspjehaUpdatea = async () => {
+    const updBool = await updateAppointment();
+    console.log("updBool:", updBool);
+    if (updBool) {
+      nav(-1);
+    }
+  };
 
   //prilikom odabiranja datuma termina, ažuriraj varijablu date
   function onChangeDate(date) {
@@ -167,113 +169,130 @@ const ChangeAppointment = () => {
 
   return (
     <div className="main-container6_1">
-      <div className="iconButtonDiv6_1">
-        <IconButton style={iconButtonStyle} onClick={() => nav(-1)}>
-          <ArrowBackIosNewIcon></ArrowBackIosNewIcon>
-        </IconButton>
-      </div>
-      <div className="mini-container6_1">
-        <div className="title-div6_1">
-          <h2>Promjena termina</h2>
+      {loading && (
+        <div className="circural-progress">
+          <CircularProgress />
         </div>
-        <div className="border-container6_1">
-          <div className="big-div6_1">
-            <div className="mid-div6_1">
-              {appointment && appointment.therapy && (
-                <AppointmentInfo appointment={appointment} />
-              )}
+      )}
+      {!loading && (
+        <div>
+          <div className="iconButtonDiv6_1">
+            <IconButton style={iconButtonStyle} onClick={() => nav(-1)}>
+              <ArrowBackIosNewIcon></ArrowBackIosNewIcon>
+            </IconButton>
+          </div>
+          <div className="mini-container6_1">
+            <div className="title-div6_1">
+              <h2>Promjena termina</h2>
             </div>
-            <div className="mid-div6_2">
-              {appointment && appointment.therapy && (
-                <TherapyInfo therapy={appointment.therapy} />
-              )}
-            </div>
-          </div>
-          <div className="big-div6_4">
-            <LocalizationProvider
-              dateAdapter={AdapterLuxon}
-              dateLibInstance={DateTime}
-            >
-              <DemoContainer components={["DatePicker"]}>
-                <DatePicker
-                  format="dd/MM/yyyy"
-                  label="Datum terapije"
-                  onChange={onChangeDate}
-                  minDate={DateTime.local()}
-                  className="date-picker6_1"
-                />
-              </DemoContainer>
-            </LocalizationProvider>
-          </div>
-          <div className="big-div6_5">
-            <LocalizationProvider dateAdapter={AdapterLuxon}>
-              <DemoContainer components={["TimePicker"]}>
-                <TimePicker
-                  label="Vrijeme terapije"
-                  className="time-picker6_1"
-                  onChange={(newTime) => setTime(newTime)}
-                />
-              </DemoContainer>
-            </LocalizationProvider>
-          </div>
-          <div className="button-div-container6_1">
-            <div className="button-div6_1">
-              {appointment && (
-                <Button
-                  variant="contained"
-                  size="medium"
-                  className="gumb6_2"
-                  style={buttonStyle2}
-                  onClick={() => {
-                    if (appointment.status && (appointment.status.status_id === 1
-                       || appointment.status.status_id === 2)) {
-                      nav(`/deny-appointment/${appointment.appointment_id}`);
-                    } else {
-                      toast.error("Ne mogu se otkazati termini koji nisu zakazani ili na čekanju!", {
-                        position: toast.POSITION.TOP_RIGHT,
-                      });
-                    }
-                  }}
+            <div className="border-container6_1">
+              <div className="big-div6_1">
+                <div className="mid-div6_1">
+                  {appointment && appointment.therapy && (
+                    <AppointmentInfo appointment={appointment} />
+                  )}
+                </div>
+                <div className="mid-div6_2">
+                  {appointment && appointment.therapy && (
+                    <TherapyInfo therapy={appointment.therapy} />
+                  )}
+                </div>
+              </div>
+              <div className="big-div6_4">
+                <LocalizationProvider
+                  dateAdapter={AdapterLuxon}
+                  dateLibInstance={DateTime}
                 >
-                  Otkaži termin
-                </Button>
-              )}
-            </div>
-            <div className="button-div6_2">
-              <div className="small-button-div6_1">
-                {appointment && (
-                  <Button
-                    variant="contained"
-                    size="medium"
-                    className="gumb6_3"
-                    style={buttonStyle3}
-                    onClick={() => {
-                      nav(-1);
-                    }}
-                  >
-                    Odustani
-                  </Button>
-                )}
+                  <DemoContainer components={["DatePicker"]}>
+                    <DatePicker
+                      format="dd/MM/yyyy"
+                      label="Datum terapije"
+                      onChange={onChangeDate}
+                      className="date-picker6_1"
+                      disablePast
+                    />
+                  </DemoContainer>
+                </LocalizationProvider>
               </div>
-              <div className="small-button-div6_2">
-                {appointment && (
-                  <Button
-                    variant="contained"
-                    size="medium"
-                    className="gumb6_1"
-                    style={buttonStyle1}
-                    onClick={() => {
-                      provjeraUspjehaUpdatea();
-                    }}
-                  >
-                    Potvrdi
-                  </Button>
-                )}
+              <div className="big-div6_5">
+                <LocalizationProvider dateAdapter={AdapterLuxon}>
+                  <DemoContainer components={["TimePicker"]}>
+                    <TimePicker
+                      label="Vrijeme terapije"
+                      className="time-picker6_1"
+                      onChange={(newTime) => setTime(newTime)}
+                    />
+                  </DemoContainer>
+                </LocalizationProvider>
+              </div>
+              <div className="button-div-container6_1">
+                <div className="button-div6_1">
+                  {appointment && (
+                    <Button
+                      variant="contained"
+                      size="medium"
+                      className="gumb6_2"
+                      style={buttonStyle2}
+                      onClick={() => {
+                        if (
+                          appointment.status &&
+                          (appointment.status.status_id === 1 ||
+                            appointment.status.status_id === 2)
+                        ) {
+                          nav(
+                            `/deny-appointment/${appointment.appointment_id}`
+                          );
+                        } else {
+                          toast.error(
+                            "Ne mogu se otkazati termini koji nisu zakazani ili na čekanju!",
+                            {
+                              position: toast.POSITION.TOP_RIGHT,
+                            }
+                          );
+                        }
+                      }}
+                    >
+                      Otkaži termin
+                    </Button>
+                  )}
+                </div>
+                <div className="button-div6_2">
+                  <div className="small-button-div6_1">
+                    {appointment && (
+                      <Button
+                        variant="contained"
+                        size="medium"
+                        className="gumb6_3"
+                        style={buttonStyle3}
+                        onClick={() => {
+                          nav(-1);
+                        }}
+                      >
+                        Odustani
+                      </Button>
+                    )}
+                  </div>
+                  <div className="small-button-div6_2">
+                    {appointment && (
+                      <Button
+                        variant="contained"
+                        size="medium"
+                        className="gumb6_1"
+                        style={buttonStyle1}
+                        onClick={() => {
+                          provjeraUspjehaUpdatea();
+                        }}
+                      >
+                        Potvrdi
+                      </Button>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
