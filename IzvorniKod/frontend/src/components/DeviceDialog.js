@@ -25,6 +25,7 @@ const DeviceDialog = ({ device, open, setOpen }) => {
     // If the user confirms, call the onDelete callback
     if (isConfirmed) {
       await DeviceService.deleteDevice(id);
+      window.location.reload();
     }
   };
 

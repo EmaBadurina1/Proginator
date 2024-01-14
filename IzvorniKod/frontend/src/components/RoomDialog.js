@@ -25,6 +25,7 @@ const RoomDialog = ({ room, open, setOpen }) => {
     // If the user confirms, call the onDelete callback
     if (isConfirmed) {
       await RoomService.deleteRoom(id);
+      window.location.reload();
     }
   };
 
