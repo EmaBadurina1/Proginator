@@ -26,6 +26,7 @@ const UserDialog = ({ employee, open, setOpen }) => {
     // If the user confirms, call the onDelete callback
     if (isConfirmed) {
       await UserAccountService.deleteEmployee(id);
+      handleClose();
       window.location.reload();
     }
   };

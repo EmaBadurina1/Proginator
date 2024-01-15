@@ -15,15 +15,7 @@ class AuthService {
       }
         
       localStorage.setItem("user_role", JSON.stringify(user_role));
-      let res2;
-      if(user_role === "patient"){
-        res2 = await axiosInstance.get("/patients/" + user_id);
-        localStorage.setItem("user_data", JSON.stringify(res2.data.data.patient));
-      }
-      else {
-        res2 = await axiosInstance.get("/employees/" + user_id);
-        localStorage.setItem("user_data", JSON.stringify(res2.data.data.employee));
-      }
+      localStorage.setItem("user_id", JSON.stringify(user_id));
       toast.success("Uspješno ste se prijavili!", {
         position: toast.POSITION.BOTTOM_RIGHT,
       });
@@ -47,7 +39,8 @@ class AuthService {
   async logout() {
     try {
       await axiosInstance.post("/logout");
-      localStorage.removeItem("user_data");
+      localStorage.removeItem("user_id");
+      localStorage.removeItem("user_role");
       toast.info("Odjavljeni ste.", {
         position: toast.POSITION.BOTTOM_RIGHT,
       });
@@ -84,9 +77,6 @@ class AuthService {
     return { success: true, message: "You have registered successfully!" };
   }
 
-  getCurrentUserData() {
-    return JSON.parse(localStorage.getItem("user_data"));
-  }
 }
 
 export default new AuthService();

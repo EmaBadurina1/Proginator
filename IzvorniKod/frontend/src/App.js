@@ -46,6 +46,8 @@ import RoomAdd from "./pages/RoomAdd";
 import RoomEdit from "./pages/RoomEdit";
 import DeviceAdd from "./pages/DeviceAdd";
 import DeviceEdit from "./pages/DeviceEdit";
+import UserAccountService from "./services/userAccountService";
+import { toast } from "react-toastify";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(true);
@@ -53,28 +55,77 @@ function App() {
   const [userData, setUserData] = React.useState(null);
 
   useEffect(() => {
-    let userDataLS = localStorage.getItem("user_data");
-    let userRoleLS = localStorage.getItem("user_role");
+    const checkAuth = async () => {
+      let userIdLS = localStorage.getItem("user_id");
+      let userRoleLS = localStorage.getItem("user_role");
 
-    if (userDataLS === null) {
-      setIsAuthenticated(false);
-    } else {
-      userDataLS = JSON.parse(userDataLS);
-      userRoleLS = JSON.parse(userRoleLS);
-      setIsAuthenticated(true);
-      setUserData(userDataLS);
-      setUserRole(userRoleLS);
-    }
+      if (userIdLS === null) {
+        setIsAuthenticated(false);
+        setUserRole(null);
+        setUserData(null);
+      } else {
+        try {
+          userRoleLS = JSON.parse(userRoleLS);
+          let userDataFromServer;
+          if (userRoleLS === "patient") {
+            userDataFromServer = await UserAccountService.getPatientById(
+              JSON.parse(userIdLS)
+            );
+          } else {
+            userDataFromServer = await UserAccountService.getEmployeeById(
+              JSON.parse(userIdLS)
+            );
+          }
+          setUserData(userDataFromServer);
+          setUserRole(userRoleLS);
+          setIsAuthenticated(true);
+        } catch (error) {
+          toast.info(
+            "Odjavljeni ste jer je vaša prijava u međuvremenu istekla!",
+            {
+              position: toast.POSITION.BOTTOM_RIGHT,
+            }
+          );
+          localStorage.removeItem("user_id");
+          localStorage.removeItem("user_role");
+          setIsAuthenticated(false);
+          setUserRole(null);
+          setUserData(null);
+        }
+      }
+    };
+    checkAuth();
   }, []);
 
-  function login() {
-    let userDataLS = localStorage.getItem("user_data");
+  async function login() {
+    let userIdLS = localStorage.getItem("user_id");
     let userRoleLS = localStorage.getItem("user_role");
-    userDataLS = JSON.parse(userDataLS);
-    userRoleLS = JSON.parse(userRoleLS);
-    setIsAuthenticated(true);
-    setUserData(userDataLS);
-    setUserRole(userRoleLS);
+
+    if (userIdLS === null) {
+      setIsAuthenticated(false);
+    } else {
+      try {
+        userRoleLS = JSON.parse(userRoleLS);
+      let userDataFromServer;
+      if (userRoleLS === "patient") {
+        userDataFromServer = await UserAccountService.getPatientById(
+          JSON.parse(userIdLS)
+        );
+      } else {
+        userDataFromServer = await UserAccountService.getEmployeeById(
+          JSON.parse(userIdLS)
+        );
+      }
+      setIsAuthenticated(true);
+      setUserData(userDataFromServer);
+      setUserRole(userRoleLS);
+      window.location.replace("/home");
+      } catch (error) {
+        toast.error("Greška prilikom prijave!", {
+          position: toast.POSITION.BOTTOM_RIGHT,
+        });
+      }
+    }
   }
 
   function logout() {
@@ -87,7 +138,12 @@ function App() {
     const isLoggedIn = isAuthenticated;
     return isLoggedIn ? (
       <LoginContext.Provider
-        value={{ userData, setUserData, userRole, setUserRole }}
+        value={{
+          userData,
+          setUserData,
+          userRole,
+          setUserRole
+        }}
       >
         <Layout onLogout={logout}>{children}</Layout>
       </LoginContext.Provider>
@@ -357,8 +413,7 @@ function App() {
               </PatientRoute>
             </ProtectedRoute>
           }
-        >
-        </ Route>
+        ></Route>
         <Route
           path="/my-therapies/:therapy_id"
           element={
@@ -394,29 +449,14 @@ function App() {
           element={
             <ProtectedRoute>
               <AdminRoute>
-                <DataPreview/>
+                <DataPreview />
               </AdminRoute>
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/registrated/:email"
-          element={
-            <Registrated />
-          }
-        />
-        <Route
-          path="/confirm-email/:id"
-          element={
-            <ConfirmEmail />
-          }
-        />
-        <Route
-          path="/reset-password"
-          element={
-            <ResetPassword />
-          }
-        />
+        <Route path="/registrated/:email" element={<Registrated />} />
+        <Route path="/confirm-email/:id" element={<ConfirmEmail />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     )

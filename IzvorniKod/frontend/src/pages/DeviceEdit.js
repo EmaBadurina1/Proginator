@@ -9,30 +9,38 @@ import Box from "@mui/material/Box";
 import DeviceService from "../services/deviceService";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import InputLabel from "@mui/material/InputLabel";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import RoomService from "../services/roomService";
 
 const DeviceEdit = () => {
   const { deviceId } = useParams();
 
   const [deviceData, setDeviceData] = useState(null);
 
+  const [deviceTypes, setDeviceTypes] = useState([]);
+  const [rooms, setRooms] = useState([]);
+
   const [values, setValues] = useState({
     device_id: "",
     device_type_id: "",
-    room_num: "",
+    room: "",
   });
 
   /* Object for highlighting the error fields */
   const [errors, setErrors] = useState({
     device_id: false,
     device_type_id: false,
-    room_num: false,
+    room: false,
   });
 
   /* Object for error description on error fields */
   const [helperText, setHelperText] = useState({
     device_id: "",
     device_type_id: "",
-    room_num: "",
+    room: "",
   });
 
   /* Disable submit button if form is not filled correctly */
@@ -41,15 +49,29 @@ const DeviceEdit = () => {
   /* Text that is shown on submit button */
   const [submitMessage, setSubmitMessage] = useState("Unesi podatke");
 
-  const [isEditing, setIsEditing] = useState(true);
-
   const nav = useNavigate();
 
   useEffect(() => {
     const getDeviceData = async () => {
       const response = await DeviceService.getDeviceById(deviceId);
+      response.room = JSON.stringify({capacity: response.room.capacity, room_num: response.room.room_num});
       setDeviceData(response);
     };
+    const getDeviceTypes = async () => {
+      const deviceTypesFromServer = await DeviceService.getAllDeviceTypes();
+      setDeviceTypes(deviceTypesFromServer);
+    };
+    const getRooms = async () => {
+      const roomsFromServer = await RoomService.getAllRooms();
+      for (let i = 0; i < roomsFromServer.length; i++) {
+        delete roomsFromServer[i].devices;
+        delete roomsFromServer[i].in_use;
+        delete roomsFromServer[i].therapy_types;
+      }
+      setRooms(roomsFromServer);
+    }
+    getDeviceTypes();
+    getRooms();
     getDeviceData();
   }, [deviceId]);
 
@@ -59,7 +81,7 @@ const DeviceEdit = () => {
     setValues({
       device_id: deviceData.device_id,
       device_type_id: deviceData.device_type.device_type_id,
-      room_num: deviceData.room.room_num,
+      room: deviceData.room,
     });
   }, [deviceData]);
 
@@ -67,7 +89,7 @@ const DeviceEdit = () => {
     const isFilled = () => {
       if (values.device_id === "") return false;
       if (values.device_type_id === "") return false;
-      if (values.room_num === "") return false;
+      if (values.room === "") return false;
       return true;
     };
 
@@ -143,10 +165,9 @@ const DeviceEdit = () => {
     const data = {
       device_id: values.device_id,
       device_type_id: values.device_type_id,
-      room_num: values.room_num,
+      room_num: JSON.parse(deviceData.room).room_num,
     };
 
-    setIsEditing(false);
     resp = await DeviceService.updateDevice(deviceId, data);
 
     if (resp.success) {
@@ -158,14 +179,18 @@ const DeviceEdit = () => {
   };
 
   const quitEdit = () => {
-    setIsEditing(false);
     setValues({
       device_id: deviceData.device_id,
       device_type_id: deviceData.device_type.device_type_id,
-      room_num: deviceData.room.room_num,
+      room: deviceData.room,
     });
     nav("/devices");
   };
+  
+  const handleRoomChange = (e) => {
+    const { name, value } = e.target;
+    setValues({ ...values, [name]: JSON.parse(value) });
+  }
 
   return (
     <>
@@ -175,7 +200,7 @@ const DeviceEdit = () => {
           <hr />
           <form onSubmit={handleDeviceChange}>
             <Grid container spacing={4}>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <TextField
                   sx={{ width: "100%", padding: "0", margin: "0!important" }}
                   autoComplete="false"
@@ -183,40 +208,74 @@ const DeviceEdit = () => {
                   label="ID"
                   variant="outlined"
                   name="device_id"
-                  disabled={!isEditing}
+                  disabled={true}
                   onChange={handleChange}
                   value={values.device_id}
                 />
               </Grid>
-              <Grid item xs={6}>
-                <TextField
+              <Grid item xs={12}>
+                <FormControl sx={{width: "100%", padding: "0", margin: "0!important"}}>
+                <InputLabel id="demo-simple-select-helper-label">
+                  Vrsta uređaja
+                </InputLabel>
+                <Select
                   sx={{ width: "100%", padding: "0", margin: "0!important" }}
-                  autoComplete="false"
-                  className="reg-form-input"
-                  label="Tip uređaja"
-                  variant="outlined"
-                  name="device_type_id"
-                  disabled={!isEditing}
-                  onChange={handleChange}
+                  labelId="demo-simple-select-helper-label"
+                  id="demo-simple-select-helper"
                   value={values.device_type_id}
-                />
+                  label="Vrsta uređaja"
+                  name="device_type_id"
+                  onChange={handleChange}
+                >
+                  <MenuItem value="">
+                    <em>Odaberite vrstu</em>
+                  </MenuItem>
+                  {deviceTypes && deviceTypes.map((deviceType) => (
+                    <MenuItem key={deviceType.id} value={deviceType.device_type_id}>
+                      {deviceType.device_type_name}
+                    </MenuItem>
+                  ))}
+                </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={6}>
+                <FormControl sx={{width: "100%", padding: "0", margin: "0!important"}}>
+                <InputLabel id="room-num-label">
+                  Soba
+                </InputLabel>
+                <Select
+                  sx={{ width: "100%", padding: "0", margin: "0!important" }}
+                  labelId="room-num-label"
+                  value={values.room}
+                  label="Soba"
+                  name="room"
+                  error={errors.room}
+                  helperText={helperText.room}
+                  onChange={handleRoomChange}
+                >
+                  <MenuItem value="">
+                    <em>Odaberite sobu</em>
+                  </MenuItem>
+                  {rooms && rooms.map((room) => (
+                    <MenuItem key={room.room_num} value={JSON.stringify(room)}>
+                      {room.room_num}
+                    </MenuItem>
+                  ))}
+                </Select>
+                </FormControl>
               </Grid>
               <Grid item xs={6}>
                 <TextField
                   sx={{ width: "100%", padding: "0", margin: "0!important" }}
                   autoComplete="false"
                   className="reg-form-input"
-                  label="Soba"
+                  label="Kapacitet sobe"
                   variant="outlined"
-                  name="room_num"
-                  disabled={!isEditing}
-                  onChange={handleChange}
-                  error={errors.room_num}
-                  helperText={helperText.room_num}
-                  value={values.room_num}
+                  name="room.capacity"
+                  disabled={true}
+                  value={values.room.capacity}
                 />
               </Grid>
-
               <Grid item xs={12}>
                 <Box display="flex" justifyContent="center">
                   <>
