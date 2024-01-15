@@ -16,6 +16,7 @@ import EmployeeService from "../services/employeeService";
 import { useEffect, useState, useRef } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { DateTime } from "luxon";
 
 const AttendanceRecord = () => {
   //inicijalizacija varijabli
@@ -190,7 +191,12 @@ const AttendanceRecord = () => {
                 <div className="small-div3_2">
                   <p>
                     <span style={bolded}>DATUM I VRIJEME TERMINA:</span>{" "}
-                    {appointment && appointment.date_from}{" "}
+                    {appointment &&
+                      DateTime.fromFormat(
+                        appointment.date_from,
+                        "EEE, dd LLL yyyy HH:mm:ss 'GMT'",
+                        { zone: "utc" }
+                      ).toFormat("dd.MM.yyyy. HH:mm")}
                   </p>
                   <p>
                     <span style={bolded}>Soba:</span>{" "}

@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-
+import { DateTime } from "luxon";
 
 const therapyInfoStyle = {
   marginBottom: "2em",
@@ -9,7 +9,7 @@ const therapyInfoStyle = {
 const bolded = {
   fontWeight: "bold",
   display: "inline",
-}
+};
 
 const TherapyInfo = (props) => {
   const therapy = props.therapy;
@@ -17,11 +17,29 @@ const TherapyInfo = (props) => {
   return (
     <div className="therapy-info" style={therapyInfoStyle}>
       <h4>Informacije o terapiji</h4>
-      <p><span style={bolded}>Vrsta terapije:</span> {therapy.therapy_type.therapy_type_name}</p> 
-      <p><span style={bolded}>Opis bolesti:</span> {therapy.disease_descr}</p> 
-      <p><span style={bolded}>Zahtjevani postupak liječenja:</span> {therapy.req_treatment}</p> 
-      <p><span style={bolded}>Datum početka:</span> {therapy.date_from}</p> 
-      <p><span style={bolded}>Opis terapije:</span> {therapy.therapy_type.therapy_type_descr}</p> 
+      <p>
+        <span style={bolded}>Vrsta terapije:</span>{" "}
+        {therapy.therapy_type.therapy_type_name}
+      </p>
+      <p>
+        <span style={bolded}>Opis bolesti:</span> {therapy.disease_descr}
+      </p>
+      <p>
+        <span style={bolded}>Zahtjevani postupak liječenja:</span>{" "}
+        {therapy.req_treatment}
+      </p>
+      <p>
+        <span style={bolded}>Datum početka:</span>{" "}
+        {DateTime.fromFormat(
+          therapy.date_from,
+          "EEE, dd LLL yyyy HH:mm:ss 'GMT'",
+          { zone: "utc" }
+        ).toFormat("dd.MM.yyyy. HH:mm")}
+      </p>
+      <p>
+        <span style={bolded}>Opis terapije:</span>{" "}
+        {therapy.therapy_type.therapy_type_descr}
+      </p>
     </div>
   );
 };

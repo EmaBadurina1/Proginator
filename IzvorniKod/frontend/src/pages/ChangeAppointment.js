@@ -263,7 +263,7 @@ const ChangeAppointment = () => {
                       onChange={(newTime) => setTime(newTime)}
                       ampm={false}
                       minTime={DateTime.local().set({ hour: 8, minute: 0 })}
-                      maxTime={DateTime.local().set({ hour: 20, minute: 0 })}
+                      maxTime={DateTime.local().set({ hour: 19, minute: 0 })}
                       hours={freeAppointments}
                       mask="__:00"
                       views={["hours"]}

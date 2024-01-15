@@ -1,5 +1,6 @@
 import { React } from "react";
 import PropTypes from "prop-types";
+import { DateTime } from "luxon";
 
 const AppointmentInfo = (props) => {
   const bolded = {
@@ -20,7 +21,12 @@ const AppointmentInfo = (props) => {
         {appointment.therapy.patient.surname}{" "}
       </p>
       <p>
-        <span style={bolded}>DATUM I VRIJEME TERMINA:</span> {appointment.date_from}{" "}
+        <span style={bolded}>DATUM I VRIJEME TERMINA:</span>{" "}
+        {DateTime.fromFormat(
+          appointment.date_from,
+          "EEE, dd LLL yyyy HH:mm:ss 'GMT'",
+          { zone: "utc" }
+        ).toFormat("dd.MM.yyyy. HH:mm")}{" "}
       </p>
       <p>
         <span style={bolded}>DOKTOR: </span>{" "}
