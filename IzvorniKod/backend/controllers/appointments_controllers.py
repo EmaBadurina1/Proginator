@@ -17,7 +17,7 @@ appointments_bp = Blueprint('appointments_bp', __name__)
 # get list of appointments
 @appointments_bp.route('/appointments', methods=['GET'])
 @auth_validation
-@require_any_role('admin')
+@require_any_role('admin', 'doctor')
 def get_appointments():
     return get_all(Model=Appointment, request=request)
 
@@ -73,22 +73,23 @@ def get_free_appointments_by_day(therapy_id, day):
                 if appointment.split(":")[1] != "00":
                     hours.remove(f'{int(hour.split(":")[0])+1}:00')
 
-    rooms = room_for_table.query.filter_by(therapy_type_id=therapy.therapy_type_id).all()
-    room_nums = [room.room_num[0] for room in rooms]
-    
+    # find rooms for specified therapy type
+    rooms = TherapyType.query.filter_by(therapy_type_id=therapy.therapy_type_id).first().rooms
+
+    # remove hours for which there are no rooms available
     for hour in hours:
         new_date_from = datetime.strptime(f'{day} {hour}', '%Y-%m-%d %H:%M')
         new_date_to = new_date_from + timedelta(minutes=60)
 
-        check = False
-        for room_num in room_nums:
+        check = False # check if there is a room with enough capacity
+        for room in rooms:
             appointments = Appointment.query.filter(and_(
-                Appointment.room_num==room_num, 
+                Appointment.room_num==room.room_num, 
                 Appointment.date_from.between(new_date_from, new_date_to)
                 )).all()
             
-            if len(appointments) < rooms[room_nums.index(room_num)].capacity:
-                check = True
+            if len(appointments) < room.capacity:
+                check = True # there is a room with enough capacity
                 break
 
         if not check:
@@ -104,7 +105,7 @@ def get_free_appointments_by_day(therapy_id, day):
 # create new appointment
 @appointments_bp.route('/appointments', methods=['POST'])
 @auth_validation
-@require_any_role('patient')
+@require_any_role('patient', 'admin')
 def create_appointment():
     required_fields = ['date_from', 'therapy_id']
     missing_fields = validate_required_fields(request.json, required_fields)
@@ -170,16 +171,16 @@ def create_appointment():
         }), 400
 
     # check for room capacity
-    rooms = room_for_table.query.filter_by(therapy_type_id=therapy.therapy_type_id).all()
-    room_nums = [room.room_num for room in rooms]
-    
-    for room_num in room_nums:
+    # find rooms for specified therapy type
+    rooms = TherapyType.query.filter_by(therapy_type_id=therapy.therapy_type_id).first().rooms
+    for room in rooms:
         appointments = Appointment.query.filter(and_(
-            Appointment.room_num==room_num, 
+            Appointment.room_num==room.room_num, 
             Appointment.date_from.between(new_date_from, new_date_to)
             )).all()
-        if len(appointments) < Room.query.filter_by(room_num=room_num).first().capacity:
-            request.json['room_num'] = room_num
+        # if there is a room with enough capacity, assign it to the appointment
+        if len(appointments) < room.capacity:
+            request.json['room_num'] = room.room_num
             break
     
     if 'room_num' not in request.json:
