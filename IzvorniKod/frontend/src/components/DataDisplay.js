@@ -245,8 +245,8 @@ DataDisplay.propTypes = {
    ).isRequired,
    buttonUrl: PropTypes.string,
    buttonLabel: PropTypes.string,
-   buttonRemove: PropTypes.boolean,
-   searchRemove: PropTypes.boolean
+   buttonRemove: PropTypes.bool,
+   searchRemove: PropTypes.bool
 };
 
 export default DataDisplay;
