@@ -16,9 +16,14 @@ const AppointmentRequestsPreview = () => {
   return (
     <div>
       <div className="title-div5_1">
-        <h2>Termini - svi pacijenti</h2>
+        <h2>Neevidentirani termini - svi pacijenti</h2>
       </div>
-      <DataDisplay url="/appointments" setData={setData} tableHead={tableHead}>
+      <DataDisplay
+        url="/appointments/active"
+        setData={setData}
+        tableHead={tableHead}
+        buttonRemove={true}
+      >
         {data !== null &&
           data.data.appointments.map((appointment) => (
             <TableRow

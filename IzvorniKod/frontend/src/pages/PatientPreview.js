@@ -19,7 +19,8 @@ const PatientPreview = () => {
       <DataDisplay
         url="/patients" 
         setData={setData} 
-        tableHead={tableHead} 
+        tableHead={tableHead}
+        buttonRemove={true} 
       >
         {data !== null &&
           data.data.patients.map((patient) => (
