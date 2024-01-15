@@ -31,17 +31,19 @@
 				\item  \underbar{Neprijavljeni korisnik (inicijator) može:}
 				\begin{packed_enum}
 					\item prijaviti se u sustav koristeći svoju e-mail adresu i lozinku
+					\item promijeniti zaboravljenu lozinku
 				\end{packed_enum}
 				
 				\item  \underbar{Pacijent-\textit{prijavljeni korisnik} (inicijator) može:}
 				\begin{packed_enum}
 					\item prikazati i mijenjati svoje osobne podatke i lozinku
-					\item vidjeti svoje zahtjeve za terminom terapije (vrijeme predaje zahtjeva, vrijeme željenog termina, tip rehabilitacije, liječnika koji ga je uputio na rehabilitaciju, referencu na prošlu terapiju i status) 
-					\item vidjeti svoje termine (vrijeme termina, prostoriju, tip rehabilitacije, liječnika, napomene i ishod termina) 
+					\item prikazati svoje terapije (tip rehabilitacije, liječnika koji ga je uputio na rehabilitaciju, referencu na prošlu terapiju i status)
+					\item prikazati svoje termine (vrijeme termina, prostoriju, tip rehabilitacije, liječnika, napomene i ishod termina) 
 					\item filtrirati svoje termine
-					\item prikazati nalaz (detalji i komentari) s termina odrađene terapije
+					\item prikazati nalaz (detalji i komentari) s odrađenog termina
 					\item naručiti se na terapiju, unijeti tip rehabilitacije, liječnika koji ga je uputio na terapiju, opis oboljenja i zahtijevani postupak liječenja
-					\item odabrati termin za neku terapiju između priloženih ili unijeti datum i odabrati neki na temelju toga ponuđeni termin
+					\item odabrati termin za neku od aktivnih terapija
+					\item promijeniti termin????
 				\end{packed_enum}
 				
 				\item  \underbar{Djelatnik-\textit{prijavljeni korisnik} (inicijator) može:}
@@ -50,8 +52,7 @@
 					\item vidjeti popis svih pacijenata (ime, prezime, MBO, e-mail adresa, broj telefona)
 					\item prikazati termine pojedinog pacijenta i prikazati evidenciju termina pojedinog pacijenta
 					\item evidentirati dolazak pacijenta na termin, dodati komentar o odrađenom terminu i vidjeti informacije o terapiji
-					\item prihvatiti/odbiti zahtjev za terminom na temelju raspoloživih prostorija i opreme 
-					
+					\item promijeniti i otkazati zakazani termin
 				\end{packed_enum}
 				\item  \underbar{Administrator - \textit{prijavljeni korisnik} (inicijator)  može:}
 				\begin{packed_enum}
@@ -62,11 +63,10 @@
 					\item dodati/registrirati novog djelatnika (ime, prezime, e-mail adresa, OIB, lozinka)
 					\item mijenjati raspoloživost soba i opreme
 					\item dodavati opremu i sobe
-					\item otkazivati i mijenjati termine, te o tome obavještavati pacijenta
 					
 				\end{packed_enum}
 				
-				\item  \underbar{Baza podataka (sudionik) može:}
+				\item  \underbar{Baza podataka (sudionik):}
 				\begin{packed_enum}
 					
 					\item pohranjuje podatke i ovlasti korisnika
@@ -105,7 +105,14 @@
 						\item  \textbf{Opis mogućih odstupanja:}
 						
 						\item[] \begin{packed_item}
-	
+							\item[1.a] Korisnik je zaboravio lozinku
+							\item[] \begin{packed_enum}
+								
+								\item Korisnik odabire opciju "Zaboravili ste lozinku?"
+								\item Korisnik unosi e-mail adresu
+								\item ???? provjereti što se dalje dešava ?????
+								
+							\end{packed_enum}
 							\item[2.a] Neispravna e-mail adresa ili lozinka
 							\item[] \begin{packed_enum}
 								
@@ -139,7 +146,7 @@
 						\item[2.a] Korisnik ne postoji u sustavu zdravstvene zaštite
 						\item[] \begin{packed_enum}
 							
-							\item Sustav obavještava korisnika o neispravnosti podataka
+							\item Sustav obaviještava korisnika o neispravnosti podataka
 							\item Korisnik mijenja podatke ili odustaje od registracije
 							
 						\end{packed_enum}
@@ -320,6 +327,7 @@
 						\item Djelatnik pretražuje pacijenta upisom imena i prezimena u tražilicu
 						\item Djelatnik odabire opciju "Prikaži termine" pored željenog pacijenta
 						\item Sustav otvara tablicu termina odabranog pacijenta
+						\item Djelatnik otvara 
 						\item Djelatnik evidentira(UC10)/prikazuje evidenciju(UC8)
 						\item Djelatnik odabire opciju povratka na popis pacijenata
 					\end{packed_enum}
