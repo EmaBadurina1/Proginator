@@ -151,7 +151,7 @@ const AppointmentOptions = () => {
                           );
                         }}
                       >
-                        Promjeni termin
+                        Premjesti termin
                       </Button>
                     </div>
                   )}

@@ -45,11 +45,19 @@
     grid-area: div2;
     margin-left: 1em;
 }
-.gumb7_1 {
+.gumb7_1, .gumb7_2, .gumb7_3 {
     height: 2.5em;
     border-radius: 0.5em;
-    width: 13em;
     margin-top: 1em;
+}
+.gumb7_1 {
+    width: 13em;
+}
+.gumb7_2 {
+    width: 8em;
+}
+.gumb7_3 {
+    width: 11em;
 }
 .button-div-container7_1 {
     display: grid;
@@ -98,5 +106,9 @@
         grid-template-columns: 100%;
         margin-left: 1.7em;
         margin-bottom: 2em;
+    }
+    .gumb7_1 {
+        width: 10em;
+        height: 3.5em;
     }
 }

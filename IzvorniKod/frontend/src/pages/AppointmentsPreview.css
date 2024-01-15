@@ -9,7 +9,6 @@
 }
 
 .title-div2_1 {
-    margin-left: 3em;
     width: 60em;
     margin-top: 1em;
 }
@@ -56,7 +55,6 @@
 
 @media (max-width: 1024px) {
     .button-title-div {
-        display: grid;
-        grid-template-columns: 100%;
+        display: flex;
     }
 }
