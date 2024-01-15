@@ -19,9 +19,9 @@ import PropTypes from 'prop-types';
 import { LoginContext } from "../contexts/LoginContext";
 
 
-const pagesPatient = ["Početna", "Moje terapije"];
-const pagesEmployee = ["Početna", "Pacijenti", "Zahtjevi"];
-const pagesAdmin = ["Početna", "Pacijenti", "Zahtjevi", "Inventar", "Prostorije", "Korisnički računi"];
+const pagesPatient = ["Moje terapije"];
+const pagesEmployee = ["Pacijenti", "Evidentiraj"];
+const pagesAdmin = ["Pacijenti", "Evidentiraj", "Inventar", "Prostorije", "Korisnički računi"];
 
 const routes = {
   "Prijava": "/login",
@@ -30,7 +30,7 @@ const routes = {
   "Promjena lozinke": "/change-password",
   "Početna": "/home",
   "Pacijenti": "/patient-preview",
-  "Zahtjevi": "/appointment-requests-preview",
+  "Evidentiraj": "/appointment-requests-preview",
   "Korisnički računi": "/user-accounts",
   "Dodavanje korisnika": "/new-user",
   "Moje terapije": "/my-therapies",

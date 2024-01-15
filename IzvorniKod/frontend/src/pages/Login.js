@@ -9,10 +9,11 @@ import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import AuthService from "../services/authService";
-import { useNavigate } from "react-router-dom";
 import "./Login.css";
+import { useNavigate } from "react-router-dom";
 
 const Login = ({ onLogin }) => {
+
   const [email, setEmail] = useState(
     localStorage.rememberMe &&
     localStorage.rememberMe === "true" &&
@@ -36,6 +37,7 @@ const Login = ({ onLogin }) => {
 
   // const form = useRef(null);
   // const checkBtn = useRef(null);
+
   const nav = useNavigate();
 
   useEffect(() => {
@@ -83,10 +85,6 @@ const Login = ({ onLogin }) => {
 
     await AuthService.login(email, password).then((resp) => {
       if (resp.success) {
-        onLogin();
-        nav("/home");
-        // window.location.reload();
-
         /* Add email to local storage if remember me is true */
         localStorage.rememberMe = rememberMe;
         if(rememberMe) {
@@ -94,6 +92,8 @@ const Login = ({ onLogin }) => {
         } else {
           localStorage.email = "";
         }
+        onLogin();
+        nav("/home");
       } else {
         setDisableSubmit(false);
         setSubmitMessage("Prijava");

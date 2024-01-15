@@ -63,6 +63,17 @@ class UserAccountService {
       }
    }
 
+   async getPatientById(userId){
+      try {
+         const response = await axiosInstance.get(`/patients/${userId}`);
+         return response.data.data.patient;
+      } catch (error) {
+         toast.error("Dogodila se greška! " + (error.response.data.error !== undefined ? error.response.data.error : ""), {
+            position: toast.POSITION.BOTTOM_RIGHT,
+          });
+      }
+   }
+
    async deleteEmployee(userId){
       try {
          const response = await axiosInstance.delete(`/employees/${userId}`);
