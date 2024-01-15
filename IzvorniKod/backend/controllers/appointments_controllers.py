@@ -462,7 +462,90 @@ def get_by_employee(user_id):
             "error": "Stranica i broj elemenata po stranici moraju biti cijeli brojevi",
             "status": 400
         }), 400
-    
+
+@appointments_bp.route('/appointments/active', methods=['GET'])
+@auth_validation
+@require_any_role('doctor', 'admin')
+def get_all_active_appointments():
+    try:
+        page = request.args.get('page', default = 1, type = int)
+        page_size = request.args.get('page_size', default = 20, type = int)
+        order_by = request.args.get('order_by', default="date_from", type=str)
+        order = request.args.get('order', default="asc", type=str)
+        search = request.args.get('search', default="", type=str)
+
+        if page_size > 20 or page_size < 1:
+            return jsonify({
+                "error": "Stranica mora sadržavati između 1 i 20 elemenata",
+                "status": 400
+            }), 400
+        
+        valid_columns = Appointment.get_column_names()
+
+        order_by = order_by if order_by in valid_columns else Appointment.get_pk_column_name()
+
+        if order.lower() not in ['asc', 'desc']:
+            order = 'asc'
+
+        order_column = getattr(Appointment, order_by)
+        if order.lower() == 'desc':
+            order_column = order_column.desc()
+
+        if search == "":
+            appointments = (Appointment
+                .query
+                .filter((Appointment.status_id == 1) | (Appointment.status_id == 2))
+                .order_by(order_column)
+                .paginate(page=page, per_page=page_size, error_out=False)
+            )
+        else:
+            appointments = (Appointment
+                .query
+                .filter((Appointment.status_id == 1) | (Appointment.status_id == 2))
+                .filter(Appointment.get_search_filter(search=search))
+                .order_by(order_column)
+                .paginate(page=page, per_page=page_size, error_out=False)
+            )
+
+        if appointments.pages == 0:
+            return jsonify({
+                "data": {
+                    "appointments": []
+                },
+                "page": 0,
+                "page_size": page_size,
+                "pages": appointments.pages,
+                "status": 200,
+                "total": appointments.total
+            }), 200
+
+        if page > appointments.pages or page < 1:
+            return jsonify({
+                'error': 'Tražena stranica ne postoji',
+                'status': 404
+            }), 404
+
+        return jsonify({
+            "data": {
+                "appointments": [item.to_dict() for item in appointments.items]
+            },
+            "page": page,
+            "page_size": page_size,
+            "pages": appointments.pages,
+            "status": 200,
+            "total": appointments.total
+        }), 200
+    except psycopg2.OperationalError as e:
+        return jsonify({
+            "error": "There was a problem with connection on server side",
+            "status": 500
+        }), 500
+    except Exception as e:
+        return jsonify({
+            "error": "Stranica i broj elemenata po stranici moraju biti cijeli brojevi",
+            "status": 400
+        }), 400
+
 # get list of statuses
 @appointments_bp.route('/statuses', methods=['GET'])
 @auth_validation

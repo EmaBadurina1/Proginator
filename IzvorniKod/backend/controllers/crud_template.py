@@ -10,7 +10,7 @@ def get_all(Model, request):
    try:
       page = request.args.get('page', default = 1, type = int)
       page_size = request.args.get('page_size', default = 20, type = int)
-      order_by = request.args.get('order_by', default="therapy_id", type=str)
+      order_by = request.args.get('order_by', default=Model.get_pk_column_name(), type=str)
       order = request.args.get('order', default="asc", type=str)
       search = request.args.get('search', default="", type=str)
 

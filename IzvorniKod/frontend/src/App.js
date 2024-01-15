@@ -37,6 +37,10 @@ import DataPreview from "./pages/DataPreview";
 import UserAccounts from "./pages/UserAccounts";
 import Devices from "./pages/Devices";
 import Rooms from "./pages/Rooms";
+import AppointmentOptions from "./pages/AppointmentOptions";
+import Registrated from "./pages/Registrated";
+import ConfirmEmail from "./pages/ConfirmEmail";
+import ResetPassword from "./pages/ResetPassword";
 import UserEdit from "./pages/UserEdit";
 import RoomAdd from "./pages/RoomAdd";
 import RoomEdit from "./pages/RoomEdit";
@@ -237,6 +241,16 @@ function App() {
           }
         />
         <Route
+          path="/appointment-options/:appointmentId"
+          element={
+            <ProtectedRoute>
+              <EmployeeRoute>
+                <AppointmentOptions />
+              </EmployeeRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/deny-appointment/:appointmentId"
           element={
             <ProtectedRoute>
@@ -383,6 +397,24 @@ function App() {
                 <DataPreview/>
               </AdminRoute>
             </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/registrated/:email"
+          element={
+            <Registrated />
+          }
+        />
+        <Route
+          path="/confirm-email/:id"
+          element={
+            <ConfirmEmail />
+          }
+        />
+        <Route
+          path="/reset-password"
+          element={
+            <ResetPassword />
           }
         />
         <Route path="*" element={<NotFound />} />

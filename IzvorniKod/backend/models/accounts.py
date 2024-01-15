@@ -4,6 +4,7 @@ import bcrypt
 from db import db
 import bcrypt
 from sqlalchemy import or_
+from datetime import datetime
 
 # Define the User model
 class User(db.Model):
@@ -15,22 +16,8 @@ class User(db.Model):
     phone_number = db.Column(db.String(20), unique=True, nullable=False)
     date_of_birth = db.Column(db.Date)
     hashed_password = db.Column(db.String(300), nullable=False)
-
-    patients = db.relationship(
-        'Patient',
-        backref=db.backref(
-            'user',
-            passive_deletes=True
-        ) 
-    )
-
-    employees = db.relationship(
-        'Employee',
-        backref=db.backref(
-            'user',
-            passive_deletes=True
-        ) 
-    )
+    confirmed = db.Column(db.Boolean, nullable=False, default=False)
+    confirmed_on = db.Column(db.DateTime)
 
     def __init__(self, password, **kwargs):
         date_of_birth = kwargs.get('date_of_birth', None)
@@ -208,6 +195,8 @@ class Employee(User):
     )
 
     def __init__(self, is_active, is_admin, OIB, **kwargs):
+        kwargs['confirmed'] = True
+        kwargs['confirmed_on'] = datetime.now()
         super().__init__(**kwargs)
         self.is_active = is_active
         self.is_admin = is_admin

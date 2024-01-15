@@ -9,7 +9,9 @@ import "./PatientPreview.css";
 
 const MyTherapies = () => {
     const context = useContext(LoginContext);
+
     const user_id = useRef({ value: context.userData.user_id });
+    
     const [therapies, setTherapies] = useState(null);
 
     const nav = useNavigate();

@@ -38,7 +38,60 @@ def get_room(room_num):
 @require_any_role('admin')
 def create_room():
     required_fields = ['room_num', 'capacity', 'in_use']
-    return create(required_fields=required_fields, Model=Room)
+    #return create(required_fields=required_fields, Model=Room)
+
+    missing_fields = validate_required_fields(request.json, required_fields)
+
+    if missing_fields:
+        error_message = f"Missing fields: {', '.join(missing_fields)}"
+        return jsonify({
+            "error": error_message,
+            "status": 400
+        }), 400
+    
+    room_num = request.json["room_num"]
+    capacity = request.json["capacity"]
+    in_use = request.json["in_use"]
+
+    room = Room(room_num=room_num, capacity=capacity, in_use=in_use)
+
+    try:
+        db.session.add(room)
+        db.session.commit()
+    except (ValueError, IntegrityError, DataError) as e:
+        db.session.rollback()
+        return jsonify({
+            "error": "Podaci su neispravni",
+            "status": 400
+        }), 400
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            "error": "Došlo je do pogreške prilikom spremanja podataka",
+            "status": 500
+        }), 500
+
+    if request.is_json and "therapy_types" in request.json and isinstance(request.json["therapy_types"], list):
+        try:
+            for therapy_type_id in request.json["therapy_types"]:
+                therapy_type = TherapyType.query.get(therapy_type_id)
+                if therapy_type:
+                    db.session.add(therapy_type)
+                    room.therapy_types.append(therapy_type)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({
+                "error": "Došlo je do pogreške prilikom spremanja podataka",
+                "status": 500
+            }), 500
+
+    return jsonify({
+        "data": {
+            f"{Room.get_name_singular()}": room.to_dict()
+        },
+        "status": 201
+    }), 201
 
 # update room with id=room_num
 @rooms_bp.route('/rooms/<string:room_num>', methods=['PATCH'])
@@ -62,6 +115,25 @@ def update_room(room_num):
                 "error": "Došlo je do pogreške prilikom spremanja podataka",
                 "status": 400
             }), 400
+        
+        if request.is_json and "therapy_types" in request.json and isinstance(request.json["therapy_types"], list):
+            try:
+                types = []
+                for therapy_type_id in request.json["therapy_types"]:
+                    therapy_type = TherapyType.query.get(therapy_type_id)
+                    if therapy_type:
+                        db.session.add(therapy_type)
+                        types.append(therapy_type)
+                room.therapy_types = types
+                db.session.commit()
+            except Exception as e:
+                db.session.rollback()
+                return jsonify({
+                    "error": "Došlo je do pogreške prilikom spremanja podataka",
+                    "status": 500
+                }), 500
+
+
         return jsonify({
             "data": {
                 "room": room.to_dict()

@@ -9,9 +9,8 @@
 }
 
 .title-div2_1 {
-    margin-left: 3em;
-    width: 20em;
-    margin-bottom: 2em;
+    width: 60em;
+    margin-top: 1em;
 }
 
 .prviRed2_1 {
@@ -43,6 +42,19 @@
     margin-bottom: 0.5em;
 }
 .iconButtonDiv2_1 {
-    margin-left: 3em;
+    float: left;
+    margin-left: 1em;
+    margin-right: 2em;
+    margin-top: 1em;
 }
 
+.button-title-div {
+    display: grid;
+    grid-template-columns: 5% auto;
+}
+
+@media (max-width: 1024px) {
+    .button-title-div {
+        display: flex;
+    }
+}

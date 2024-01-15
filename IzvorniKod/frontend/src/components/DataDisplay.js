@@ -116,44 +116,48 @@ const DataDisplay = (props) => {
       <div className="data-display">
          <TableContainer>
             <div className="top-conteiner">
-               <Button
-                  className="add-button"
-                  color="success"
-                  variant="contained"
-                  size="medium"
-                  onClick={() => nav(props.buttonUrl)}
-               >
-                  <span className="lg-button-label">{props.buttonLabel}</span>
-                  <AddCircleIcon className="sm-button-label"/>
-               </Button>
-               <TextField
-                  id="search-input"
-                  type="text"
-                  variant="standard"
-                  autoComplete="false"
-                  label="Traži"
-                  value={value}
-                  onChange={handleOnChangeValue}
-                  onKeyDown={(event) => {
-                     if (event.key === 'Enter') {
-                        handleSearch();
-                     }
-                  }}
-                  InputProps={{
-                     endAdornment: (
-                        <InputAdornment position="end">
-                           <IconButton
-                              aria-label="search button"
-                              onClick={handleSearch}
-                              onMouseDown={handleMouseDown}
-                              disabled={loading}
-                           >
-                              <SearchIcon />
-                           </IconButton>
-                        </InputAdornment>
-                     )
-                  }}
-               />
+               {props.buttonRemove !== true && (
+                  <Button
+                     className="add-button"
+                     color="success"
+                     variant="contained"
+                     size="medium"
+                     onClick={() => nav(props.buttonUrl)}
+                  >
+                     <span className="lg-button-label">{props.buttonLabel}</span>
+                     <AddCircleIcon className="sm-button-label"/>
+                  </Button>
+               )}
+               {props.searchRemove !== true && (
+                  <TextField
+                     id="search-input"
+                     type="text"
+                     variant="standard"
+                     autoComplete="false"
+                     label="Traži"
+                     value={value}
+                     onChange={handleOnChangeValue}
+                     onKeyDown={(event) => {
+                        if (event.key === 'Enter') {
+                           handleSearch();
+                        }
+                     }}
+                     InputProps={{
+                        endAdornment: (
+                           <InputAdornment position="end">
+                              <IconButton
+                                 aria-label="search button"
+                                 onClick={handleSearch}
+                                 onMouseDown={handleMouseDown}
+                                 disabled={loading}
+                              >
+                                 <SearchIcon />
+                              </IconButton>
+                           </InputAdornment>
+                        )
+                     }}
+                  />
+               )}
             </div>
             <Table aria-label="simple table">
                <TableHead>
@@ -239,8 +243,10 @@ DataDisplay.propTypes = {
          classes: PropTypes.string.isRequired
       })
    ).isRequired,
-   buttonUrl: PropTypes.string.isRequired,
-   buttonLabel: PropTypes.string.isRequired
+   buttonUrl: PropTypes.string,
+   buttonLabel: PropTypes.string,
+   buttonRemove: PropTypes.boolean,
+   searchRemove: PropTypes.boolean
 };
 
 export default DataDisplay;

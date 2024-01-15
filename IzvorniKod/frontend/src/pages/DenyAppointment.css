@@ -7,6 +7,12 @@
     margin-right: 5em;
     margin-bottom: 2em;
 }
+.circural-progress {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
 .border-container7_1 {
     margin-top: 1em;
     border: 0.1em solid black;
@@ -39,24 +45,40 @@
     grid-area: div2;
     margin-left: 1em;
 }
-.gumb7_1 {
+.gumb7_1, .gumb7_2, .gumb7_3 {
     height: 2.5em;
     border-radius: 0.5em;
-    width: 13em;
     margin-top: 1em;
 }
+.gumb7_1 {
+    width: 13em;
+}
+.gumb7_2 {
+    width: 8em;
+}
+.gumb7_3 {
+    width: 11em;
+}
 .button-div-container7_1 {
-    margin-bottom: 6em;
+    display: grid;
+    grid-template-columns: 50% 50%;
 }
 .button-div7_1 {
-    width: 40%;
+    width: 20%;
     margin-right: 5em;
-    float: left;
+    margin-right: auto;
 }
 .button-div7_2 {
-    width: 40%;
-    margin-left: 5em;
-    float: right;
+    width: 15em;
+    margin-right: 5em;
+    margin-left: auto;
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
+.small-button-div7_1 {
+    margin-bottom: 1em;
+    margin-left: 0;
+    margin-right: 4em;
 }
 .iconButtonDiv7_1 {
     margin-left: 3em;
@@ -68,5 +90,25 @@
       grid-template-areas: 
       "div1"
       "div2";
+    }
+}
+@media (max-width: 768px) {
+
+    .button-div-container7_1 {
+        display: grid;
+        grid-template-columns: 100%;
+    }
+    .button-div7_2 {
+        margin-top: 1em;
+    }
+    .button-div7_2 {
+        display: grid;
+        grid-template-columns: 100%;
+        margin-left: 1.7em;
+        margin-bottom: 2em;
+    }
+    .gumb7_1 {
+        width: 10em;
+        height: 3.5em;
     }
 }

@@ -11,8 +11,9 @@
 }
 
 .title-div5_1 {
-    width: 30em;
+    width: 35em;
     margin-left: 3em;
+    margin-top: 1em;
 }
 
 .prviRed5_1 {
@@ -36,4 +37,11 @@
 .button-container2 {
     width: 10em;
     margin: auto;
+}
+@media (max-width: 1024px) {
+    .title-div5_1 {
+        width: 20em;
+        margin-left: 3em;
+        margin-top: 1em;
+    }
 }

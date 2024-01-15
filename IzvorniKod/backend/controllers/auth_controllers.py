@@ -4,6 +4,11 @@ from db import db
 from models import User, Patient, Employee
 from auth import auth_validation
 from utils.utils import *
+from datetime import datetime
+from dotenv import load_dotenv
+from mail import mail
+from flask_mail import Message
+import os
 
 # setup blueprint
 from flask import Blueprint
@@ -20,6 +25,13 @@ def login():
       }), 400
    
    user: User = User.query.filter_by(email=request.json['email']).first()
+
+   if user.confirmed == False:
+      return jsonify({
+         "message": "E-mail nije potvrđen",
+         "status": 400
+      }), 400
+
    if user and user.check_password(request.json['password']):
       session['user_id'] = user.user_id
       #print(session['user_id'])
@@ -101,3 +113,103 @@ def change_password(user_id):
       "message": "Lozinka uspješno promijenjena",
       "status": 200
    }), 200
+
+@auth_bp.route('/confirm-email/<string:token>', methods=['GET'])
+def confirm_email(token):
+   email = confirm_token(token)
+   if email == False:
+      return jsonify({
+         "message": "Link za potvrdu e-maila nije valjan ili je istekao",
+         "status": 404
+      }), 404
+   user = User.query.filter_by(email=email).first()
+   if user == None:
+      return jsonify({
+         "message": "Link za potvrdu e-maila nije valjan ili je istekao",
+         "status": 404
+      }), 404
+   if user.confirmed:
+      return jsonify({
+         "message": "E-mail je već potvrđen",
+         "status": 409
+      }), 409
+   user.confirmed = True
+   user.confirmed_on = datetime.now()
+   db.session.commit()
+   return jsonify({
+      "message": "Potvrdili ste svoj e-mail",
+      "status": 200
+   }), 200
+
+@auth_bp.route('/resend-email', methods=['POST'])
+def resend_email():
+   if request.is_json and 'email' in request.json:
+      email = request.json['email']
+      load_dotenv()
+      token = generate_token(email=email)
+      url = os.getenv("FRONTEND_URL")
+      url = url + "/confirm-email/" + token
+      msg = Message(
+         'E-mail verifikacija - RehApp',
+         sender='proginator@fastmail.com',
+         recipients=[email]
+      )
+      msg.body = "Za verifikaciju računa kliknite na poveznicu: " + url
+      mail.send(msg)
+      return jsonify({
+         "message": "Link za verifikaciju je uspješno poslan na e-mail: " + email,
+         "status": 200
+      }), 200
+   return jsonify({
+      "error": "E-mail nije naveden",
+      "status": 400
+   }), 400
+
+@auth_bp.route('/reset-password', methods=['POST'])
+def reset_password():
+   if request.is_json and 'email' in request.json:
+      email = request.json['email']
+      user = User.query.filter(User.email == email).first()
+
+      if user == None:
+         return jsonify({
+            "error": "E-mail " + email + " ne postoji u sustavu",
+            "status": 404
+         }), 404
+
+      tmp_password = generate_password()
+      user.set_password(tmp_password)
+      db.session.commit()
+      msg = Message(
+         'Privremena lozinka - RehApp',
+         sender='proginator@fastmail.com',
+         recipients=[email]
+      )
+      msg.body = "Lozinku promijenite u postavkama nakon prve prijave u sustav.\nLozinka: " + tmp_password
+      mail.send(msg)
+      return jsonify({
+         "message": "Privremena lozinka poslana je na email: " + email,
+         "status": 200
+      }), 200
+   return jsonify({
+      "error": "E-mail nije naveden",
+      "status": 400
+   }), 400
+
+@auth_bp.route('/check-account/<string:email>', methods=['GET'])
+def check_account(email):
+   user = User.query.filter(User.email == email).first()
+   if user:
+      if user.confirmed:
+         return jsonify({
+            "error": "Korisnik je već potvrdio svoj e-mail",
+            "status": 400
+         }), 400
+      return jsonify({
+         "message": "Korsnik mora potvrditi svoj e-mail",
+         "status": 200
+      }), 200
+   return jsonify({
+      "error": "Ne postoji korisnik sa e-mailom: " + email,
+      "status": 404
+   }), 404

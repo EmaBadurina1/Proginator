@@ -159,7 +159,7 @@ export default function Registration() {
 
     AuthService.register(values).then((resp) => {
       if (resp.success) {
-        nav("/login");
+        nav("/registrated/" + values.email);
         // window.location.reload();
       } else {
         setDisableSubmit(false);

@@ -1,147 +1,76 @@
-import React from "react";
+import { React, useEffect, useState } from "react";
+import DataDisplay from "../components/DataDisplay";
+import { TableCell, TableRow } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import "./PatientPreview.css";
-import {
-  TableContainer,
-  Table,
-  TableBody,
-  TableHead,
-  TableRow,
-  InputAdornment,
-} from "@mui/material";
-import TextField from "@mui/material/TextField";
-import TableCell from "@mui/material/TableCell";
-import { useEffect, useState } from "react";
-import Button from "@mui/material/Button";
-import SearchIcon from "@mui/icons-material/Search";
-//import ForwardIcon from '@mui/icons-material/Forward';
-import EmployeeService from "../services/employeeService";
-import { Link } from "react-router-dom";
 
 const PatientPreview = () => {
-  const cellStyle = {
-    textAlign: "center",
-  };
+  //inicijalizacija varijabli
+  const [data, setData] = useState(null);
+  const nav = useNavigate();
 
-  const cellStyle2 = {
-    textAlign: "center",
-    border: "0.1em solid black",
-  };
-
-  const buttonStyle = {
-    backgroundColor: "purple",
-  };
-
-  const searchIconStyle = {
-    color: "blue",
-  };
-
-  const [searchInput, setSearchInput] = useState("");
-
-  //test podatci
-  const [patients, setPatients] = useState(null);
-
-  useEffect(() => {
-    EmployeeService.patientPreview();
-    const patientData = EmployeeService.getCurrentPatientData();
-
-    setPatients(patientData.data.patients);
-    console.log(patientData);
-  }, []);
-
-  const onChangeSearch = (e) => {
-    setSearchInput(e.target.value);
-    getFilteredPatients(e.target.value);
-  };
-
-  const getFilteredPatients = (v) => {
-
-    EmployeeService.patientPreview();
-    const data = EmployeeService.getCurrentPatientData().data.patients;
-
-    const filteredPatients = data.filter((patient) => {
-      return (
-        patient &&
-        (
-          patient.name.toLowerCase() +
-          " " +
-          patient.surname.toLowerCase()
-        ).includes(v.toLowerCase())
-      );
-    });
-    setPatients(filteredPatients);
-  };
+  useEffect(() => {}, [data]);
 
   return (
-    <div className="main-container1_1">
-      <div className="header1_1">
-        <div className="title-div1_1">
-          <h2>Svi pacijenti</h2>
-        </div>
-        <TextField
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <SearchIcon style={searchIconStyle} />
-              </InputAdornment>
-            ),
-          }}
-          autoComplete="false"
-          className="pretraga"
-          label="Pretraga"
-          variant="outlined"
-          name="pretraga"
-          onChange={(event) => onChangeSearch(event)}
-          value={searchInput}
-        />
+    <div>
+      <div className="title-div1_1">
+        <h2>Svi pacijenti</h2>
       </div>
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow className="prviRed1_1">
-              <TableCell style={cellStyle}>Ime</TableCell>
-              <TableCell style={cellStyle}>Prezime</TableCell>
-              <TableCell style={cellStyle}>MBO</TableCell>
-              <TableCell style={cellStyle}>Datum rođenja</TableCell>
-              <TableCell style={cellStyle}>E-mail adresa</TableCell>
-              <TableCell style={cellStyle}>Broj telefona</TableCell>
-              <TableCell style={cellStyle}>Akcije</TableCell>
+      <DataDisplay
+        url="/patients" 
+        setData={setData} 
+        tableHead={tableHead}
+        buttonRemove={true} 
+      >
+        {data !== null &&
+          data.data.patients.map((patient) => (
+            <TableRow
+              onClick={() => {nav(`/appointments-preview/${patient.user_id}`)}}
+              key={patient.user_id}
+            >
+              <TableCell>{patient.name}</TableCell>
+              <TableCell>{patient.surname}</TableCell>
+              <TableCell>{patient.MBO}</TableCell>
+              <TableCell className="hide-sm">{patient.email}</TableCell>
+              <TableCell className="hide-sm">{patient.phone_number}</TableCell>
             </TableRow>
-          </TableHead>
-          <TableBody>
-            {patients &&
-              patients.map((patient) => (
-                <TableRow key={patient.user_id}>
-                  <TableCell style={cellStyle2}>{patient.name}</TableCell>
-                  <TableCell style={cellStyle2}>{patient.surname}</TableCell>
-                  <TableCell style={cellStyle2}>{patient.MBO}</TableCell>
-                  <TableCell style={cellStyle2}>
-                    {patient.date_of_birth}
-                  </TableCell>
-                  <TableCell style={cellStyle2}>{patient.email}</TableCell>
-                  <TableCell style={cellStyle2}>
-                    {patient.phone_number}
-                  </TableCell>
-                  <TableCell style={cellStyle2}>
-                    <div>
-                      <Link to={`/appointments-preview/${patient.user_id}`}>
-                        <Button
-                          variant="contained"
-                          size="medium"
-                          className="gumb1_1"
-                          style={buttonStyle}
-                        >
-                          Prikaži termine
-                        </Button>
-                      </Link>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+          ))}
+      </DataDisplay>
     </div>
   );
 };
 
 export default PatientPreview;
+
+const tableHead = [
+  {
+    name: "Ime",
+    orderBy: "name",
+    align: "left",
+    classes: "show-sm"
+  },
+  {
+    name: "Prezime",
+    orderBy: "surname",
+    align: "left",
+    classes: "show-sm"
+  },
+  {
+    name: "MBO",
+    orderBy: "MBO",
+    align: "left",
+    classes: "show-sm"
+  },
+  {
+    name: "E-mail adresa",
+    orderBy: "email",
+    align: "left",
+    classes: "hide-sm"
+  },
+  {
+    name: "Broj telefona",
+    orderBy: "phone_number",
+    align: "left",
+    classes: "hide-sm"
+  },
+];

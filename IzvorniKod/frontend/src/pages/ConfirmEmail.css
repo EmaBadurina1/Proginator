@@ -1,0 +1,17 @@
+.confirm-email .conteiner {
+   text-align: center;
+   padding: 40px;
+   flex-direction: column;
+   border: 3px solid #3498db;
+   border-radius: 8px;
+}
+
+.confirm-email .conteiner button {
+   margin-top: 20px;
+}
+
+.confirm-email {
+   display: flex;
+   justify-content: center;
+   padding: 40px;
+}

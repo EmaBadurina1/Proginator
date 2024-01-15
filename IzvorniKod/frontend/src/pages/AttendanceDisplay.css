@@ -4,7 +4,12 @@
     margin-bottom: 2em;
     margin-right: 4em;
 }
-
+.circural-progress {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
 .text-field {
     padding: 0;
     margin-top: 5em;
@@ -21,6 +26,9 @@
     padding-left: 0.5em;
     padding-top: 0.2em;
     margin-right: 3em;
+}
+.small-div4_2 {
+    margin-top: 4em;
 }
 .small-div4_1, .small-div4_2, .small-div4_3 {
     margin-bottom: 1em;
@@ -74,10 +82,17 @@
 }
 
 @media (max-width: 1024px) {
-    .big-div1 {
+    .big-div4_1 {
       grid-template-columns: 100%;
       grid-template-areas: 
       "div1"
       "div2";
+    }
+    .small-div4_1 {
+        border: 0.1em solid gray;
+        width: 12.8em;
+        padding-left: 0.5em;
+        padding-top: 0.2em;
+        margin-right: 3em;
     }
 }
