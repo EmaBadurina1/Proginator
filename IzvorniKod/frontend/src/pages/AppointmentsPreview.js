@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import "./AppointmentsPreview.css";
 import { IconButton } from "@mui/material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import { DateTime } from "luxon";
 
 const AppointmentsPreview = () => {
   //inicijalizacija varijabli
@@ -66,10 +67,20 @@ const AppointmentsPreview = () => {
               onClick={() => {
                 if (appointment.status) {
                   nav(`/appointment-options/${appointment.appointment_id}`);
+                } else {
+                  toast.error("Greska!", {
+                    position: toast.POSITION.TOP_RIGHT,
+                  });
                 }
               }}
             >
-              <TableCell>{appointment.date_from}</TableCell>
+              <TableCell>
+                {DateTime.fromFormat(
+                  appointment.date_from,
+                  "EEE, dd LLL yyyy HH:mm:ss 'GMT'",
+                  { zone: "utc" }
+                ).toFormat("dd.MM.yyyy. HH:mm")}
+              </TableCell>
               <TableCell>
                 {appointment.therapy.therapy_type.therapy_type_name}
               </TableCell>

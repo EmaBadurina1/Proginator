@@ -44,12 +44,19 @@ const AppointmentOptions = () => {
       try {
         const resp = await EmployeeService.getAppointmentById(appointmentId);
         if (resp.success) {
-          setAppointment(resp.data);
+          if (resp.data.status) {
+            setAppointment(resp.data);
+          } else {
+            toast.error("Greska!", {
+              position: toast.POSITION.TOP_RIGHT,
+            });
+          }
           setLoading(false);
         } else {
           toast.error("Greska!", {
             position: toast.POSITION.TOP_RIGHT,
           });
+          setLoading(false);
         }
       } catch (err) {
         toast.error(`API Error:${err.response.data}`, {
