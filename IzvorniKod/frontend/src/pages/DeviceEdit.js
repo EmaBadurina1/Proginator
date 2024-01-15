@@ -165,7 +165,7 @@ const DeviceEdit = () => {
     const data = {
       device_id: values.device_id,
       device_type_id: values.device_type_id,
-      room_num: JSON.parse(deviceData.room).room_num,
+      room_num: JSON.parse(values.room).room_num,
     };
 
     resp = await DeviceService.updateDevice(deviceId, data);
@@ -189,7 +189,7 @@ const DeviceEdit = () => {
   
   const handleRoomChange = (e) => {
     const { name, value } = e.target;
-    setValues({ ...values, [name]: JSON.parse(value) });
+    setValues({ ...values, [name]: value });
   }
 
   return (
@@ -273,7 +273,7 @@ const DeviceEdit = () => {
                   variant="outlined"
                   name="room.capacity"
                   disabled={true}
-                  value={values.room.capacity}
+                  value={values.room == "" ? "" : JSON.parse(values.room).capacity}
                 />
               </Grid>
               <Grid item xs={12}>
