@@ -37,6 +37,7 @@ import DataPreview from "./pages/DataPreview";
 import UserAccounts from "./pages/UserAccounts";
 import Devices from "./pages/Devices";
 import Rooms from "./pages/Rooms";
+import AppointmentOptions from "./pages/AppointmentOptions";
 import Registrated from "./pages/Registrated";
 import ConfirmEmail from "./pages/ConfirmEmail";
 import ResetPassword from "./pages/ResetPassword";
@@ -235,6 +236,16 @@ function App() {
             <ProtectedRoute>
               <EmployeeRoute>
                 <AppointmentsPreview />
+              </EmployeeRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/appointment-options/:appointmentId"
+          element={
+            <ProtectedRoute>
+              <EmployeeRoute>
+                <AppointmentOptions />
               </EmployeeRoute>
             </ProtectedRoute>
           }

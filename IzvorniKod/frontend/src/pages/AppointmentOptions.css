@@ -1,7 +1,7 @@
-.main-container7_1 {
+.main-container8_1 {
     margin-top: 3em;
 }
-.mini-container7_1 {
+.mini-container8_1 {
     margin-top: 2em;
     margin-left: 5em;
     margin-right: 5em;
@@ -13,30 +13,27 @@
     align-items: center;
     padding: 20px;
 }
-.border-container7_1 {
+.border-container8_1 {
     margin-top: 1em;
     border: 0.1em solid black;
 }
-.title-div7_1 {
+.title-div8_1 {
     margin-left: 3em;
 }
 
-.big-div7_1 {
+.big-div8_1 {
     display: grid;
     grid-template-columns: 50% auto;
     grid-template-areas: 
     "div1 div2";
 }
-.big-div7_2 {
-    margin-top: 2em;
-}
-.mid-div7_1 {
+.mid-div8_1 {
     margin-top: 2em;
     line-height: 2em;
     margin-left: 2em;
     grid-area: div1;
 }
-.mid-div7_2 {
+.mid-div8_2 {
     border: 0.1em solid black;
     margin-top: 1em;
     margin-right: 1em;
@@ -45,58 +42,52 @@
     grid-area: div2;
     margin-left: 1em;
 }
-.gumb7_1 {
-    height: 2.5em;
-    border-radius: 0.5em;
-    width: 13em;
-    margin-top: 1em;
-}
-.button-div-container7_1 {
-    display: grid;
-    grid-template-columns: 50% 50%;
-}
-.button-div7_1 {
-    width: 20%;
-    margin-right: 5em;
-    margin-right: auto;
-}
-.button-div7_2 {
-    width: 15em;
-    margin-right: 5em;
-    margin-left: auto;
-    display: grid;
-    grid-template-columns: 50% 50%;
-}
-.small-button-div7_1 {
-    margin-bottom: 1em;
-    margin-left: 0;
-    margin-right: 4em;
-}
-.iconButtonDiv7_1 {
+
+.iconButtonDiv8_1 {
     margin-left: 3em;
+}
+.button-div-container8_1 {
+    display: grid;
+    grid-template-columns: 12% auto auto auto auto;
+    margin-top: 2em;
+    margin-left: 1em;
+    margin-bottom: 2em;
 }
 
 @media (max-width: 1024px) {
-    .big-div7_1 {
+    .big-div8_1 {
       grid-template-columns: 100%;
       grid-template-areas: 
       "div1"
       "div2";
     }
+    .border-container8_1 {
+        margin-top: 1em;
+        border: 0.1em solid black;
+    }
+    .button-div-container8_1 {
+        display: grid;
+        grid-template-columns: 100%;
+    }
+    .akcije-div {
+        margin-bottom: 1em;
+    }
+    .button-div8_1 {
+        margin-bottom: 1em;
+    }
+    .button-div8_2 {
+        margin-bottom: 1em;
+    }
+    .button-div8_3 {
+        margin-bottom: 1em;
+    }
+
 }
+
 @media (max-width: 768px) {
 
-    .button-div-container7_1 {
+    .button-div-container8_1 {
         display: grid;
         grid-template-columns: 100%;
-    }
-    .button-div7_2 {
-        margin-top: 1em;
-    }
-    .button-div7_2 {
-        display: grid;
-        grid-template-columns: 100%;
-        margin-left: 1.7em;
-        margin-bottom: 2em;
     }
 }
