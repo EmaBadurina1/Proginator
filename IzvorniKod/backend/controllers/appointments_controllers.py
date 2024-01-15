@@ -75,6 +75,7 @@ def get_free_appointments_by_day(therapy_id, day):
 
     # find rooms for specified therapy type
     rooms = TherapyType.query.filter_by(therapy_type_id=therapy.therapy_type_id).first().rooms
+    print(rooms[0].to_dict_simple())
 
     # remove hours for which there are no rooms available
     for hour in hours:
@@ -85,7 +86,8 @@ def get_free_appointments_by_day(therapy_id, day):
         for room in rooms:
             appointments = Appointment.query.filter(and_(
                 Appointment.room_num==room.room_num, 
-                Appointment.date_from.between(new_date_from, new_date_to)
+                Appointment.date_from>=new_date_from,
+                Appointment.date_from<new_date_to
                 )).all()
             
             if len(appointments) < room.capacity:
@@ -176,7 +178,8 @@ def create_appointment():
     for room in rooms:
         appointments = Appointment.query.filter(and_(
             Appointment.room_num==room.room_num, 
-            Appointment.date_from.between(new_date_from, new_date_to)
+            Appointment.date_from>=new_date_from,
+            Appointment.date_from<new_date_to
             )).all()
         # if there is a room with enough capacity, assign it to the appointment
         if len(appointments) < room.capacity:
@@ -196,6 +199,97 @@ def create_appointment():
 @auth_validation
 @require_any_role('admin', 'patient')
 def update_appointment(appointment_id):
+    required_fields = ['date_from']
+    missing_fields = validate_required_fields(request.json, required_fields)
+
+    if missing_fields:
+        error_message = f"Nedostajuća polja: {', '.join(missing_fields)}"
+        return jsonify({
+            "error": error_message,
+            "status": 400
+        }), 400
+
+    appointment = Appointment.query.filter_by(appointment_id=appointment_id).first()
+
+    if not appointment:
+        return jsonify({
+            "error": "Termin ne postoji",
+            "status": 404
+        }), 404
+    
+    # get patient and duration from therapy with database session
+    therapy = Therapy.query.filter_by(therapy_id=appointment.therapy_id).first()
+
+    if not therapy:
+        return jsonify({
+            "error": "Terapija termina ne postoji",
+            "status": 404
+        }), 404
+    
+    patient_id = therapy.patient_id
+
+    # patient can only create his appointments
+    if session['role'] == 'patient' and patient_id != session['user_id']:
+        return jsonify({
+            "error": "Forbidden",
+            "status": 403
+        }), 403
+    
+    # check if new date is in the past
+    if datetime.strptime(request.json['date_from'], '%Y-%m-%d %H:%M') < datetime.now():
+        return jsonify({
+            "error": "Termin ne može biti u prošlosti",
+            "status": 400
+        }), 400
+    
+    try:
+        new_date_from = datetime.strptime(request.json['date_from'], '%Y-%m-%d %H:%M')
+    except Exception as e:
+        return jsonify({
+            "error": "Wrong date format",
+            "status": 400
+        }), 400
+
+    if 'date_to' in request.json:
+        try:
+            new_date_to = datetime.strptime(request.json['date_to'], '%Y-%m-%d %H:%M')
+        except Exception as e:
+            return jsonify({
+                "error": "Wrong date format",
+                "status": 400
+            }), 400
+    else:
+        new_date_to = new_date_from + timedelta(minutes=60)
+        request.json['date_to'] = new_date_to.strftime('%Y-%m-%d %H:%M')
+
+    # check if appointment overlaps with any other appointment
+    overlapping = appointment_overlapping(patient_id, new_date_from, new_date_to)
+    if overlapping:
+        return jsonify({
+            "error": "Termin se preklapa s drugim terminom",
+            "status": 400
+        }), 400
+
+    # check for room capacity
+    # find rooms for specified therapy type
+    rooms = TherapyType.query.filter_by(therapy_type_id=therapy.therapy_type_id).first().rooms
+    for room in rooms:
+        appointments = Appointment.query.filter(and_(
+            Appointment.room_num==room.room_num, 
+            Appointment.date_from>=new_date_from,
+            Appointment.date_from<new_date_to
+            )).all()
+        # if there is a room with enough capacity, assign it to the appointment
+        if len(appointments) < room.capacity:
+            request.json['room_num'] = room.room_num
+            break
+    
+    if 'room_num' not in request.json:
+        return jsonify({
+            "error": "Nema slobodnih soba za ovaj termin",
+            "status": 400
+        }), 400
+
     return update(id=appointment_id, Model=Appointment)
     
 # delete appointment with id=appointment_id
@@ -203,6 +297,13 @@ def update_appointment(appointment_id):
 @auth_validation
 @require_any_role('admin', 'patient')
 def delete_appointment(appointment_id):
+    # # patient can only delete his appointments
+    # appointment = Appointment.query.filter_by(appointment_id=appointment_id).first()
+    # if session['role'] == 'patient' and appointment.therapy.patient_id != session['user_id']:
+    #     return jsonify({
+    #         "error": "Forbidden",
+    #         "status": 403
+    #     }), 403
     return delete(id=appointment_id, Model=Appointment)
 
 # get list of appointments by therapy_id
@@ -210,6 +311,20 @@ def delete_appointment(appointment_id):
 @auth_validation
 @require_any_role('admin', 'patient')
 def get_by_therapy(therapy_id):
+    # # patient can only see his appointments
+    # therapy = Therapy.query.filter_by(therapy_id=therapy_id).first()
+    # if not therapy:
+    #     return jsonify({
+    #         "error": "Terapija ne postoji",
+    #         "status": 404
+    #     }), 404
+    
+    # if session['role'] == 'patient' and therapy.patient_id != session['user_id']:
+    #     return jsonify({
+    #         "error": "Forbidden",
+    #         "status": 403
+    #     }), 403
+
     try:
         page = request.args.get('page', default = 1, type = int)
         page_size = request.args.get('page_size', default = 20, type = int)
