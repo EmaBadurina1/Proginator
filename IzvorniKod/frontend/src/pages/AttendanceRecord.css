@@ -90,7 +90,7 @@
     }
     .small-div3_1 {
         border: 0.1em solid gray;
-        width: 18em;
+        width: 12.8em;
         padding-left: 0.5em;
         padding-top: 0.2em;
         margin-right: 3em;
@@ -99,7 +99,7 @@
 @media (max-width: 768px) {
     .button-div3_1 {
         margin-right: 1em;
-        margin-left: 1em;
+
         width: 100%;
         display: grid;
         grid-template-columns: 100%;

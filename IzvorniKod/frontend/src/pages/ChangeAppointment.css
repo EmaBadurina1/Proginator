@@ -64,7 +64,6 @@
     height: 2.5em;
     border-radius: 0.5em;
     width: 13em;
-
 }
 
 .big-div9_3 {
@@ -126,5 +125,12 @@
         grid-template-columns: 100%;
         margin-left: 1.7em;
         margin-bottom: 2em;
+    }
+    .gumb9_1 {
+        width: 11em;
+    
+    }
+    .gumb9_2 {
+        width: 11em;
     }
 }

@@ -59,7 +59,12 @@ const AppointmentsPreview = () => {
           </h2>
         </div>
       </div>
-      <DataDisplay url={url} setData={setData} tableHead={tableHead}>
+      <DataDisplay
+        url={url}
+        setData={setData}
+        tableHead={tableHead}
+        buttonRemove={true}
+      >
         {data !== null &&
           data.data.appointments.map((appointment) => (
             <TableRow

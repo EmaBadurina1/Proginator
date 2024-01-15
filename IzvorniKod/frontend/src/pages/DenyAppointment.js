@@ -34,12 +34,10 @@ const DenyAppointment = () => {
   };
   const buttonStyle1 = {
     backgroundColor: "orange",
-    width: "18em",
     marginLeft: "2em",
   };
   const buttonStyle2 = {
     backgroundColor: "gray",
-    width: "8em",
   };
   const buttonStyle3 = {
     backgroundColor: "blue",
@@ -215,7 +213,7 @@ const DenyAppointment = () => {
                       className="gumb7_1"
                       style={buttonStyle1}
                     >
-                      Premjesti ovaj termin
+                      Premjesti termin
                     </Button>
                   </Link>
                 </div>
@@ -224,7 +222,7 @@ const DenyAppointment = () => {
                     <Button
                       variant="contained"
                       size="medium"
-                      className="gumb7_1"
+                      className="gumb7_2"
                       style={buttonStyle2}
                       onClick={() => {
                         nav(-1);
@@ -238,7 +236,7 @@ const DenyAppointment = () => {
                       <Button
                         variant="contained"
                         size="medium"
-                        className="gumb7_1"
+                        className="gumb7_3"
                         style={buttonStyle3}
                         onClick={() => {
                           provjeraUspjehaUpdatea();

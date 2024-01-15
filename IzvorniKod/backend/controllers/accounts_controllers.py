@@ -334,7 +334,41 @@ def register_employee():
     for key in required_fields:
         data[key] = request.json[key]
 
-    create(required_fields=required_fields, Model=Employee)
+    #create(required_fields=required_fields, Model=Employee)
+
+    missing_fields = validate_required_fields(request.json, required_fields)
+
+    if missing_fields:
+        error_message = f"Missing fields: {', '.join(missing_fields)}"
+        return jsonify({
+            "error": error_message,
+            "status": 400
+        }), 400
+    
+    employee = Employee(**request.json)
+
+    try:
+        db.session.add(employee)
+        db.session.commit()
+        return jsonify({
+            "data": {
+                "employee": employee.to_dict()
+            },
+            "status": 201
+        }), 201
+    except (ValueError, IntegrityError, DataError) as e:
+        db.session.rollback()
+        print(e)
+        return jsonify({
+            "error": "Podaci su neispravni",
+            "status": 400
+        }), 400
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            "error": "Došlo je do pogreške prilikom spremanja podataka",
+            "status": 500
+        }), 500
 
 # update employee with id=user_id
 @accounts_bp.route('/employees/<int:user_id>', methods=['PATCH'])
