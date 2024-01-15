@@ -322,7 +322,7 @@ def register_employee():
             duplicate_params.append("email")
         if query_employee.phone_number == phone_number:
             duplicate_params.append("phone_number")
-        if query_employee.MBO == OIB:
+        if query_employee.OIB == OIB:
             duplicate_params.append("OIB")
 
         return jsonify({
