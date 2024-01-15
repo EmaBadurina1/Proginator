@@ -62,14 +62,37 @@ def get_free_appointments_by_day(therapy_id, day):
         Appointment.date_from.between(date_from, date_from_next_day)
         )).all()
     appointments = [appointment.date_from.strftime('%H:%M') for appointment in appointments]
-    for appointment in appointments:
-        hours.remove(appointment)
 
-    # check for room capacity, ----------> NOT IMPLEMENTED YET !!!!!!!!
-    # therapy_type_id = therapy.therapy_type_id
-    # room_for_therapy = room_for_table.query.filter_by(therapy_type_id=therapy_type_id).room_num
-    # for hour in hours:
-    #     hours[hour] = room_for_therapy
+    for appointment in appointments:
+        for hour in hours:
+            if appointment.split(":")[0] == hour.split(":")[0]:
+                hours.remove(hour)
+
+                # if appointment does not start at the beginning of the hour, remove the next hour too, 
+                # because every appointment lasts 60 minutes
+                if appointment.split(":")[1] != "00":
+                    hours.remove(f'{int(hour.split(":")[0])+1}:00')
+
+    rooms = room_for_table.query.filter_by(therapy_type_id=therapy.therapy_type_id).all()
+    room_nums = [room.room_num[0] for room in rooms]
+    
+    for hour in hours:
+        new_date_from = datetime.strptime(f'{day} {hour}', '%Y-%m-%d %H:%M')
+        new_date_to = new_date_from + timedelta(minutes=60)
+
+        check = False
+        for room_num in room_nums:
+            appointments = Appointment.query.filter(and_(
+                Appointment.room_num==room_num, 
+                Appointment.date_from.between(new_date_from, new_date_to)
+                )).all()
+            
+            if len(appointments) < rooms[room_nums.index(room_num)].capacity:
+                check = True
+                break
+
+        if not check:
+            hours.remove(hour)
 
     return jsonify({
         "data": {
@@ -94,7 +117,15 @@ def create_appointment():
         }), 400
 
     # get patient and duration from therapy with database session
-    patient_id = db.session.query(Therapy.patient_id).filter_by(therapy_id=request.json['therapy_id']).first().patient_id
+    therapy = Therapy.query.filter_by(therapy_id=request.json['therapy_id']).first()
+
+    if not therapy:
+        return jsonify({
+            "error": "Terapija ne postoji",
+            "status": 404
+        }), 404
+    
+    patient_id = therapy.patient_id
 
     # patient can only create his appointments
     if session['role'] == 'patient' and patient_id != session['user_id']:
@@ -109,6 +140,7 @@ def create_appointment():
             "error": "Termin ne može biti u prošlosti",
             "status": 400
         }), 400
+    
     try:
         new_date_from = datetime.strptime(request.json['date_from'], '%Y-%m-%d %H:%M')
     except Exception as e:
@@ -131,12 +163,28 @@ def create_appointment():
 
     # check if appointment overlaps with any other appointment
     overlapping = appointment_overlapping(patient_id, new_date_from, new_date_to)
-
-    # needs check for room capacity, ----------> NOT IMPLEMENTED YET !!!!!!!!
-
     if overlapping:
         return jsonify({
             "error": "Termin se preklapa s drugim terminom",
+            "status": 400
+        }), 400
+
+    # check for room capacity
+    rooms = room_for_table.query.filter_by(therapy_type_id=therapy.therapy_type_id).all()
+    room_nums = [room.room_num for room in rooms]
+    
+    for room_num in room_nums:
+        appointments = Appointment.query.filter(and_(
+            Appointment.room_num==room_num, 
+            Appointment.date_from.between(new_date_from, new_date_to)
+            )).all()
+        if len(appointments) < Room.query.filter_by(room_num=room_num).first().capacity:
+            request.json['room_num'] = room_num
+            break
+    
+    if 'room_num' not in request.json:
+        return jsonify({
+            "error": "Nema slobodnih soba za ovaj termin",
             "status": 400
         }), 400
     
