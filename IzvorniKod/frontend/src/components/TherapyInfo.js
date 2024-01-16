@@ -41,12 +41,12 @@ const TherapyInfo = (props) => {
                 "EEE, dd LLL yyyy HH:mm:ss 'GMT'",
                 { zone: "utc" }
               ).toFormat("dd.MM.yyyy.")
-            : "Nema zaht. tretmana"}
+            : "Nema datuma"}
         </DataBox>
         <DataBox label="Opis terapije" tooltip="Opis terapije" big={false}>
           {therapy.therapy_type
             ? therapy.therapy_type.therapy_type_descr
-            : "Nema zaht. tretmana"}
+            : "Nema opisa"}
         </DataBox>
     </div>
   );

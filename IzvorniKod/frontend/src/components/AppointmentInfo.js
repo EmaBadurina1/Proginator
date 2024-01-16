@@ -35,12 +35,12 @@ const AppointmentInfo = (props) => {
               ).toFormat("dd.MM.yyyy. HH:mm")
             : "Nema datuma"}
         </DataBox>
-        <DataBox label="Doktor" tooltip="Ime i prezime doktora" big={false}>
+        <DataBox label="Doktor" tooltip="Doktor vezan uz termin" big={false}>
           {appointment.employee
             ? appointment.employee.name + " " + appointment.employee.surname
             : "Nema doktora"}
         </DataBox>
-      <DataBox label="Status" tooltip="status termina" big={false}>
+      <DataBox label="Status" tooltip="Status termina" big={false}>
         {appointment.status ? appointment.status.status_name : "Nema statusa"}
       </DataBox>
       <DataBox label="Soba" tooltip="Soba termina" big={false}>

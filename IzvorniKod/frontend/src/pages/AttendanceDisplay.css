@@ -1,6 +1,6 @@
 .main-container4_1 {
     margin-left: 4em;
-    margin-top: 2em;
+    margin-top: 1em;
     margin-bottom: 2em;
     margin-right: 4em;
 }
@@ -90,7 +90,6 @@
       "div2";
     }
     .small-div4_1 {
-        border: 0.1em solid gray;
         width: 12.8em;
         padding-left: 0.5em;
         padding-top: 0.2em;
