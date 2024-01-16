@@ -66,5 +66,16 @@ class RoomService {
           });
       }
    }
+
+   async getAllTherapyTypes(){
+      try {
+         const response = await axiosInstance.get(`/therapy-types`);
+         return response.data.data.therapy_types;
+      } catch (error) {
+         toast.error("Dogodila se greška! " + (error.response.data.error !== undefined ? error.response.data.error : ""), {
+            position: toast.POSITION.BOTTOM_RIGHT,
+          });
+      }
+   }
 }
 export default new RoomService();
