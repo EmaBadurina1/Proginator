@@ -46,8 +46,9 @@ import RoomAdd from "./pages/RoomAdd";
 import RoomEdit from "./pages/RoomEdit";
 import DeviceAdd from "./pages/DeviceAdd";
 import DeviceEdit from "./pages/DeviceEdit";
-import UserAccountService from "./services/userAccountService";
 import { toast } from "react-toastify";
+import axiosInstance from "./axiosInstance";
+
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(true);
@@ -68,13 +69,11 @@ function App() {
           userRoleLS = JSON.parse(userRoleLS);
           let userDataFromServer;
           if (userRoleLS === "patient") {
-            userDataFromServer = await UserAccountService.getPatientById(
-              JSON.parse(userIdLS)
-            );
+            userDataFromServer = await axiosInstance.get(`/patients/${JSON.parse(userIdLS)}`);
+            userDataFromServer = userDataFromServer.data.data.patient;
           } else {
-            userDataFromServer = await UserAccountService.getEmployeeById(
-              JSON.parse(userIdLS)
-            );
+            userDataFromServer = await axiosInstance.get(`/employees/${JSON.parse(userIdLS)}`);
+            userDataFromServer = userDataFromServer.data.data.employee;
           }
           setUserData(userDataFromServer);
           setUserRole(userRoleLS);
@@ -108,13 +107,11 @@ function App() {
         userRoleLS = JSON.parse(userRoleLS);
       let userDataFromServer;
       if (userRoleLS === "patient") {
-        userDataFromServer = await UserAccountService.getPatientById(
-          JSON.parse(userIdLS)
-        );
+        userDataFromServer = await axiosInstance.get(`/patients/${JSON.parse(userIdLS)}`);
+        userDataFromServer = userDataFromServer.data.data.patient;
       } else {
-        userDataFromServer = await UserAccountService.getEmployeeById(
-          JSON.parse(userIdLS)
-        );
+        userDataFromServer = await axiosInstance.get(`/employees/${JSON.parse(userIdLS)}`);
+        userDataFromServer = userDataFromServer.data.data.employee;
       }
       setIsAuthenticated(true);
       setUserData(userDataFromServer);
