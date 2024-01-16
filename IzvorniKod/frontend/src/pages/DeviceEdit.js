@@ -36,12 +36,6 @@ const DeviceEdit = () => {
     room: false,
   });
 
-  /* Object for error description on error fields */
-  const [helperText, setHelperText] = useState({
-    device_id: "",
-    device_type_id: "",
-    room: "",
-  });
 
   /* Disable submit button if form is not filled correctly */
   const [disableSubmit, setDisableSubmit] = useState(true);
@@ -112,24 +106,16 @@ const DeviceEdit = () => {
 
   /* Check if value is like regex, update
    errors and helperText after checking */
-  const checkRegex = (name, value, regex, message) => {
+  const checkRegex = (name, value, regex) => {
     if (!regex.test(value) && value !== "") {
       setErrors((oldErrors) => ({
         ...oldErrors,
         [name]: true,
       }));
-      setHelperText((oldText) => ({
-        ...oldText,
-        [name]: message,
-      }));
     } else {
       setErrors((oldErrors) => ({
         ...oldErrors,
         [name]: false,
-      }));
-      setHelperText((oldText) => ({
-        ...oldText,
-        [name]: "",
       }));
     }
   };
@@ -231,7 +217,7 @@ const DeviceEdit = () => {
                     <em>Odaberite vrstu</em>
                   </MenuItem>
                   {deviceTypes && deviceTypes.map((deviceType) => (
-                    <MenuItem key={deviceType.id} value={deviceType.device_type_id}>
+                    <MenuItem key={deviceType.device_type_id} value={deviceType.device_type_id}>
                       {deviceType.device_type_name}
                     </MenuItem>
                   ))}
@@ -250,7 +236,6 @@ const DeviceEdit = () => {
                   label="Soba"
                   name="room"
                   error={errors.room}
-                  helperText={helperText.room}
                   onChange={handleRoomChange}
                 >
                   <MenuItem value="">

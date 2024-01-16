@@ -43,12 +43,6 @@ const DeviceAdd = () => {
     room: false,
   });
 
-  /* Object for error description on error fields */
-  const [helperText, setHelperText] = useState({
-    device_type_id: "",
-    room: "",
-  });
-
   /* Disable submit button if form is not filled correctly */
   const [disableSubmit, setDisableSubmit] = useState(true);
 
@@ -84,24 +78,16 @@ const DeviceAdd = () => {
 
   /* Check if value is like regex, update
    errors and helperText after checking */
-  const checkRegex = (name, value, regex, message) => {
+  const checkRegex = (name, value, regex) => {
     if (!regex.test(value) && value !== "") {
       setErrors((oldErrors) => ({
         ...oldErrors,
         [name]: true,
       }));
-      setHelperText((oldText) => ({
-        ...oldText,
-        [name]: message,
-      }));
     } else {
       setErrors((oldErrors) => ({
         ...oldErrors,
         [name]: false,
-      }));
-      setHelperText((oldText) => ({
-        ...oldText,
-        [name]: "",
       }));
     }
   };
@@ -160,19 +146,6 @@ const DeviceAdd = () => {
           <hr />
           <form onSubmit={handleDeviceAdd}>
             <Grid container spacing={4}>
-              {/* <Grid item xs={12}>
-                <TextField
-                  sx={{ width: "100%", padding: "0", margin: "0!important" }}
-                  autoComplete="false"
-                  className="reg-form-input"
-                  label="Tip uređaja"
-                  variant="outlined"
-                  name="device_type_id"
-                  disabled={!isEditing}
-                  onChange={handleChange}
-                  value={values.device_type_id}
-                />
-              </Grid> */}
               <Grid item xs={12}>
                 <FormControl sx={{width: "100%", padding: "0", margin: "0!important"}}>
                 <InputLabel id="demo-simple-select-helper-label">
@@ -187,11 +160,11 @@ const DeviceAdd = () => {
                   name="device_type_id"
                   onChange={handleChange}
                 >
-                  <MenuItem value="">
+                  <MenuItem key={-1} value="">
                     <em>Odaberite vrstu</em>
                   </MenuItem>
                   {deviceTypes && deviceTypes.map((deviceType) => (
-                    <MenuItem key={deviceType.id} value={deviceType.device_type_id}>
+                    <MenuItem key={deviceType.device_type_id} value={deviceType.device_type_id}>
                       {deviceType.device_type_name}
                     </MenuItem>
                   ))}
@@ -210,11 +183,10 @@ const DeviceAdd = () => {
                   label="Soba"
                   name="room"
                   error={errors.room}
-                  helperText={helperText.room}
                   defaultValue={""}
                   onChange={handleChange}
                 >
-                  <MenuItem value="">
+                  <MenuItem key={-1} value="">
                     <em>Odaberite sobu</em>
                   </MenuItem>
                   {rooms && rooms.map((room) => (
