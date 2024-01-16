@@ -10,7 +10,6 @@ import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import AuthService from "../services/authService";
 import "./Login.css";
-import { useNavigate } from "react-router-dom";
 
 const Login = ({ onLogin }) => {
 
@@ -37,8 +36,6 @@ const Login = ({ onLogin }) => {
 
   // const form = useRef(null);
   // const checkBtn = useRef(null);
-
-  const nav = useNavigate();
 
   useEffect(() => {
     const isFilled = () => {
@@ -93,7 +90,6 @@ const Login = ({ onLogin }) => {
           localStorage.email = "";
         }
         onLogin();
-        nav("/home");
       } else {
         setDisableSubmit(false);
         setSubmitMessage("Prijava");

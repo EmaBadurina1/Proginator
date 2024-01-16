@@ -32,7 +32,6 @@ import CreateTherapy from "./pages/CreateTherapy";
 import MyTherapy from "./pages/MyTherapy";
 import NewAppointment from "./pages/NewAppointment";
 import ChangePassword from "./pages/ChangePassword";
-import AlreadyLoggedIn from "./pages/AlreadyLoggedIn";
 import DataPreview from "./pages/DataPreview";
 import UserAccounts from "./pages/UserAccounts";
 import Devices from "./pages/Devices";
@@ -48,9 +47,11 @@ import DeviceAdd from "./pages/DeviceAdd";
 import DeviceEdit from "./pages/DeviceEdit";
 import { toast } from "react-toastify";
 import axiosInstance from "./axiosInstance";
+import Loading from "./pages/Loading";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = React.useState(true);
+  const [loading, setLoading] = React.useState(true);
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
   const [userRole, setUserRole] = React.useState(null);
   const [userData, setUserData] = React.useState(null);
 
@@ -58,6 +59,8 @@ function App() {
     const checkAuth = async () => {
       let userIdLS = localStorage.getItem("user_id");
       let userRoleLS = localStorage.getItem("user_role");
+
+      setLoading(true);
 
       if (userIdLS === null) {
         setIsAuthenticated(false);
@@ -82,24 +85,33 @@ function App() {
           setUserRole(userRoleLS);
           setIsAuthenticated(true);
         } catch (error) {
-          toast.info(
-            "Odjavljeni ste jer je vaša prijava u međuvremenu istekla!",
-            {
+          if (error.response && error.response.status === 401) {
+            toast.info(
+              "Odjavljeni ste jer je vaša prijava u međuvremenu istekla!",
+              {
+                position: toast.POSITION.BOTTOM_RIGHT,
+              }
+            );
+            localStorage.removeItem("user_id");
+            localStorage.removeItem("user_role");
+            setIsAuthenticated(false);
+            setUserRole(null);
+            setUserData(null);
+          } else {
+            setIsAuthenticated(false);
+            toast.error("Dogodila se greška!", {
               position: toast.POSITION.BOTTOM_RIGHT,
-            }
-          );
-          localStorage.removeItem("user_id");
-          localStorage.removeItem("user_role");
-          setIsAuthenticated(false);
-          setUserRole(null);
-          setUserData(null);
+            });
+          }
         }
       }
+      setLoading(false);
     };
     checkAuth();
   }, []);
 
   async function login() {
+    setLoading(true);
     let userIdLS = localStorage.getItem("user_id");
     let userRoleLS = localStorage.getItem("user_role");
 
@@ -123,24 +135,27 @@ function App() {
         setIsAuthenticated(true);
         setUserData(userDataFromServer);
         setUserRole(userRoleLS);
-        window.location.replace("/home");
       } catch (error) {
         toast.error("Greška prilikom prijave!", {
           position: toast.POSITION.BOTTOM_RIGHT,
         });
       }
     }
+    setLoading(false);
   }
 
   function logout() {
+    setLoading(true);
     setIsAuthenticated(false);
     setUserRole(null);
     setUserData(null);
+    setLoading(false);
   }
 
   const ProtectedRoute = ({ children }) => {
-    const isLoggedIn = isAuthenticated;
-    return isLoggedIn ? (
+    return loading ? (
+      <Loading />
+    ) : isAuthenticated ? (
       <LoginContext.Provider
         value={{
           userData,
@@ -193,16 +208,20 @@ function App() {
         <Route
           path="/"
           element={
-            <Navigate to={isAuthenticated ? "/home" : "/login"} replace />
+            loading ? (
+              <Loading />
+            ) : (
+              <Navigate to={isAuthenticated ? "/home" : "/login"} replace />
+            )
           }
         />
         <Route
           path="/login"
           element={
-            isAuthenticated ? (
-              <ProtectedRoute>
-                <AlreadyLoggedIn />
-              </ProtectedRoute>
+            loading ? (
+              <Loading />
+            ) : isAuthenticated ? (
+              <Navigate to="/home" replace />
             ) : (
               <Login onLogin={login} />
             )
@@ -211,10 +230,10 @@ function App() {
         <Route
           path="/registration"
           element={
-            isAuthenticated ? (
-              <ProtectedRoute>
-                <AlreadyLoggedIn />
-              </ProtectedRoute>
+            loading ? (
+              <Loading />
+            ) : isAuthenticated ? (
+              <Navigate to="/home" replace />
             ) : (
               <Registration />
             )
