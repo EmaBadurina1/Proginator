@@ -153,8 +153,9 @@ function App() {
   }
 
   const ProtectedRoute = ({ children }) => {
-    const isLoggedIn = isAuthenticated;
-    return isLoggedIn ? (
+    return loading ? (
+      <Loading />
+    ) : isAuthenticated ? (
       <LoginContext.Provider
         value={{
           userData,
@@ -229,7 +230,9 @@ function App() {
         <Route
           path="/registration"
           element={
-            isAuthenticated ? (
+            loading ? (
+              <Loading />
+            ) : isAuthenticated ? (
               <Navigate to="/home" replace />
             ) : (
               <Registration />
