@@ -55,7 +55,7 @@ const ChangeAppointment = () => {
 
   //stilovi
   const iconButtonStyle = {
-    backgroundColor: "black",
+    backgroundColor: "#3498db",
     color: "white",
     float: "left",
   };

@@ -15,7 +15,8 @@
 }
 .border-container7_1 {
     margin-top: 1em;
-    border: 0.1em solid black;
+    border: 3px solid #3498db;
+    border-radius: 8px;
 }
 .title-div7_1 {
     margin-left: 3em;
@@ -23,7 +24,7 @@
 
 .big-div7_1 {
     display: grid;
-    grid-template-columns: 50% auto;
+    grid-template-columns: 35% auto;
     grid-template-areas: 
     "div1 div2";
 }
@@ -32,12 +33,12 @@
 }
 .mid-div7_1 {
     margin-top: 2em;
-    line-height: 2em;
     margin-left: 2em;
     grid-area: div1;
 }
 .mid-div7_2 {
-    border: 0.1em solid black;
+    border: 2px solid #3498db;
+    border-radius: 8px;
     margin-top: 1em;
     margin-right: 1em;
     padding-left: 1em;

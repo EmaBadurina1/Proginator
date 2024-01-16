@@ -1,46 +1,51 @@
 import { React } from "react";
 import PropTypes from "prop-types";
 import { DateTime } from "luxon";
+import DataBox from "./DataBox";
 
 const AppointmentInfo = (props) => {
-  const bolded = {
-    fontWeight: "bold",
-    display: "inline",
+  const appointmentInfoStyle = {
+    marginBottom: "2em",
   };
 
   const appointment = props.appointment;
 
   return (
-    <div className="appointment-info">
-      <p>
-        <span style={bolded}>IME PACIJENTA:</span>{" "}
-        {appointment.therapy.patient.name}{" "}
-      </p>
-      <p>
-        <span style={bolded}>PREZIME PACIJENTA:</span>{" "}
-        {appointment.therapy.patient.surname}{" "}
-      </p>
-      <p>
-        <span style={bolded}>DATUM I VRIJEME TERMINA:</span>{" "}
-        {DateTime.fromFormat(
-          appointment.date_from,
-          "EEE, dd LLL yyyy HH:mm:ss 'GMT'",
-          { zone: "utc" }
-        ).toFormat("dd.MM.yyyy. HH:mm")}{" "}
-      </p>
-      <p>
-        <span style={bolded}>DOKTOR: </span>{" "}
-        {appointment && appointment.employee && appointment.employee.name}{" "}
-        {appointment && appointment.employee && appointment.employee.surname}
-      </p>
-      <p>
-        <span style={bolded}>STATUS TERMINA: </span>{" "}
-        {appointment && appointment.status && appointment.status.status_name}
-      </p>
-      <p>
-        <span style={bolded}>SOBA: </span>{" "}
-        {appointment && appointment.room && appointment.room.room_num}
-      </p>
+    <div className="appointment-info" style={appointmentInfoStyle}>
+        <DataBox label="Ime" tooltip="Ime pacijenta" big={false}>
+          {appointment.therapy.patient
+            ? appointment.therapy.patient.name
+            : "Nema pacijenta"}
+        </DataBox>
+        <DataBox label="Prezime" tooltip="Prezime pacijenta" big={false}>
+          {appointment.therapy.patient
+            ? appointment.therapy.patient.surname
+            : "Nema pacijenta"}
+        </DataBox>
+        <DataBox
+          label="Datum i vrijeme"
+          tooltip="Datum i vrijeme termina"
+          big={false}
+        >
+          {appointment.date_from
+            ? DateTime.fromFormat(
+                appointment.date_from,
+                "EEE, dd LLL yyyy HH:mm:ss 'GMT'",
+                { zone: "utc" }
+              ).toFormat("dd.MM.yyyy. HH:mm")
+            : "Nema datuma"}
+        </DataBox>
+        <DataBox label="Doktor" tooltip="Ime i prezime doktora" big={false}>
+          {appointment.employee
+            ? appointment.employee.name + " " + appointment.employee.surname
+            : "Nema doktora"}
+        </DataBox>
+      <DataBox label="Status" tooltip="status termina" big={false}>
+        {appointment.status ? appointment.status.status_name : "Nema statusa"}
+      </DataBox>
+      <DataBox label="Soba" tooltip="Soba termina" big={false}>
+        {appointment.room ? appointment.room.room_num : "Nema sobe"}
+      </DataBox>
     </div>
   );
 };

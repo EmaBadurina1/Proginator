@@ -49,7 +49,6 @@ import DeviceEdit from "./pages/DeviceEdit";
 import { toast } from "react-toastify";
 import axiosInstance from "./axiosInstance";
 
-
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(true);
   const [userRole, setUserRole] = React.useState(null);
@@ -69,10 +68,14 @@ function App() {
           userRoleLS = JSON.parse(userRoleLS);
           let userDataFromServer;
           if (userRoleLS === "patient") {
-            userDataFromServer = await axiosInstance.get(`/patients/${JSON.parse(userIdLS)}`);
+            userDataFromServer = await axiosInstance.get(
+              `/patients/${JSON.parse(userIdLS)}`
+            );
             userDataFromServer = userDataFromServer.data.data.patient;
           } else {
-            userDataFromServer = await axiosInstance.get(`/employees/${JSON.parse(userIdLS)}`);
+            userDataFromServer = await axiosInstance.get(
+              `/employees/${JSON.parse(userIdLS)}`
+            );
             userDataFromServer = userDataFromServer.data.data.employee;
           }
           setUserData(userDataFromServer);
@@ -105,18 +108,22 @@ function App() {
     } else {
       try {
         userRoleLS = JSON.parse(userRoleLS);
-      let userDataFromServer;
-      if (userRoleLS === "patient") {
-        userDataFromServer = await axiosInstance.get(`/patients/${JSON.parse(userIdLS)}`);
-        userDataFromServer = userDataFromServer.data.data.patient;
-      } else {
-        userDataFromServer = await axiosInstance.get(`/employees/${JSON.parse(userIdLS)}`);
-        userDataFromServer = userDataFromServer.data.data.employee;
-      }
-      setIsAuthenticated(true);
-      setUserData(userDataFromServer);
-      setUserRole(userRoleLS);
-      window.location.replace("/home");
+        let userDataFromServer;
+        if (userRoleLS === "patient") {
+          userDataFromServer = await axiosInstance.get(
+            `/patients/${JSON.parse(userIdLS)}`
+          );
+          userDataFromServer = userDataFromServer.data.data.patient;
+        } else {
+          userDataFromServer = await axiosInstance.get(
+            `/employees/${JSON.parse(userIdLS)}`
+          );
+          userDataFromServer = userDataFromServer.data.data.employee;
+        }
+        setIsAuthenticated(true);
+        setUserData(userDataFromServer);
+        setUserRole(userRoleLS);
+        window.location.replace("/home");
       } catch (error) {
         toast.error("Greška prilikom prijave!", {
           position: toast.POSITION.BOTTOM_RIGHT,
@@ -139,7 +146,7 @@ function App() {
           userData,
           setUserData,
           userRole,
-          setUserRole
+          setUserRole,
         }}
       >
         <Layout onLogout={logout}>{children}</Layout>
@@ -271,7 +278,13 @@ function App() {
         />
         <Route
           path="/attendance-display/:appointmentId"
-          element={<AttendanceDisplay />}
+          element={
+            <ProtectedRoute>
+              <EmployeeRoute>
+                <AttendanceDisplay />
+              </EmployeeRoute>
+            </ProtectedRoute>
+          }
         />
         <Route
           path="/patient-preview"

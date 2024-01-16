@@ -16,12 +16,12 @@
 }
 
 .mini-container4_1 {
-    border: 0.2em solid black;
+    border: 3px solid #3498db;
+    border-radius: 8px;
     height: 80%;
 }
 
 .small-div4_1 {
-    border: 0.1em solid gray;
     width: 27em;
     padding-left: 0.5em;
     padding-top: 0.2em;
@@ -35,7 +35,7 @@
 }
 .big-div4_1 {
     display: grid;
-    grid-template-columns: 50% auto;
+    grid-template-columns: 35% auto;
     grid-template-areas: 
     "div1 div2";
 }
@@ -51,7 +51,8 @@
 }
 
 .mid-div4_2 {
-    border: 0.1em solid black;
+    border: 2px solid #3498db;
+    border-radius: 8px;
     margin-top: 1em;
     margin-right: 1em;
     padding-left: 1em;
