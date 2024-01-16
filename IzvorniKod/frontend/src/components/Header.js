@@ -68,9 +68,11 @@ const Header = ({ onLogout }) => {
   const handleLogout = (e) => {
     e.preventDefault();
 
-    AuthService.logout().then(() => {
+    AuthService.logout().then((resp) => {
+      if(resp.success === true){
       onLogout();
       nav("/login");
+      }
     });
   }
 
