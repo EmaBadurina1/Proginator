@@ -51,6 +51,16 @@ const RoomDialog = ({ room, open, setOpen }) => {
           <span>
             <strong>Dostupna:</strong> {room.in_use ? "DA" : "NE"}
           </span>
+          <span>
+            <strong>Vrste terapija:</strong>
+            <ul>
+              {room.therapy_types.map((therapyType) => (
+                <li key={therapyType.therapy_type_id}>
+                  {therapyType.therapy_type_name}
+                </li>
+              ))}
+            </ul>
+          </span>
         </div>
       </DialogContent>
       <DialogActions>
