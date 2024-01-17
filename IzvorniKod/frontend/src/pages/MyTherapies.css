@@ -1,0 +1,12 @@
+.my-therapies {
+   display: flex;
+   flex-direction: column;
+}
+
+.my-therapies .header {
+   text-align: center;
+}
+
+.my-therapies .header h2 {
+   margin: 10px 10px 5px 10px;
+}

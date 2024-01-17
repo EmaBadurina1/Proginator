@@ -67,12 +67,6 @@
     margin-left: 3em;
 }
 
-/* 
-.gumb6_1 {
-    display: center;
-
-} */
-
 .button-div6_1 {
     margin-bottom: 6em;
 }
@@ -100,4 +94,20 @@
             "div1"
             "div2";
     }
+}
+
+.container-div2 .progr {
+    padding: 15px;
+}
+
+.container-div2 .border-container2 .form-row {
+    margin: 15px;
+}
+
+.container-div2 .border-container2 .form-row.date-picker {
+    margin-top: 7px;
+}
+
+.container-div2 .border-container2 .form-row .autocomplete {
+    width: 100%;
 }

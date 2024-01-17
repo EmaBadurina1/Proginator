@@ -23,10 +23,7 @@ const MyTherapy = () => {
         setLoading(true);
         const getTherapy = async () => {
             try {
-                const res = await axiosInstance.get("/therapies/" + therapy_id, {
-                    "page": 1,
-                    "page_size": 20
-                });
+                const res = await axiosInstance.get("/therapies/" + therapy_id);
                 setTherapy(res.data.data.therapy);
                 setLoading(false);
             }
@@ -104,7 +101,8 @@ const MyTherapy = () => {
                         setData={setAppointments}
                         tableHead={tableHead}
                         buttonLabel="Dodaj termin"
-                        buttonUrl="/new-appointment"
+                        buttonUrl={"/new-appointment/" + therapy.therapy_id}
+                        buttonRemove={therapy.date_to !== null && therapy.date_to !== ""}
                     >
                         { appointments !== null && appointments.data.appointments.map(appointment => (
                             <TableRow

@@ -8,11 +8,19 @@ import axiosInstance from "../axiosInstance";
 import { toast } from "react-toastify";
 import './CreateTherapy.css';
 import { LoginContext } from "../contexts/LoginContext";
+import { useNavigate } from "react-router-dom";
 
 const CreateTherapy = () => {
     const context = useContext(LoginContext);
+
     const [types, setTypes] = useState([]);
     const [doctors, setDoctors] = useState([]);
+    const [submitMessage, setSubmitMessage] = useState("Popuni obrazac");
+    const [disableSubmit, setDisableSubmit] = useState(true);
+    const [autocomplete, setAutocomplete] = useState({
+        types: null,
+        doctors: null
+    });
     const [form, setForm] = useState({
         "therapy_type_id": null,
         "doctor_id": null,
@@ -21,17 +29,13 @@ const CreateTherapy = () => {
         "date_from": null,
         "req_treatment": ""
     });
-    const [submitMessage, setSubmitMessage] = useState("Popuni obrazac");
-    const [disableSubmit, setDisableSubmit] = useState(true);
-    const [autocomplete, setAutocomplete] = useState({
-        types: null,
-        doctors: null
-    });
 
     const fetched = useRef({
         doctors: false,
         types: false
     });
+
+    const nav = useNavigate();
 
     useEffect(() => {
         const getTherapyTypes = async () => {
@@ -102,11 +106,34 @@ const CreateTherapy = () => {
         }));
     }
 
+    const createTherapy = async (data) => {
+        setDisableSubmit(true);
+        try {
+            const res = await axiosInstance.post("/therapies", {...data});
+            if(res.status === 201) {
+                toast.success("Dodana terapija!", {
+                    position: toast.POSITION.BOTTOM_RIGHT,
+                });
+                nav("/my-therapies");
+            }
+        }
+        catch (err) {
+            toast.error("Dogodila se greška!", {
+                position: toast.POSITION.BOTTOM_RIGHT,
+            });
+        }
+        setDisableSubmit(false);
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log(form);
-        //let data = { ...form };
 
+        let data = { ...form };
+        if(data.req_treatment === "") delete data.req_treatment;
+        if(data.therapy_type_id === null) delete data.therapy_type_id;
+
+        createTherapy(data);
     }
 
     return (
@@ -175,6 +202,7 @@ const CreateTherapy = () => {
                                     format="dd/MM/yyyy"
                                     label="Datum terapije"
                                     onChange={onChangeDate}
+                                    disablePast
                                 />
                             </DemoContainer>
                         </LocalizationProvider>
