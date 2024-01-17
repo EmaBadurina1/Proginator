@@ -248,7 +248,7 @@ def create_appointment():
 # update appointment with id=appointment_id
 @appointments_bp.route('/appointments/<int:appointment_id>', methods=['PATCH'])
 @auth_validation
-@require_any_role('admin', 'patient')
+@require_any_role('admin', 'patient', 'doctor')
 def update_appointment(appointment_id):
     required_fields = ['date_from']
     missing_fields = validate_required_fields(request.json, required_fields)
