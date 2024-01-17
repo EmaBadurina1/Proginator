@@ -3,10 +3,13 @@ from controllers.crud_template import *
 from models import *
 from auth import auth_validation, require_any_role
 from sqlalchemy.orm import joinedload
+from sqlalchemy import text
 import psycopg2
 from flask import request, jsonify, session
 from db import db
 from datetime import datetime, timedelta
+from mail import mail
+from flask_mail import Message
 
 from utils.appointments_util import appointment_overlapping
 
@@ -192,7 +195,55 @@ def create_appointment():
             "status": 400
         }), 400
     
-    return create(required_fields=required_fields, Model=Appointment)
+    missing_fields = validate_required_fields(request.json, required_fields)
+
+    if missing_fields:
+        error_message = f"Missing fields: {', '.join(missing_fields)}"
+        return jsonify({
+            "error": error_message,
+            "status": 400
+        }), 400
+    
+    appointment = Appointment(**request.json)
+
+    try:
+        db.session.add(appointment)
+        db.session.commit()
+    except (ValueError, IntegrityError, DataError) as e:
+        db.session.rollback()
+        print(e)
+        return jsonify({
+            "error": "Podaci su neispravni",
+            "status": 400
+        }), 400
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            "error": "Došlo je do pogreške prilikom spremanja podataka",
+            "status": 500
+        }), 500
+
+    if appointment:
+        if appointment.therapy:
+            if appointment.therapy.patient:
+                if appointment.therapy.patient.email:
+                    email = appointment.therapy.patient.email
+
+    if email:
+        msg = Message(
+            'Rezerviran termin - RehApp',
+            sender='proginator@fastmail.com',
+            recipients=[email]
+        )
+        msg.body = "Vaš termin je dana: " + appointment.date_from + "\nSoba: " + appointment.room_num
+        mail.send(msg)
+
+    return jsonify({
+        "data": {
+            "appointment": appointment.to_dict()
+        },
+        "status": 201
+    }), 201
 
 # update appointment with id=appointment_id
 @appointments_bp.route('/appointments/<int:appointment_id>', methods=['PATCH'])
@@ -290,7 +341,51 @@ def update_appointment(appointment_id):
             "status": 400
         }), 400
 
-    return update(id=appointment_id, Model=Appointment)
+    appointment = Appointment.query.get(appointment_id)
+    if appointment:
+        try:
+            appointment.update(**request.json)
+            db.session.commit()
+        except (ValueError, IntegrityError, DataError) as e:
+            db.session.rollback()
+            return jsonify({
+                "error": f"Podaci su neispravni: {e}",
+                "status": 400
+            }), 400
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({
+                "error": "Došlo je do pogreške prilikom spremanja podataka",
+                "status": 500
+            }), 500
+        
+        if request.json.get("date_from") and request.json.get("room_num"):
+            if appointment:
+                if appointment.therapy:
+                    if appointment.therapy.patient:
+                        if appointment.therapy.patient.email:
+                            email = appointment.therapy.patient.email
+
+            if email:
+                msg = Message(
+                    'Rezerviran termin - RehApp',
+                    sender='proginator@fastmail.com',
+                    recipients=[email]
+                )
+                msg.body = "Vaš termin je dana: " + appointment.date_from + "\nSoba: " + appointment.room_num
+                mail.send(msg)
+
+        return jsonify({
+            "data": {
+                "appointment": appointment.to_dict()
+            },
+            "status": 200
+        }), 200
+    else:
+        return jsonify({
+            "error": f"Nepostojeći ID: {appointment_id}",
+            "status": 404
+        }), 404
     
 # delete appointment with id=appointment_id
 @appointments_bp.route('/appointments/<int:appointment_id>', methods=['DELETE'])
@@ -697,3 +792,37 @@ def update_status(status_id):
 @require_any_role('admin')
 def delete_status(status_id):
     return delete(id=status_id, Model=Status)
+
+@appointments_bp.route('/occupied-appointments/room/<string:room_num>', methods=['GET'])
+@auth_validation
+@require_any_role('admin', 'patient', 'doctor')
+def get_occupied_hours(room_num):
+    try:
+        sql = text('''
+            SELECT appointment.date_from FROM appointment
+            LEFT JOIN room ON room.room_num = appointment.room_num
+            WHERE room.room_num = :room_num
+            AND room.in_use = TRUE
+            AND appointment.date_from >= current_timestamp
+            GROUP BY appointment.date_from, room.capacity
+            HAVING COUNT(appointment.date_from) >= room.capacity;
+        ''')
+
+        result = db.session.execute(sql, {'room_num': room_num})
+
+        # Fetch the date_times from the result and create a list
+        date_times = [row[0].strftime('%Y-%m-%d %H:%M') for row in result.fetchall()]
+
+        return jsonify({
+            "data": {
+                "times": date_times,
+                "room_num": room_num
+            },
+            "status": 200
+        }), 200
+
+    except Exception as e:
+        return jsonify({
+            "error": "There was a problem with your request",
+            "status": 400
+        }), 400
