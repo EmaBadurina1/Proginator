@@ -21,7 +21,8 @@ const NewAppointment = () => {
     const [form, setForm] = useState({
         "therapy_id": therapy_id,
         "date_from": null,
-        "room_num": null
+        "room_num": null,
+        "status_id": 2
     });
 
     const nav = useNavigate();
@@ -62,7 +63,7 @@ const NewAppointment = () => {
             "date_from": value
         }));
 
-        if(value && form.room_num && form.therapy_id) {
+        if(value && form.room_num && form.therapy_id && form.room_num !== "" && form.status_id !== null) {
             setDisableSubmit(false);
         } else {
             setDisableSubmit(true);
@@ -116,7 +117,7 @@ const NewAppointment = () => {
             "room_num": newValue === null ? null : newValue.id
         }));
 
-        if(validateDateTime(form.date_from) && form.room_num && form.therapy_id && form.room_num !== "") {
+        if(validateDateTime(form.date_from) && form.room_num && form.therapy_id && form.room_num !== "" && form.status_id !== null) {
             setDisableSubmit(false);
         } else {
             setDisableSubmit(true);
