@@ -159,8 +159,6 @@ const DeviceEdit = () => {
     if (resp.success) {
       setDeviceData(resp.data);
       nav("/devices");
-    } else {
-      window.location.reload();
     }
   };
 
