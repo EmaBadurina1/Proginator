@@ -7,6 +7,9 @@ import psycopg2
 from flask import request, jsonify, session
 from db import db
 from datetime import datetime, timedelta
+from mail import mail
+from flask_mail import Message
+import os
 
 from utils.appointments_util import appointment_overlapping
 
@@ -193,6 +196,32 @@ def create_appointment():
         }), 400
     
     return create(required_fields=required_fields, Model=Appointment)
+# OVO JE PROMJENA
+# cancel appointment
+#@appointments_bp.route('/attendance/<int:appointment_id>', methods=['PATCH'])
+#@auth_validation
+#@require_any_role('admin', 'doctor')
+
+# OVO JE PROMJENA
+# update attendance of appointment
+@appointments_bp.route('/attendance/<int:appointment_id>', methods=['PATCH'])
+@auth_validation
+@require_any_role('admin', 'doctor')
+def attendance_appointment(appointment_id):
+        required_fields = ['status_id','comment']
+        missing_fields = validate_required_fields(request.json, required_fields)
+
+        # na frontu se vec radi validacija ali kao...
+        if missing_fields:
+                error_message = f"Nedostajuća polja: {', '.join(missing_fields)}"
+                return jsonify({
+                "error": error_message,
+                "status": 400
+                }), 400
+        
+        appointment = Appointment.query.filter_by(appointment_id=appointment_id).first()
+        
+        return update(id=appointment_id, Model=Appointment)
 
 # update appointment with id=appointment_id
 @appointments_bp.route('/appointments/<int:appointment_id>', methods=['PATCH'])

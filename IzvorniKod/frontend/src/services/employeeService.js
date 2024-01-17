@@ -66,6 +66,19 @@ class EmployeeService {
     }
   }
 
+  // OVO JE PROMJENA
+  async attendanceAppointment(appointmentId, updatedData) {
+        try {
+          const res8 = await axiosInstance.patch(`/attendance/${appointmentId}`, updatedData);
+          return { 
+            success: true, 
+            message: "Success!",
+            data: res8.data.data.appointment,
+          };
+        } catch (error) {
+          return { success: false, message: "Error" };
+        }
+      }
   async updateAppointment(appointmentId, updatedData) {
     try {
       const res6 = await axiosInstance.patch(`/appointments/${appointmentId}`, updatedData);
