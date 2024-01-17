@@ -419,7 +419,7 @@ def get_doctors():
         }), 200
     except Exception as e:
         return jsonify({
-            "error": "Došlo je do pogreške prilikom dohvaćanja podataka",
+            "error": "Došlo je do pogreške prilikom dohvaćanja podataka" + str(e),
             "status": 500
         }), 500
 

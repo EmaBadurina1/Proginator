@@ -55,7 +55,7 @@ const ChangeAppointment = () => {
 
   //stilovi
   const iconButtonStyle = {
-    backgroundColor: "black",
+    backgroundColor: "#3498db",
     color: "white",
     float: "left",
   };
@@ -223,7 +223,7 @@ const ChangeAppointment = () => {
           </div>
           <div className="mini-container9_1">
             <div className="title-div9_1">
-              <h2>Promjena termina</h2>
+              <h2>Premještaj termina</h2>
             </div>
             <div className="border-container9_1">
               <div className="big-div9_1">

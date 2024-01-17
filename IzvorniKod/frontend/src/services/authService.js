@@ -25,7 +25,13 @@ class AuthService {
           position: toast.POSITION.BOTTOM_RIGHT,
         });
         return { success: false, message: "Unauthorized" };
-      } else {
+      } else if(error.response && error.response.status === 400){
+        toast.error("Dogodila se greška! " + (error.response.data.error !== undefined ? error.response.data.error : ""), {
+          position: toast.POSITION.BOTTOM_RIGHT,
+        });
+        return { success: false, message: "Error" };
+      }
+      else{
         toast.error("Dogodila se greška!", {
           position: toast.POSITION.BOTTOM_RIGHT,
         });

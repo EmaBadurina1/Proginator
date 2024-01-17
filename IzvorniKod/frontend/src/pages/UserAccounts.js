@@ -65,7 +65,6 @@ const UserAccounts = () => {
               >
                 <TableCell>{employee.name}</TableCell>
                 <TableCell>{employee.surname}</TableCell>
-                <TableCell className="hide-sm">{employee.OIB}</TableCell>
                 <TableCell className="hide-sm">{formatDate(employee.date_of_birth)}</TableCell>
                 <TableCell className="hide-sm">{employee.email}</TableCell>
                 <TableCell className="hide-sm">{employee.phone_number}</TableCell>
@@ -96,19 +95,13 @@ const tableHead = [
     classes: "show-sm" 
   },
   {
-    name: "OIB",
-    orderBy: "OIB",
-    align: "left",
-    classes: "hide-sm" 
-  },
-  {
     name: "Datum rođenja",
     orderBy: "date_of_birth",
     align: "left",
     classes: "hide-sm" 
   },
   {
-    name: "E-mail",
+    name: "E-mail adresa",
     orderBy: "email",
     align: "left",
     classes: "hide-sm" 
@@ -120,7 +113,7 @@ const tableHead = [
     classes: "hide-sm" 
   },
   {
-    name: "Administrator?",
+    name: "Admin?",
     orderBy: "is_admin",
     align: "left",
     classes: "hide-sm" 

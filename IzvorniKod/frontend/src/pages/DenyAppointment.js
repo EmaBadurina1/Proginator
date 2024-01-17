@@ -45,7 +45,7 @@ const DenyAppointment = () => {
     marginLeft: "auto",
   };
   const iconButtonStyle = {
-    backgroundColor: "black",
+    backgroundColor: "#3498db",
     color: "white",
     float: "left",
   };
@@ -175,7 +175,7 @@ const DenyAppointment = () => {
           </div>
           <div className="mini-container7_1">
             <div className="title-div7_1">
-              <h2>Odbijanje zahtjeva za terminom</h2>
+              <h2>Otkazivanje termina</h2>
             </div>
             <div className="border-container7_1">
               <div className="big-div7_1">

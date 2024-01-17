@@ -17,6 +17,7 @@ import { useEffect, useState, useRef } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
+import DataBox from "../components/DataBox";
 
 const AttendanceRecord = () => {
   //inicijalizacija varijabli
@@ -44,10 +45,6 @@ const AttendanceRecord = () => {
   };
   const komentarStyle = {
     width: "70%",
-  };
-  const bolded = {
-    fontWeight: "bold",
-    display: "inline",
   };
 
   //funkcija koja provjerava jesu komentar ili status prazni
@@ -189,23 +186,41 @@ const AttendanceRecord = () => {
                   </FormControl>
                 </div>
                 <div className="small-div3_2">
-                  <p>
-                    <span style={bolded}>DATUM I VRIJEME TERMINA:</span>{" "}
-                    {appointment &&
-                      DateTime.fromFormat(
-                        appointment.date_from,
-                        "EEE, dd LLL yyyy HH:mm:ss 'GMT'",
-                        { zone: "utc" }
-                      ).toFormat("dd.MM.yyyy. HH:mm")}
-                  </p>
-                  <p>
-                    <span style={bolded}>Soba:</span>{" "}
+                  <DataBox
+                    label="Datum i vrijeme"
+                    tooltip="Datum i vrijeme termina"
+                    big={false}
+                  >
+                    {appointment && appointment.date_from
+                      ? DateTime.fromFormat(
+                          appointment.date_from,
+                          "EEE, dd LLL yyyy HH:mm:ss 'GMT'",
+                          { zone: "utc" }
+                        ).toFormat("dd.MM.yyyy. HH:mm")
+                      : "Nema datuma"}
+                  </DataBox>
+                  <DataBox
+                    label="Doktor"
+                    tooltip="Doktor vezan uz termin"
+                    big={false}
+                  >
+                    {appointment && appointment.employee
+                      ? appointment.employee.name +
+                        " " +
+                        appointment.employee.surname
+                      : "Nema doktora"}
+                  </DataBox>
+                  <DataBox
+                    label="Soba"
+                    tooltip="Soba u kojoj je termin zakazan"
+                    big={false}
+                  >
                     {appointment &&
                     appointment.room &&
                     appointment.status.status_name !== "Otkazan"
                       ? appointment.room.room_num
-                      : "/"}
-                  </p>
+                      : "Nema sobe"}
+                  </DataBox>
                 </div>
               </div>
               <div className="mid-div3_2">

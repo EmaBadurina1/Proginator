@@ -20,7 +20,7 @@ const AppointmentsPreview = () => {
 
   //stilovi
   const iconButtonStyle = {
-    backgroundColor: "black",
+    backgroundColor: "#3498db",
     color: "white",
   };
 

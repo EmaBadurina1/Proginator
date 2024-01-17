@@ -8,7 +8,7 @@ import {
   Radio,
   CircularProgress,
 } from "@mui/material";
-import TextField from "@mui/material/TextField";
+//import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import TherapyInfo from "../components/TherapyInfo";
 import { useParams } from "react-router-dom";
@@ -17,6 +17,7 @@ import { useEffect, useState, useRef } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
+import DataBox from "../components/DataBox";
 
 //stilovi
 const buttonStyle = {
@@ -25,13 +26,6 @@ const buttonStyle = {
   marginRight: "4em",
   marginBottom: "1em",
   display: "block",
-};
-const komentarStyle = {
-  width: "70%",
-};
-const bolded = {
-  fontWeight: "bold",
-  display: "inline",
 };
 
 const AttendanceDisplay = () => {
@@ -124,23 +118,41 @@ const AttendanceDisplay = () => {
                   </FormControl>
                 </div>
                 <div className="small-div4_2">
-                  <p>
-                    <span style={bolded}>DATUM I VRIJEME TERMINA:</span>{" "}
-                    {appointment &&
-                      DateTime.fromFormat(
-                        appointment.date_from,
-                        "EEE, dd LLL yyyy HH:mm:ss 'GMT'",
-                        { zone: "utc" }
-                      ).toFormat("dd.MM.yyyy. HH:mm")}
-                  </p>
-                  <p>
-                    <span style={bolded}>SOBA:</span>{" "}
+                  <DataBox
+                    label="Datum i vrijeme"
+                    tooltip="Datum i vrijeme termina"
+                    big={false}
+                  >
+                    {appointment && appointment.date_from
+                      ? DateTime.fromFormat(
+                          appointment.date_from,
+                          "EEE, dd LLL yyyy HH:mm:ss 'GMT'",
+                          { zone: "utc" }
+                        ).toFormat("dd.MM.yyyy. HH:mm")
+                      : "Nema datuma"}
+                  </DataBox>
+                  <DataBox
+                    label="Doktor"
+                    tooltip="Doktor vezan uz termin"
+                    big={false}
+                  >
+                    {appointment && appointment.employee
+                      ? appointment.employee.name +
+                        " " +
+                        appointment.employee.surname
+                      : "Nema doktora"}
+                  </DataBox>
+                  <DataBox
+                    label="Soba"
+                    tooltip="Soba u kojoj je termin zakazan"
+                    big={false}
+                  >
                     {appointment &&
                     appointment.room &&
                     appointment.status.status_name !== "Otkazan"
                       ? appointment.room.room_num
-                      : "/"}
-                  </p>
+                      : "Nema sobe"}
+                  </DataBox>
                 </div>
               </div>
               <div className="mid-div4_2">
@@ -150,22 +162,15 @@ const AttendanceDisplay = () => {
               </div>
             </div>
             <div className="big-div4_2">
-              Komentari:
-              <br></br>
-              <TextField
-                autoComplete="false"
-                className="komentar-text4_1"
-                label={appointment && appointment.comment}
-                variant="outlined"
-                name="korištena oprema"
-                multiline
-                rows={4}
-                style={komentarStyle}
-                InputProps={{
-                  readOnly: true,
-                }}
-                disabled
-              />
+              <DataBox
+                label="Komentar"
+                tooltip="Komentar stavljen pri evidenciji termina"
+                big={false}
+              >
+                {appointment && appointment.comment
+                  ? appointment.comment
+                  : "Nema komentara"}
+              </DataBox>
             </div>
             {appointment && (
               <Button
