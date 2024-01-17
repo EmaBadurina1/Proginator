@@ -401,6 +401,27 @@ def delete_appointment(appointment_id):
     #     }), 403
     return delete(id=appointment_id, Model=Appointment)
 
+# OVO JE PROMJENA
+# update attendance of appointment
+@appointments_bp.route('/attendance/<int:appointment_id>', methods=['PATCH'])
+@auth_validation
+@require_any_role('admin', 'doctor')
+def attendance_appointment(appointment_id):
+        required_fields = ['status_id','comment']
+        missing_fields = validate_required_fields(request.json, required_fields)
+
+        # na frontu se vec radi validacija ali kao...
+        if missing_fields:
+                error_message = f"Nedostajuća polja: {', '.join(missing_fields)}"
+                return jsonify({
+                "error": error_message,
+                "status": 400
+                }), 400
+        
+        appointment = Appointment.query.filter_by(appointment_id=appointment_id).first()
+        
+        return update(id=appointment_id, Model=Appointment)
+
 # get list of appointments by therapy_id
 @appointments_bp.route('/appointments/by-therapy/<int:therapy_id>', methods=['GET'])
 @auth_validation
