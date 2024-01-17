@@ -17,11 +17,11 @@ import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
 import { useCallback } from "react";
 
+//funkcija koja dobavlja slobodne termine u odabranom datumu
 const fetchAvailableHours = async (date, appointment, setFreeAppointments) => {
   if (!date || !appointment || !appointment.therapy) {
     return;
   }
-
   try {
     const resp = await EmployeeService.getAvailableHours(
       appointment.therapy.therapy_id,
@@ -52,6 +52,7 @@ const ChangeAppointment = () => {
   const nav = useNavigate();
   const toastShownRef = useRef(false);
   const [loading, setLoading] = useState(true);
+  const [timePickerKey, setTimePickerKey] = useState(0);
 
   //stilovi
   const iconButtonStyle = {
@@ -151,7 +152,7 @@ const ChangeAppointment = () => {
         const resp = await EmployeeService.getAppointmentById(appointmentId);
         if (resp.success) {
           setAppointment(resp.data);
-          setLoading(false); 
+          setLoading(false);
           if (
             (resp.data.status.status_id === 3 ||
               resp.data.status.status_id === 5) &&
@@ -187,22 +188,48 @@ const ChangeAppointment = () => {
       nav(-1);
     }
   };
-  
 
   //prilikom odabiranja datuma termina, ažuriraj varijablu date
   function onChangeDate(date) {
     let value = date.toFormat("yyyy-MM-dd");
     setDate(value);
-    //fetchAvailableHours();
-    //console.log(freeAppointments);
   }
 
   const fetchAvailableHoursCallback = useCallback(() => {
     fetchAvailableHours(date, appointment, setFreeAppointments);
   }, [date, appointment, setFreeAppointments]);
 
+  //onemogućenje biranja vikenda za datum termina
+  const shouldDisableDate = (day) => {
+    if (
+      DateTime.fromISO(day).weekday === 6 ||
+      DateTime.fromISO(day).weekday === 7
+    )
+      return true;
+    return false;
+  };
+
+  //funkcionalnost da se može odabrati samo slobodno vrijeme
+  const shouldDisableTime = (newTime) => {
+    if (!freeAppointments) return false;
+    const currentDateTime = DateTime.now();
+    const hoursNow = currentDateTime.hour;
+    const selectedDateTime = DateTime.fromFormat(date, "yyyy-MM-dd");
+    if (selectedDateTime.hasSame(currentDateTime, "day")) {
+      if (newTime.hour <= hoursNow) {
+        return true;
+      }
+    }
+    if (newTime.hour < 8 || newTime.hour >= 20) return true;
+    return !freeAppointments.includes(newTime.hour + ":00");
+  };
+
+  //prilikom promjene datuma zovi funkciju koja dobavlja slobodne termine u odabranom datumu
+  //ako se promijeni datum, resetiraj TimePicker
   useEffect(() => {
     if (date !== "") {
+      setTime("");
+      setTimePickerKey((prevKey) => prevKey + 1);
       fetchAvailableHoursCallback();
     }
   }, [date, fetchAvailableHoursCallback]);
@@ -250,6 +277,7 @@ const ChangeAppointment = () => {
                       onChange={(date) => onChangeDate(date)}
                       className="date-picker9_1"
                       disablePast
+                      shouldDisableDate={shouldDisableDate}
                     />
                   </DemoContainer>
                 </LocalizationProvider>
@@ -258,16 +286,16 @@ const ChangeAppointment = () => {
                 <LocalizationProvider dateAdapter={AdapterLuxon}>
                   <DemoContainer components={["TimePicker"]}>
                     <TimePicker
+                      key={timePickerKey}
                       label="Vrijeme terapije"
                       className="time-picker9_1"
                       onChange={(newTime) => setTime(newTime)}
                       ampm={false}
-                      minTime={DateTime.local().set({ hour: 8, minute: 0 })}
-                      maxTime={DateTime.local().set({ hour: 19, minute: 0 })}
                       hours={freeAppointments}
                       mask="__:00"
                       views={["hours"]}
                       view="hours"
+                      shouldDisableTime={shouldDisableTime}
                     />
                   </DemoContainer>
                 </LocalizationProvider>
