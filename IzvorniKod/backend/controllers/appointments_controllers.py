@@ -235,7 +235,7 @@ def create_appointment():
             sender='proginator@fastmail.com',
             recipients=[email]
         )
-        msg.body = "Vaš termin je dana: " + appointment.date_from + "\nSoba: " + appointment.room_num
+        msg.body = "Vaš termin je dana: " + appointment.date_from.strftime("%Y-%m-%d %H:%M") + "\nSoba: " + appointment.room_num
         mail.send(msg)
 
     return jsonify({
@@ -372,7 +372,7 @@ def update_appointment(appointment_id):
                     sender='proginator@fastmail.com',
                     recipients=[email]
                 )
-                msg.body = "Vaš termin je dana: " + appointment.date_from + "\nSoba: " + appointment.room_num
+                msg.body = "Vaš termin je dana: " + appointment.date_from.strftime("%Y-%m-%d %H:%M") + "\nSoba: " + appointment.room_num
                 mail.send(msg)
 
         return jsonify({
