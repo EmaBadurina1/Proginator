@@ -157,8 +157,6 @@ const RoomEdit = () => {
     if (resp.success) {
       setRoomData(resp.data);
       nav("/rooms");
-    } else {
-      window.location.reload();
     }
   };
 
