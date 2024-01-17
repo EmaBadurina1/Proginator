@@ -165,3 +165,21 @@ def delete_room(room_num):
             "error": f"Soba ne postoji",
             "status": 404
         }), 404
+    
+@rooms_bp.route('/rooms/by-therapy-type/<int:therapy_type_id>', methods=['GET'])
+@auth_validation
+@require_any_role('admin', 'doctor', 'patient')
+def get_rooms_by_therapy_type(therapy_type_id):
+    try:
+        rooms = Room.query.filter(Room.therapy_types.any(therapy_type_id=therapy_type_id)).all()
+        return jsonify({
+            "data": {
+                "rooms": [room.to_dict_simple() for room in rooms]
+            },
+            "status": 200
+        }), 200
+    except Exception as e:
+        return jsonify({
+            "error": "There was a problem fetching your data",
+            "status": 200
+        }), 200

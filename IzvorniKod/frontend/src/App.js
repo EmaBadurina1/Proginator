@@ -464,7 +464,7 @@ function App() {
           }
         />
         <Route
-          path="/new-appointment"
+          path="/new-appointment/:therapy_id"
           element={
             <ProtectedRoute>
               <PatientRoute>

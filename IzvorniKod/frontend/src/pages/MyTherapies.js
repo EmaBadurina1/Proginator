@@ -4,7 +4,7 @@ import { TableRow, TableCell } from "@mui/material";
 import { parseDate } from "../services/utils";
 import { LoginContext } from "../contexts/LoginContext";
 import DataDisplay from "../components/DataDisplay";
-import "./PatientPreview.css";
+import "./MyTherapies.css";
 
 
 const MyTherapies = () => {
@@ -20,11 +20,9 @@ const MyTherapies = () => {
     }, [therapies, context]);
 
     return (
-        <div className="main-container">
+        <div className="my-therapies">
             <div className="header">
-                <div className="title-div">
-                    <h2>Moje terapije</h2>
-                </div>
+                <h2>Moje terapije</h2>
             </div>
             <DataDisplay
                 url={"/therapies/by-patient/" + user_id.current.value}
