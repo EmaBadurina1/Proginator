@@ -217,7 +217,7 @@
 						\item[] \begin{packed_enum}
 							
 							\item Sustav upozorava korisnika o neispravnosti lozinke
-							\item Korisnik ponovno unosi lozinku ili odustaje od promjene
+							\item Korisnik ponovno mijenja lozinku ili odustaje od promjene
 							
 						\end{packed_enum}
 						\item[3.a] Nova lozinka je jednaka staroj
@@ -234,7 +234,7 @@
 				\noindent \underbar{\textbf{UC6 - Kreiranje terapije(\ref{fig:sekvencijski_dijagram_1})}}
 				\begin{packed_item}
 					
-					\item \textbf{Glavni sudionik: }Pacjient
+					\item \textbf{Glavni sudionik: }Pacijent
 					\item  \textbf{Cilj: }Kreiranje procesa terapije
 					\item  \textbf{Sudionici: }Baza podataka
 					\item  \textbf{Preduvjet: }Pacijent je prijavljen u sustav
@@ -242,10 +242,10 @@
 					
 					\item[] \begin{packed_enum}
 						
-						\item Pacijent odabire opciju "Kreiraj terapiju"
-						\item Otvara se stranica za prijavljivanje terapije
+						\item Pacijent odabire opciju "Nova terapija"
+						\item Otvara se stranica za kreiranje terapije
 						\item Pacijent unosi ime i prezime liječnika, opis oboljenja i zahtijevani postupak liječenja, te odabire vrstu terapije
-						\item Pacijent odabire opciju "Pošalji"
+						\item Pacijent odabire opciju "Potvrdi"
 						\item Provjera ispravnosti podataka u imeniku liječnika
 						\item Prikaz stranice za odabir termina
 					\end{packed_enum}
@@ -276,9 +276,11 @@
 					\item[] \begin{packed_enum}
 						
 						\item Pacijent odabire terapiju za koju se prijavljuje na termin
-						\item Pacijent unosi datum i na temelju njega bira ponuđene slobodne termine
-						\item Pacijent opcionalno dodaje napomenu za liječnika
-						\item Pacijent šalje zahtjev klikom na "Pošalji"
+						\item Otvara se stranica s popisom termina te terapije i gumbom za novu terapiju
+						\item Pacijent odabire opciju "Novi termin"
+						\item Otvara se stranica za prijavu termina
+						\item Pacijent unosi datum i vrijeme
+						\item Pacijent šalje zahtjev klikom na "Potvrdi"
 						\item Spremanje podataka u bazu i slanje maila s podatcima o terminu
 						
 					\end{packed_enum}
@@ -286,10 +288,18 @@
 					\item  \textbf{Opis mogućih odstupanja:}
 					
 					\item[] \begin{packed_item}
-						\item[2.a] Pacijentu ne odgovara niti jedan termin
+						\item[5.a] Pacijentu ne odgovara niti jedan termin
 						\item[] \begin{packed_enum}
 							
 							\item Pacijent odustaje od prijave na termin
+							
+						\end{packed_enum}
+						
+						\item[7.a] Termin koji je pacijent odabrao se u međuvremenu popunio
+						\item[] \begin{packed_enum}
+							
+							\item Sustav ne sprema podatke u bazu i obaviještava korisnika o zauzetom terminu
+							\item Pacijent mijenja podatke ili odustaje od prijave termina
 							
 						\end{packed_enum}
 						
@@ -302,7 +312,7 @@
 				\begin{packed_item}
 					
 					\item \textbf{Glavni sudionik: }Pacijent
-					\item  \textbf{Cilj: }Pacijent vidi svoje nalaze
+					\item  \textbf{Cilj: }Pacijent vidi svoje termine
 					\item  \textbf{Sudionici: }Baza podataka
 					\item  \textbf{Preduvjet: }Prijavljen u sustav, postoje prošli termini
 					\item  \textbf{Opis osnovnog tijeka: }
@@ -374,12 +384,14 @@
 					\item  \textbf{Opis osnovnog tijeka: }
 					
 					\item[] \begin{packed_enum}
-						\item Djelatnik odabire opciju evidentiraj pored termina odabranog pacijenta
+						\item Djelatnik odabire termin koji će evidentirati
+						\item Otvara se stranica termina
+						\item Djelatnik odabire opciju "Evidentiraj"
 						\item Otvara se obrazac za evidenciju dolaska na termin
-						\item Djelatnik evidentira dolazak odabirom jedne od tri ponuđene opcije(nije došao, došao je)
-						\item Djelatnik unosi komentar o odrađenoj terapiji
+						\item Djelatnik evidentira dolazak odabirom jedne od tri ponuđene opcije(nije došao, došao je, otkazano)
+						\item Djelatnik unosi komentar o odrađenom terminu i napredku
 						\item Djelatnik predaje evidenciju
-						\item Povratak na popis termina odabranog pacijenta
+						\item Povratak na stranicu termina
 					\end{packed_enum}
 					
 					\item  \textbf{Opis mogućih odstupanja:}
@@ -400,7 +412,7 @@
 				\begin{packed_item}
 					
 					\item \textbf{Glavni sudionik: }Administrator
-					\item  \textbf{Cilj: }Registrirati novog liječnika
+					\item  \textbf{Cilj: }Registrirati novog djelatnika
 					\item  \textbf{Sudionici: }Baza podataka
 					\item  \textbf{Preduvjet: }
 					\item[] \begin{packed_enum}
