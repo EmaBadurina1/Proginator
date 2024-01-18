@@ -53,6 +53,8 @@ class Appointment(db.Model):
          self.employee_id = kwargs.get('employee_id', None)
       if 'date_to' in kwargs:
          self.date_to = datetime.strptime(kwargs.get('date_to', None), '%Y-%m-%d %H:%M')
+      if 'status_id' in kwargs:
+         self.status_id = kwargs.get('status_id', 2)
 
    def __repr__(self):
       return f'<Appointment ID {self.appointment_id}>'
