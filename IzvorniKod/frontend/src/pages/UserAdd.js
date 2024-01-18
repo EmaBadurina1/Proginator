@@ -247,7 +247,7 @@ const UserAdd = () => {
          
          if(response.ok || response.status === 201) {
             toast.success(
-               response.data.message,
+               "Djelatnik uspješno dodan!",
                { position: toast.POSITION.BOTTOM_RIGHT }
             );
             navigate("/user-accounts");
