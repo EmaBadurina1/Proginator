@@ -16,6 +16,7 @@ const MyTherapy = () => {
     const [loading, setLoading] = useState(true);
     const [open, setOpen] = useState(false);
     const [content, setContent] = useState(null);
+    const [re, setRe] = useState(true);
 
     const { therapy_id } = useParams();
 
@@ -35,7 +36,7 @@ const MyTherapy = () => {
         }
         getTherapy();
 
-    }, [therapy_id]);
+    }, [therapy_id, re]);
 
     const openDialog = (content) => {
         setContent(content);
@@ -128,6 +129,8 @@ const MyTherapy = () => {
                         open={open}
                         setOpen={setOpen}
                         appointment={content}
+                        setRe={setRe}
+                        re={re}
                     />
                 )}
                 </>

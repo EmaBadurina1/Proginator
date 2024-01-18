@@ -129,8 +129,6 @@ const DeviceAdd = () => {
 
     if (resp.success) {
       nav("/devices");
-    } else {
-      window.location.reload();
     }
   };
 

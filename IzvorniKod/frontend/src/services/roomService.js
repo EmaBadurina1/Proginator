@@ -39,6 +39,7 @@ class RoomService {
          toast.error("Dogodila se greška! " + (error.response.data.error !== undefined ? error.response.data.error : ""), {
             position: toast.POSITION.BOTTOM_RIGHT,
           });
+          return {success:false}
       }
    }
 
@@ -53,6 +54,7 @@ class RoomService {
          toast.error("Dogodila se greška! " + (error.response.data.error !== undefined ? error.response.data.error : ""), {
             position: toast.POSITION.BOTTOM_RIGHT,
           });
+          return {success:false}
       }
    }
 

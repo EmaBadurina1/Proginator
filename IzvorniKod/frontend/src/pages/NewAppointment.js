@@ -21,7 +21,8 @@ const NewAppointment = () => {
     const [form, setForm] = useState({
         "therapy_id": therapy_id,
         "date_from": null,
-        "room_num": null
+        "room_num": null,
+        "status_id": 2
     });
 
     const nav = useNavigate();
@@ -62,7 +63,7 @@ const NewAppointment = () => {
             "date_from": value
         }));
 
-        if(value && form.room_num && form.therapy_id) {
+        if(value && form.room_num && form.therapy_id && form.room_num !== "" && form.status_id !== null) {
             setDisableSubmit(false);
         } else {
             setDisableSubmit(true);
@@ -71,6 +72,7 @@ const NewAppointment = () => {
 
     const shouldDisableDate = (day) => {
         if(day.toFormat("yyyy-MM-dd") === DateTime.now().toFormat("yyyy-MM-dd")) return true;
+        if(day.weekday === 6 || day.weekday === 7) return true;
         return false;
     }
 
@@ -116,7 +118,7 @@ const NewAppointment = () => {
             "room_num": newValue === null ? null : newValue.id
         }));
 
-        if(validateDateTime(form.date_from) && form.room_num && form.therapy_id && form.room_num !== "") {
+        if(validateDateTime(form.date_from) && form.room_num && form.therapy_id && form.room_num !== "" && form.status_id !== null) {
             setDisableSubmit(false);
         } else {
             setDisableSubmit(true);
@@ -135,6 +137,7 @@ const NewAppointment = () => {
         if(dateTime.second !== 0) return null;
         if(dateTime.hour < 8) return null;
         if(dateTime.hour >= 20) return null;
+        if(dateTime.weekday === 6 || dateTime.weekday === 7) return null;
 
         if(times) {
             const disabledTimes = times.map((dTime) => DateTime.fromFormat(dTime, "yyyy-MM-dd HH:mm"));
@@ -232,7 +235,7 @@ const NewAppointment = () => {
                             className="reg-btn"
                             disabled={disableSubmit}
                         >
-                            Pošalji
+                            Dodaj
                         </Button>
                     </div>
                 </div>

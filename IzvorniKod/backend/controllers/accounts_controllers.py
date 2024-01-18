@@ -229,7 +229,35 @@ def update_patient(user_id):
             "status": 400
         }), 400
     
-    update(patient, update_fields)
+    #update(id=user_id, Model=Patient)
+    patient = Patient.query.get(user_id)
+    if patient:
+        try:
+            patient.update(**request.json)
+            db.session.commit()
+        except (ValueError, IntegrityError, DataError) as e:
+            db.session.rollback()
+            return jsonify({
+                "error": f"Podaci su neispravni: {e}",
+                "status": 400
+            }), 400
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({
+                "error": "Došlo je do pogreške prilikom spremanja podataka",
+                "status": 500
+            }), 500
+        return jsonify({
+            "data": {
+                "patient": patient.to_dict()
+            },
+            "status": 200
+        }), 200
+    else:
+        return jsonify({
+            "error": f"Nepostojeći ID: {user_id}",
+            "status": 404
+        }), 404
 
 # delete patient with id=user_id
 @accounts_bp.route('/patients/<int:user_id>', methods=['DELETE'])

@@ -140,8 +140,6 @@ const RoomAdd = () => {
 
     if (resp.success) {
       nav("/rooms");
-    } else {
-      window.location.reload();
     }
   };
 

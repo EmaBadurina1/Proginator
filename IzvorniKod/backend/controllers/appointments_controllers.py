@@ -79,7 +79,6 @@ def get_free_appointments_by_day(therapy_id, day):
 
     # find rooms for specified therapy type
     rooms = TherapyType.query.filter_by(therapy_type_id=therapy.therapy_type_id).first().rooms
-    print(rooms[0].to_dict_simple())
 
     # remove hours for which there are no rooms available
     for hour in hours:
@@ -198,7 +197,7 @@ def create_appointment():
 # update appointment with id=appointment_id
 @appointments_bp.route('/appointments/<int:appointment_id>', methods=['PATCH'])
 @auth_validation
-@require_any_role('admin', 'patient')
+@require_any_role('admin', 'patient', 'doctor')
 def update_appointment(appointment_id):
     appointment = Appointment.query.filter_by(appointment_id=appointment_id).first()
 

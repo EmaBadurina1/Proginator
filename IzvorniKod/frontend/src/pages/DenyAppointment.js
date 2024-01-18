@@ -91,7 +91,7 @@ const DenyAppointment = () => {
 
     //ažuriranje termina
     try {
-      const resp = await EmployeeService.updateAppointment(
+      const resp = await EmployeeService.attendanceAppointment(
         appointmentId,
         updatedData
       );
