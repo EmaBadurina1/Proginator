@@ -32,16 +32,16 @@ const AttendanceRecord = () => {
   //stilovi
   const buttonStyle = {
     backgroundColor: "purple",
-    marginLeft: "3em",
-    marginRight: "2em",
-    marginBottom: "1em",
   };
   const buttonStyle2 = {
     backgroundColor: "gray",
     width: "8em",
     marginBottom: "1em",
-    marginLeft: "3em",
-    marginRight: "2em",
+  };
+  const buttonStyle3 = {
+    backgroundColor: "green",
+    marginLeft: "2em",
+    marginBottom: "1em",
   };
   const komentarStyle = {
     width: "70%",
@@ -95,7 +95,44 @@ const AttendanceRecord = () => {
         return false;
       }
     } catch (err) {
-      toast.error(`API Error:${err.response.data}`, {
+      toast.error("Greska!", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      return false;
+    }
+  };
+
+  //funkcija za završetak terapije
+  const updateTherapy = async () => {
+
+    if (appointment && !(appointment.status.status_id === 2)) {
+      toast.error("Termin je već evidentiran ili je na čekanju!", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      return false;
+    }
+
+    //ažurirani podatci
+    const updatedData = {
+      date_to: DateTime.now().toFormat("yyyy-MM-dd")
+    };
+
+    //ažuriranje terapije
+    try {
+      const resp = await EmployeeService.updateTherapy(
+        appointment.therapy.therapy_id,
+        updatedData
+      );
+      if (resp.success) {
+        return true;
+      } else {
+        toast.error("Greska!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        return false;
+      }
+    } catch (err) {
+      toast.error("Greska!", {
         position: toast.POSITION.TOP_RIGHT,
       });
       return false;
@@ -123,7 +160,7 @@ const AttendanceRecord = () => {
           });
         }
       } catch (err) {
-        toast.error(`API Error:${err.response.data}`, {
+        toast.error("Greska!", {
           position: toast.POSITION.TOP_RIGHT,
         });
       }
@@ -134,9 +171,17 @@ const AttendanceRecord = () => {
   //funkcija koja provjerava je li evidencija uspjela
   const provjeraUspjehaUpdatea = async () => {
     const updBool = await updateAppointment();
-    console.log("updBool:", updBool);
     if (updBool) {
       nav(-1);
+    }
+  };
+
+  const provjeraUspjehaUpdateaTerapije = async () => {
+    const updBool2 = await updateTherapy();
+    if (updBool2) {
+      toast.success("Terapija završena!", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
     }
   };
 
@@ -244,33 +289,50 @@ const AttendanceRecord = () => {
               />
             </div>
 
-            <div className="button-div3_1">
-              {appointment && (
-                <Button
-                  variant="contained"
-                  size="medium"
-                  className="gumb3_1"
-                  style={buttonStyle2}
-                  onClick={() => {
-                    nav(-1);
-                  }}
-                >
-                  Odustani
-                </Button>
-              )}
-              {appointment && (
-                <Button
-                  variant="contained"
-                  size="medium"
-                  className="gumb3_2"
-                  style={buttonStyle}
-                  onClick={() => {
-                    provjeraUspjehaUpdatea();
-                  }}
-                >
-                  Predaj evidenciju
-                </Button>
-              )}
+            <div className="button-div-container3_1">
+              <div className="button-div3_1">
+                {appointment && (
+                  <Button
+                    variant="contained"
+                    size="medium"
+                    className="gumb3_3"
+                    style={buttonStyle3}
+                    onClick={() => {
+                      provjeraUspjehaUpdateaTerapije();
+                    }}
+                  >
+                    Završi terapiju
+                  </Button>
+                )}
+              </div>
+              <div className="button-div3_2">
+                {appointment && (
+                  <Button
+                    variant="contained"
+                    size="medium"
+                    className="gumb3_1"
+                    style={buttonStyle2}
+                    onClick={() => {
+                      nav(-1);
+                    }}
+                  >
+                    Odustani
+                  </Button>
+                )}
+                {appointment && (
+                  <Button
+                    variant="contained"
+                    size="medium"
+                    className="gumb3_2"
+                    style={buttonStyle}
+                    onClick={() => {
+                      provjeraUspjehaUpdatea();
+                    }}
+                  >
+                    Predaj evidenciju
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
         </div>

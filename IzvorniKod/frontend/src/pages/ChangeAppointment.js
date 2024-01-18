@@ -29,14 +29,13 @@ const fetchAvailableHours = async (date, appointment, setFreeAppointments) => {
     );
     if (resp.success) {
       setFreeAppointments(resp.data);
-      console.log(resp.data);
     } else {
       toast.error("Greska!", {
         position: toast.POSITION.TOP_RIGHT,
       });
     }
   } catch (err) {
-    toast.error(`API Error:${err.response.data}`, {
+    toast.error("Greska!", {
       position: toast.POSITION.TOP_RIGHT,
     });
   }
@@ -88,9 +87,11 @@ const ChangeAppointment = () => {
     //ako je termin odrađen ili propušten, onemogućavanje promjene datuma termina
     if (
       appointment &&
-      (appointment.status.status_id === 3 || appointment.status.status_id === 5)
+      (appointment.status.status_id === 3 ||
+        appointment.status.status_id === 4 ||
+        appointment.status.status_id === 5)
     ) {
-      toast.error("Ne može se promijeniti propušten ili odrađen termin!", {
+      toast.error("Ne mogu se promijeniti termini koji nisu zakazani ili na čekanju!!", {
         position: toast.POSITION.TOP_RIGHT,
       });
       return false;
@@ -100,6 +101,40 @@ const ChangeAppointment = () => {
     let filled = isFilled();
     if (!filled) {
       toast.error("Treba unijeti datum i vrijeme!", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      return false;
+    }
+
+    //onemogućavanje ažuriranja termina ako je datum subota ili nedjelja
+    const selectedDateTime = DateTime.fromFormat(date, "yyyy-MM-dd");
+    if (selectedDateTime.weekday === 6 || selectedDateTime.weekday === 7) {
+      toast.error("Morate odabrati radni dan!", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      return false;
+    }
+
+    //onemogućavanje ažuriranja termina ako odabrano vrijeme nije validno
+    const currentDateTime = DateTime.now();
+    const hoursNow = currentDateTime.hour;
+    if (time.hour >= 8 && time.hour < 20) {
+      if (selectedDateTime.hasSame(currentDateTime, "day")) {
+        if (time.hour <= hoursNow) {
+          toast.error("Morate odabrati validno vrijeme!", {
+            position: toast.POSITION.TOP_RIGHT,
+          });
+          return false;
+        }
+      }
+      if (!freeAppointments.includes(time.hour + ":00")) {
+        toast.error("Morate odabrati validno vrijeme!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        return false;
+      }
+    } else {
+      toast.error("Morate odabrati validno vrijeme!", {
         position: toast.POSITION.TOP_RIGHT,
       });
       return false;
@@ -137,7 +172,7 @@ const ChangeAppointment = () => {
         return false;
       }
     } catch (err) {
-      toast.error(`API Error:${err.response.data}`, {
+      toast.error("Greska!", {
         position: toast.POSITION.TOP_RIGHT,
       });
       return false;
@@ -155,11 +190,12 @@ const ChangeAppointment = () => {
           setLoading(false);
           if (
             (resp.data.status.status_id === 3 ||
+              resp.data.status.status_id === 4 ||
               resp.data.status.status_id === 5) &&
             !toastShownRef.current
           ) {
             toast.error(
-              "Ne može se promijeniti propušten ili odrađen termin!",
+              "Ne mogu se promijeniti termini koji nisu zakazani ili na čekanju!",
               {
                 position: toast.POSITION.TOP_RIGHT,
               }
@@ -172,7 +208,7 @@ const ChangeAppointment = () => {
           });
         }
       } catch (err) {
-        toast.error(`API Error:${err.response.data}`, {
+        toast.error("Greska!", {
           position: toast.POSITION.TOP_RIGHT,
         });
       }
@@ -183,7 +219,6 @@ const ChangeAppointment = () => {
   //funkcija koja provjerava je li ažuriranje termina uspjelo
   const provjeraUspjehaUpdatea = async () => {
     const updBool = await updateAppointment();
-    console.log("updBool:", updBool);
     if (updBool) {
       nav(-1);
     }

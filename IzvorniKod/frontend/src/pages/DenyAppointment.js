@@ -6,7 +6,6 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { IconButton, CircularProgress } from "@mui/material";
 import AppointmentInfo from "../components/AppointmentInfo";
 import { useParams } from "react-router-dom";
-import { Link } from "react-router-dom";
 import EmployeeService from "../services/employeeService";
 import { useEffect, useState, useRef } from "react";
 import TextField from "@mui/material/TextField";
@@ -105,7 +104,7 @@ const DenyAppointment = () => {
         return false;
       }
     } catch (err) {
-      toast.error(`API Error:${err.response.data}`, {
+      toast.error("Greska!", {
         position: toast.POSITION.TOP_RIGHT,
       });
       return false;
@@ -142,7 +141,7 @@ const DenyAppointment = () => {
           });
         }
       } catch (err) {
-        toast.error(`API Error:${err.response.data}`, {
+        toast.error("Greska!", {
           position: toast.POSITION.TOP_RIGHT,
         });
       }
@@ -153,7 +152,6 @@ const DenyAppointment = () => {
   //funkcija koja provjerava je li otkazivanje termina uspjelo
   const provjeraUspjehaUpdatea = async () => {
     const updBool = await updateAppointment();
-    console.log("updBool:", updBool);
     if (updBool) {
       nav(-1);
     }
@@ -206,16 +204,34 @@ const DenyAppointment = () => {
               </div>
               <div className="button-div-container7_1">
                 <div className="button-div7_1">
-                  <Link to={`/change-appointment/${appointmentId}`}>
+                  {appointment && (
                     <Button
                       variant="contained"
                       size="medium"
                       className="gumb7_1"
                       style={buttonStyle1}
+                      onClick={() => {
+                        if (
+                          appointment.status &&
+                          (appointment.status.status_id === 1 ||
+                            appointment.status.status_id === 2)
+                        ) {
+                          nav(
+                            `/change-appointment/${appointment.appointment_id}`
+                          );
+                        } else {
+                          toast.error(
+                            "Ne mogu se promijeniti termini koji nisu zakazani ili na čekanju!",
+                            {
+                              position: toast.POSITION.TOP_RIGHT,
+                            }
+                          );
+                        }
+                      }}
                     >
                       Premjesti termin
                     </Button>
-                  </Link>
+                  )}
                 </div>
                 <div className="button-div7_2">
                   <div className="small-button-div7_1">
