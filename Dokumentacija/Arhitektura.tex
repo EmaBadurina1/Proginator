@@ -55,7 +55,7 @@ Zbog potreba naše aplikacije, baza podataka sadrži entitete:
 			
 \textbf{Korisnik:}
 
-Entitet Korisnik sadrži sve bitne informacije o korisniku aplikacije. Entitet sadrži atribute: idKorisnika, ime, prezime, datumRodenja, telefon, email, lozinka. Atribut idKorisnika je primarni ključ. Atributi email i telefon su alternativni ključevi. Korisnik može biti ili djelatnik zdravstvene ustanove ili pacijent koji se želi naručiti na terapiju u zdravstvenoj ustanovi. 
+Entitet Korisnik sadrži sve bitne informacije o korisniku aplikacije. Entitet sadrži atribute: idKorisnika, ime, prezime, datumRodenja, telefon, email, lozinka, potvrden, potvrdenNa. Atribut idKorisnika je primarni ključ. Atributi email i telefon su alternativni ključevi. Korisnik može biti ili djelatnik zdravstvene ustanove ili pacijent koji se želi naručiti na terapiju u zdravstvenoj ustanovi. 
 
 				
 				
@@ -72,9 +72,11 @@ Entitet Korisnik sadrži sve bitne informacije o korisniku aplikacije. Entitet s
 					ime & VARCHAR(50) & ime korisnika	\\ \hline 
                      prezime & VARCHAR(50) & prezime korisnika	\\ \hline
                      datumRodenja & DATE & datum rođenja korisnika	\\ \hline  
-                     telefon & VARCHAR(50) & broj mobilnog telefona korisnika	\\ \hline 
+                     telefon & VARCHAR(20) & broj mobilnog telefona korisnika	\\ \hline 
 					email & VARCHAR(100) & e-mail adresa korisnika   \\ \hline 
-					lozinka & VARCHAR(100) & hash lozinke za prijavu u aplikaciju	\\ \hline 
+					lozinka & VARCHAR(100) & hash lozinke za prijavu u aplikaciju	\\ \hline
+					potvrden & BOOLEAN & status potvrde e-maila korisnika (e-mail je ili nije potvrđen) 	\\ \hline
+					potvrdenNa & TIMESTAMP & datum i vrijeme potvrde e-maila korisnika	\\ \hline
 					 
 				\end{longtblr}
 
