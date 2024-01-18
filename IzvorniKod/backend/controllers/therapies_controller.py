@@ -110,7 +110,6 @@ def get_therapy(therapy_id):
 @auth_validation
 @require_any_role('patient')
 def create_therapy():
-   print(request.json)
    required_fields = ['doctor_id', 'disease_descr', 'patient_id', 'date_from']
    # patient can only create his therapies
    if session['role'] == 'patient' and request.json.get('patient_id') != session['user_id']:

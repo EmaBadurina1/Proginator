@@ -11,7 +11,8 @@ from datetime import datetime, timedelta
 from mail import mail
 from flask_mail import Message
 
-from utils.appointments_util import appointment_overlapping
+from utils.appointments_util import *
+from utils.errors import *
 
 # setup blueprint
 from flask import Blueprint
@@ -112,98 +113,53 @@ def get_free_appointments_by_day(therapy_id, day):
 @auth_validation
 @require_any_role('patient', 'admin')
 def create_appointment():
+    # check if request contains required fields
     required_fields = ['date_from', 'therapy_id']
     missing_fields = validate_required_fields(request.json, required_fields)
-
     if missing_fields:
         error_message = f"Nedostajuća polja: {', '.join(missing_fields)}"
-        return jsonify({
-            "error": error_message,
-            "status": 400
-        }), 400
+        return BadRequestError(message=error_message)
 
-    # get patient and duration from therapy with database session
+    # check if therapy exists
     therapy = Therapy.query.filter_by(therapy_id=request.json['therapy_id']).first()
-
     if not therapy:
-        return jsonify({
-            "error": "Terapija ne postoji",
-            "status": 404
-        }), 404
+        return NotFoundError(message="Terapija ne postoji")
     
-    patient_id = therapy.patient_id
-
     # patient can only create his appointments
+    patient_id = therapy.patient_id
     if session['role'] == 'patient' and patient_id != session['user_id']:
-        return jsonify({
-            "error": "Forbidden",
-            "status": 403
-        }), 403
+        return ForbiddenError(message="Forbidden")
     
-    # check if appointment is in the past
-    if datetime.strptime(request.json['date_from'], '%Y-%m-%d %H:%M') < datetime.now():
-        return jsonify({
-            "error": "Termin ne može biti u prošlosti",
-            "status": 400
-        }), 400
-    
+    # create new_date_from
     try:
         new_date_from = datetime.strptime(request.json['date_from'], '%Y-%m-%d %H:%M')
     except Exception as e:
-        return jsonify({
-            "error": "Wrong date format",
-            "status": 400
-        }), 400
+        return BadRequestError(message="Pogrešan format datuma")
+    
+    # check if appointment is in the past
+    if new_date_from < datetime.now():
+        return BadRequestError(message="Termin ne može biti u prošlosti")
 
+    # check if request contains date_to
     if 'date_to' in request.json:
-        try:
-            new_date_to = datetime.strptime(request.json['date_to'], '%Y-%m-%d %H:%M')
-        except Exception as e:
-            return jsonify({
-                "error": "Wrong date format",
-                "status": 400
-            }), 400
-    else:
-        new_date_to = new_date_from + timedelta(minutes=60)
-        request.json['date_to'] = new_date_to.strftime('%Y-%m-%d %H:%M')
+        return BadRequestError(message="Zahtjev ne može imati date_to")
+    new_date_to = new_date_from + timedelta(minutes=60)
 
     # check if appointment overlaps with any other appointment
     overlapping = appointment_overlapping(patient_id, new_date_from, new_date_to)
     if overlapping:
-        return jsonify({
-            "error": "Termin se preklapa s drugim terminom",
-            "status": 400
-        }), 400
+        return BadRequestError(message="Termin se preklapa s drugim terminom")
 
-    # check for room capacity
-    # find rooms for specified therapy type
-    rooms = TherapyType.query.filter_by(therapy_type_id=therapy.therapy_type_id).first().rooms
-    for room in rooms:
-        appointments = Appointment.query.filter(and_(
-            Appointment.room_num==room.room_num, 
-            Appointment.date_from>=new_date_from,
-            Appointment.date_from<new_date_to
-            )).all()
-        # if there is a room with enough capacity, assign it to the appointment
-        if len(appointments) < room.capacity:
-            request.json['room_num'] = room.room_num
-            break
-    
-    if 'room_num' not in request.json:
-        return jsonify({
-            "error": "Nema slobodnih soba za ovaj termin",
-            "status": 400
-        }), 400
-    
-    missing_fields = validate_required_fields(request.json, required_fields)
+    if 'room_num' in request.json:
+        if not check_room_capacity(request.json['room_num'], new_date_from):
+            return BadRequestError(message="Soba nema dovoljno kapaciteta")
+    else:
+        # check for room capacity
+        room_num = get_room_for_therapy_type(therapy.therapy_type_id, new_date_from, new_date_to)
+        if not room_num:
+            return BadRequestError(message="Nema slobodnih soba za ovaj termin")
+        request.json['room_num'] = room_num
 
-    if missing_fields:
-        error_message = f"Missing fields: {', '.join(missing_fields)}"
-        return jsonify({
-            "error": error_message,
-            "status": 400
-        }), 400
-    
     appointment = Appointment(**request.json)
 
     try:
@@ -211,18 +167,12 @@ def create_appointment():
         db.session.commit()
     except (ValueError, IntegrityError, DataError) as e:
         db.session.rollback()
-        print(e)
-        return jsonify({
-            "error": "Podaci su neispravni",
-            "status": 400
-        }), 400
+        return BadRequestError(message=f"Podaci su neispravni: {e}")
     except Exception as e:
         db.session.rollback()
-        return jsonify({
-            "error": "Došlo je do pogreške prilikom spremanja podataka",
-            "status": 500
-        }), 500
+        return ServerError(message="Došlo je do pogreške prilikom spremanja podataka")
 
+    email = None
     if appointment:
         if appointment.therapy:
             if appointment.therapy.patient:
@@ -250,142 +200,82 @@ def create_appointment():
 @auth_validation
 @require_any_role('admin', 'patient')
 def update_appointment(appointment_id):
-    required_fields = ['date_from']
-    missing_fields = validate_required_fields(request.json, required_fields)
-
-    if missing_fields:
-        error_message = f"Nedostajuća polja: {', '.join(missing_fields)}"
-        return jsonify({
-            "error": error_message,
-            "status": 400
-        }), 400
-
     appointment = Appointment.query.filter_by(appointment_id=appointment_id).first()
 
     if not appointment:
-        return jsonify({
-            "error": "Termin ne postoji",
-            "status": 404
-        }), 404
+        return NotFoundError(message=f"Nepostojeći ID: {appointment_id}")
     
     # get patient and duration from therapy with database session
     therapy = Therapy.query.filter_by(therapy_id=appointment.therapy_id).first()
-
     if not therapy:
-        return jsonify({
-            "error": "Terapija termina ne postoji",
-            "status": 404
-        }), 404
+        return NotFoundError(message="Terapija ne postoji")
     
-    patient_id = therapy.patient_id
-
     # patient can only create his appointments
+    patient_id = therapy.patient_id
     if session['role'] == 'patient' and patient_id != session['user_id']:
-        return jsonify({
-            "error": "Forbidden",
-            "status": 403
-        }), 403
+        return ForbiddenError(message="Forbidden")
     
-    # check if new date is in the past
-    if datetime.strptime(request.json['date_from'], '%Y-%m-%d %H:%M') < datetime.now():
-        return jsonify({
-            "error": "Termin ne može biti u prošlosti",
-            "status": 400
-        }), 400
-    
-    try:
-        new_date_from = datetime.strptime(request.json['date_from'], '%Y-%m-%d %H:%M')
-    except Exception as e:
-        return jsonify({
-            "error": "Wrong date format",
-            "status": 400
-        }), 400
-
-    if 'date_to' in request.json:
+    if 'date_from' in request.json:
         try:
-            new_date_to = datetime.strptime(request.json['date_to'], '%Y-%m-%d %H:%M')
+            new_date_from = datetime.strptime(request.json['date_from'], '%Y-%m-%d %H:%M')
         except Exception as e:
-            return jsonify({
-                "error": "Wrong date format",
-                "status": 400
-            }), 400
-    else:
+            return BadRequestError(message="Pogrešan format datuma")
+        
         new_date_to = new_date_from + timedelta(minutes=60)
         request.json['date_to'] = new_date_to.strftime('%Y-%m-%d %H:%M')
-
-    # check if appointment overlaps with any other appointment
-    overlapping = appointment_overlapping(patient_id, new_date_from, new_date_to)
-    if overlapping:
-        return jsonify({
-            "error": "Termin se preklapa s drugim terminom",
-            "status": 400
-        }), 400
-
-    # check for room capacity
-    # find rooms for specified therapy type
-    rooms = TherapyType.query.filter_by(therapy_type_id=therapy.therapy_type_id).first().rooms
-    for room in rooms:
-        appointments = Appointment.query.filter(and_(
-            Appointment.room_num==room.room_num, 
-            Appointment.date_from>=new_date_from,
-            Appointment.date_from<new_date_to
-            )).all()
-        # if there is a room with enough capacity, assign it to the appointment
-        if len(appointments) < room.capacity:
-            request.json['room_num'] = room.room_num
-            break
-    
-    if 'room_num' not in request.json:
-        return jsonify({
-            "error": "Nema slobodnih soba za ovaj termin",
-            "status": 400
-        }), 400
-
-    appointment = Appointment.query.get(appointment_id)
-    if appointment:
-        try:
-            appointment.update(**request.json)
-            db.session.commit()
-        except (ValueError, IntegrityError, DataError) as e:
-            db.session.rollback()
+        
+        # check if new date is in the past
+        if new_date_from < datetime.now():
+            return BadRequestError(message="Termin ne može biti u prošlosti")
+        
+        # check if appointment overlaps with any other appointment
+        overlapping = appointment_overlapping(patient_id, new_date_from, new_date_to)
+        if overlapping:
             return jsonify({
-                "error": f"Podaci su neispravni: {e}",
+                "error": "Termin se preklapa s drugim terminom",
                 "status": 400
             }), 400
-        except Exception as e:
-            db.session.rollback()
-            return jsonify({
-                "error": "Došlo je do pogreške prilikom spremanja podataka",
-                "status": 500
-            }), 500
+
+        # check for room capacity
+        room_num = get_room_for_therapy_type(therapy.therapy_type_id, new_date_from, new_date_to)
+        if not room_num:
+            return BadRequestError(message="Nema slobodnih soba za ovaj termin")
+
+        request.json['room_num'] = room_num
+    
+    try:
+        appointment.update(**request.json)
+        db.session.commit()
+    except (ValueError, IntegrityError, DataError) as e:
+        db.session.rollback()
+        return jsonify({
+            "error": f"Podaci su neispravni: {e}",
+            "status": 400
+        }), 400
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            "error": "Došlo je do pogreške prilikom spremanja podataka",
+            "status": 500
+        }), 500
+
+    if appointment.therapy.patient.email:
+        email = appointment.therapy.patient.email
         
-        if request.json.get("date_from") and request.json.get("room_num"):
-            if appointment:
-                if appointment.therapy:
-                    if appointment.therapy.patient:
-                        if appointment.therapy.patient.email:
-                            email = appointment.therapy.patient.email
+        msg = Message(
+            'Rezerviran termin - RehApp',
+            sender='proginator@fastmail.com',
+            recipients=[email]
+        )
+        msg.body = "Vaš termin je dana: " + appointment.date_from.strftime("%Y-%m-%d %H:%M") + "\nSoba: " + appointment.room_num
+        mail.send(msg)
 
-            if email:
-                msg = Message(
-                    'Rezerviran termin - RehApp',
-                    sender='proginator@fastmail.com',
-                    recipients=[email]
-                )
-                msg.body = "Vaš termin je dana: " + appointment.date_from.strftime("%Y-%m-%d %H:%M") + "\nSoba: " + appointment.room_num
-                mail.send(msg)
-
-        return jsonify({
-            "data": {
-                "appointment": appointment.to_dict()
-            },
-            "status": 200
-        }), 200
-    else:
-        return jsonify({
-            "error": f"Nepostojeći ID: {appointment_id}",
-            "status": 404
-        }), 404
+    return jsonify({
+        "data": {
+            "appointment": appointment.to_dict()
+        },
+        "status": 200
+    }), 200
     
 # delete appointment with id=appointment_id
 @appointments_bp.route('/appointments/<int:appointment_id>', methods=['DELETE'])
@@ -407,20 +297,19 @@ def delete_appointment(appointment_id):
 @auth_validation
 @require_any_role('admin', 'doctor')
 def attendance_appointment(appointment_id):
-        required_fields = ['status_id','comment']
-        missing_fields = validate_required_fields(request.json, required_fields)
+    required_fields = ['status_id','comment']
+    missing_fields = validate_required_fields(request.json, required_fields)
 
-        # na frontu se vec radi validacija ali kao...
-        if missing_fields:
-                error_message = f"Nedostajuća polja: {', '.join(missing_fields)}"
-                return jsonify({
-                "error": error_message,
-                "status": 400
-                }), 400
-        
-        appointment = Appointment.query.filter_by(appointment_id=appointment_id).first()
-        
-        return update(id=appointment_id, Model=Appointment)
+    # na frontu se vec radi validacija ali kao...
+    if missing_fields:
+        error_message = f"Nedostajuća polja: {', '.join(missing_fields)}"
+        return BadRequestError(message=error_message)
+    
+    appointment = Appointment.query.filter_by(appointment_id=appointment_id).first()
+    if not appointment:
+        return NotFoundError(message=f"Nepostojeći ID: {appointment_id}")
+    
+    return update(id=appointment_id, Model=Appointment)
 
 # get list of appointments by therapy_id
 @appointments_bp.route('/appointments/by-therapy/<int:therapy_id>', methods=['GET'])

@@ -1,5 +1,9 @@
 from sqlalchemy import or_, not_
-from models import Appointment, Therapy
+from models import Appointment, Therapy, TherapyType
+from datetime import datetime, timedelta
+from flask import abort, request
+from sqlalchemy import and_
+from errors import *
 
 
 def appointment_overlapping(patient_id, new_date_from, new_date_to):
@@ -26,6 +30,45 @@ def appointment_overlapping(patient_id, new_date_from, new_date_to):
         .all()
     )
     if overlapping_appointments:
+        return True
+    else:
+        return False
+    
+
+def get_room_for_therapy_type(therapy_type_id, date_from, date_to):
+    '''
+    Returns first available room for specified therapy type
+    '''
+    # check for room capacity
+    # find rooms for specified therapy type
+    therapy_type = TherapyType.query.filter_by(therapy_type_id=therapy_type_id).first()
+    if not therapy_type:
+        abort(NotFoundError("Tip terapije ne postoji"))
+        
+    rooms = therapy_type.rooms
+    # remove room if id not active
+    rooms = [room for room in rooms if room.in_use]
+
+    for room in rooms:
+        appointments = Appointment.query.filter(and_(
+            Appointment.room_num==room.room_num, 
+            Appointment.date_from==date_from
+            )).all()
+        # if there is a room with enough capacity, assign it to the appointment
+        if len(appointments) < room.capacity:
+            return room.room_num
+        
+    return None
+
+def check_room_capacity(room_num, date_from):
+    '''
+    Returns True if room has enough capacity for new appointment, False otherwise
+    '''
+    # get room capacity
+    room_capacity = TherapyType.query.filter_by(therapy_type_id=Appointment.query.filter_by(room_num=room_num, date_from=date_from).first().therapy.therapy_type_id).first().rooms.filter_by(room_num=room_num).first().capacity
+    # get number of appointments in room
+    num_appointments = len(Appointment.query.filter_by(room_num=room_num, date_from=date_from).all())
+    if num_appointments < room_capacity:
         return True
     else:
         return False
