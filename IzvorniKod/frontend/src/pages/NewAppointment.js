@@ -72,6 +72,7 @@ const NewAppointment = () => {
 
     const shouldDisableDate = (day) => {
         if(day.toFormat("yyyy-MM-dd") === DateTime.now().toFormat("yyyy-MM-dd")) return true;
+        if(day.weekday === 6 || day.weekday === 7) return true;
         return false;
     }
 
@@ -136,6 +137,7 @@ const NewAppointment = () => {
         if(dateTime.second !== 0) return null;
         if(dateTime.hour < 8) return null;
         if(dateTime.hour >= 20) return null;
+        if(dateTime.weekday === 6 || dateTime.weekday === 7) return null;
 
         if(times) {
             const disabledTimes = times.map((dTime) => DateTime.fromFormat(dTime, "yyyy-MM-dd HH:mm"));
@@ -233,7 +235,7 @@ const NewAppointment = () => {
                             className="reg-btn"
                             disabled={disableSubmit}
                         >
-                            Pošalji
+                            Dodaj
                         </Button>
                     </div>
                 </div>

@@ -127,7 +127,6 @@ const CreateTherapy = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(form);
 
         let data = { ...form };
         if(data.req_treatment === "") delete data.req_treatment;
