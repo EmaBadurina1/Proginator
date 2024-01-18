@@ -110,7 +110,8 @@
 								
 								\item Korisnik odabire opciju "Zaboravili ste lozinku?"
 								\item Korisnik unosi e-mail adresu
-								\item ???? provjereti što se dalje dešava ?????
+								\item Nakon potvrde korisniku se šalje e-mail s novom lozinkom
+								\item Korisnik ponovno unosi podatke
 								
 							\end{packed_enum}
 							\item[2.a] Neispravna e-mail adresa ili lozinka
@@ -136,6 +137,8 @@
 						
 						\item Korisnik unosi svoje podatke (ime, prezime, e-mail adresu, MBO, lozinka)
 						\item Provjera ispravnosti podataka verifikacijom iz baze podataka sustava zdravstvene zaštite
+						\item Slanje maila za verifikaciju e-mail adrese
+						\item Korisnik klikom na link verificira svoju e-mail adresu
 						\item Prikaz stranice za prijavu u sustav
 					\end{packed_enum}
 					
@@ -146,7 +149,7 @@
 						\item[2.a] Korisnik ne postoji u sustavu zdravstvene zaštite
 						\item[] \begin{packed_enum}
 							
-							\item Sustav obaviještava korisnika o neispravnosti podataka
+							\item Sustav obavještava korisnika o neispravnosti podataka
 							\item Korisnik mijenja podatke ili odustaje od registracije
 							
 						\end{packed_enum}
@@ -170,20 +173,21 @@
 					\end{packed_enum}
 					
 				\end{packed_item}
-				\noindent \underbar{\textbf{UC4 - Promjena osobnih podataka}}
+				\noindent \underbar{\textbf{UC4 - Promjena broja telefona}}
 				\begin{packed_item}
 					
 					\item \textbf{Glavni sudionik: }Korisnik
-					\item  \textbf{Cilj: }Promijeniti osobne podatke
+					\item  \textbf{Cilj: }Promijeniti broj telefona
 					\item  \textbf{Sudionici: }Baza podataka
 					\item  \textbf{Preduvjet: }Korisnik mora biti prijavljen u sustav
 					\item  \textbf{Opis osnovnog tijeka: }
 					
 					\item[] \begin{packed_enum}
 						
-						\item Korisnik odabire opciju "Uredi"  
-						\item Korisnik unosi/mijenja podatke
-						\item Korisnik odabire opciju "Spremi promjene"
+						\item Korisnik odabire opciju "Promijeni broj telefona"  
+						\item Korisnik unosi/mijenja broj telefona
+						\item Korisnik odabire opciju "Spremi"
+						\item Povratak na prikaz osobnih podataka
 					\end{packed_enum}
 				\end{packed_item}
 				
@@ -199,11 +203,10 @@
 					\item[] \begin{packed_enum}
 						
 						\item Korisnik odabire opciju "Promijeni lozinku"
-						\item Korisnik potvrđuje staru lozinku
+						\item Korisnik unosi staru lozinku
 						\item Korisnik unosi novu lozinku
 						\item Korisnik potvrđuje novu lozinku
-						\item Sustav korisnika prebacuje na prijavu
-						\item Korisnik se prijavljuje s novom lozinkom
+						\item Povratak na prikaz podataka
 					\end{packed_enum}
 					
 					\item  \textbf{Opis mogućih odstupanja:}

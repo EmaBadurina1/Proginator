@@ -1,7 +1,7 @@
 
 \chapter{Opis projektnog zadatka}
 		
-		Cilj ovog projekta je izgradnja web aplikacije koja će omogućiti ljudima/pacijentima lakše prijavljivanje na slobodne termine za medicinsku rehabilitaciju i fizikalnu terapiju te praćenje njihovog zdravstvenog napretka. Također će omogućiti zaposlenicima ustanove da odbijaju ili prihvaćaju termine ovisno o raspoloživosti prostorija, opreme i osoblja pritom imajući mogućnost uvida u pacjentove prošle terapije i napredak. Vrijeme provođenja rehabilitacije je svakim radnim danom od ponedjeljka do petka od 8:00 do 20:00 sati.
+		Cilj ovog projekta je izgradnja web aplikacije koja će omogućiti ljudima/pacijentima lakše prijavljivanje na slobodne termine za medicinsku rehabilitaciju i fizikalnu terapiju te praćenje njihovog zdravstvenog napretka. Također će omogućiti zaposlenicima ustanove da otkazuju ili mijenjaju termine ovisno o raspoloživosti prostorija, opreme i osoblja pritom imajući mogućnost uvida u pacjentove prošle terapije i napredak. Vrijeme provođenja rehabilitacije je svakim radnim danom od ponedjeljka do petka od 8:00 do 20:00 sati.
 		
 		\noindent Aplikacija će razlikovati tri vrste korisnika: 
 		\begin{packed_item}
@@ -38,9 +38,9 @@
 			\item reference na terapiju
 			\item komentara za liječnika
 		\end{packed_item}
-		Pacijent odabire željeni termin tako što prvo odabire referencu na neku od njegovih aktivnih terapija, nakon toga unosi datum, na temelju kojeg će mu se prikazati slobodni termini. Pacijent će odabrati jedan, opcionalno dodati komentar i poslati zahtjev. Ukoliko se željeni termin nije popunio, termin će automatski biti odobren. Pacijentu će o odobrenom terminu, te o svim mogućim promjenama biti obaviješten e-mailom.
+		Pacijent, nakon što je kreirao terapiju, unutar nje kreira termin odabirući pritom prostoriju i željeno vrijeme. Ukoliko se željeni termin nije popunio, termin će automatski biti odobren. Pacijentu će o odobrenom terminu, te o svim mogućim promjenama biti obaviješten e-mailom.
 		
-		\textit{Liječnik} nakon prijavljivanja u sustav ima pregled svih pacijenata i njihovih podataka. Imati će opciju pretraživanja pacijenta. Klikom na prikaz terapije bit će mu prikazani svi termini odabranog pacijenta i detalji o njima, tu će imati opciju evidentirati dolazak pacijenta i zabilježiti komentare vezane uz napredak ili pregledati napredak i komentare iz prošlih termina. Liječnik koji je evidentirao pacijenta dodati će se u sustav kao liječnik koji je vodio taj termin terapije. Također svaki djelatnik ustanove imati će mogućnost promjene termina, o čemu će pacijent biti obaviješten mailom. 
+		\textit{Liječnik} nakon prijavljivanja u sustav ima pregled svih pacijenata i njihovih podataka. Imati će opciju pretraživanja pacijenta. Klikom na prikaz bit će mu prikazani svi termini odabranog pacijenta i detalji o njima, tu će imati opciju evidentirati dolazak pacijenta i zabilježiti komentare vezane uz napredak. Liječnik koji je evidentirao pacijenta dodati će se u sustav kao liječnik koji je vodio taj termin terapije. Također svaki djelatnik ustanove imati će mogućnost promjene termina, o čemu će pacijent biti obaviješten e-mailom. 
 		
 		\textit{Administrator} ima pregled svih pacijenata i djelatnika. Uz ovlasti koje imaju liječnici, administrator pri zaposlenju novog liječnika izrađuje korisnički račun za njega s inicijalnom lozinkom. Također nakon prestanka radnog odnosa administrator može ukloniti tog liječnika. Administrator definira sve što je potrebno za ispravan rad sustava, dakle može mijenjati dostupnost opreme i unositi novu opremu, mijenjati dostupnost prostorija i unositi nove. Također ako dođe do promjena u dostupnosti prostorija ili opreme.
 		
@@ -61,7 +61,7 @@
 		
 		---
 		
-		Aplikacija će se moći proširiti na način da su svi termini, prostorije, oprema i djelatnici vidljivi su administratoru koji im može mijenjati status za određeno vrijeme, na primjer kada liječnik ode na godišnji odmor može promijeniti njegov status u neaktivan za to razdoblje ili kada cijela ustanova ima sastanak onemogućiti sve termine za vrijeme tog sastanka. Ostala bi mogućnost upućivanja maila ili telefonskog poziva pacijentu u slučaju ikakvih promjena.
+		Aplikacija će se moći proširiti na način da su svi termini, prostorije, oprema i djelatnici vidljivi su administratoru koji im može mijenjati status za određeno vrijeme, na primjer kada liječnik ode na godišnji odmor može promijeniti njegov status u neaktivan za to razdoblje ili kada cijela ustanova ima sastanak onemogućiti sve termine za vrijeme tog sastanka. Također može se proširiti uvođenjem statistike koja bi ustanovi omogućila bolje korištenje resursa i nabavku novih. Primjerice ako je veća potražnja za kardiovaskularnim terapijama da povećaju broj opreme i liječnika specijaliziranih za taj tip terapije.
 		
 	
 		\eject
