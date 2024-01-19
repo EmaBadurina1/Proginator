@@ -46,6 +46,7 @@ Zbog potreba naše aplikacije, baza podataka sadrži entitete:
         \item 	\textnormal{Soba}	
         \item 	\textnormal{Uredaj}
         \item 	\textnormal{VrstaUredaja}
+        \item    SobaZa
                    				
 	 \end{packed_item}
 
@@ -54,7 +55,7 @@ Zbog potreba naše aplikacije, baza podataka sadrži entitete:
 			
 \textbf{Korisnik:}
 
-Entitet Korisnik sadrži sve bitne informacije o korisniku aplikacije. Entitet sadrži atribute: idKorisnika, ime, prezime, datumRodenja, telefon, email, lozinka. Atribut idKorisnika je primarni ključ. Atributi email i telefon su alternativni ključevi. Korisnik može biti ili djelatnik zdravstvene ustanove ili pacijent koji se želi naručiti na terapiju u zdravstvenoj ustanovi. 
+Entitet Korisnik sadrži sve bitne informacije o korisniku aplikacije. Entitet sadrži atribute: idKorisnika, ime, prezime, datumRodenja, telefon, email, lozinka, potvrden, potvrdenNa. Atribut idKorisnika je primarni ključ. Atributi email i telefon su alternativni ključevi. Korisnik može biti ili djelatnik zdravstvene ustanove ili pacijent koji se želi naručiti na terapiju u zdravstvenoj ustanovi. 
 
 				
 				
@@ -71,9 +72,11 @@ Entitet Korisnik sadrži sve bitne informacije o korisniku aplikacije. Entitet s
 					ime & VARCHAR(50) & ime korisnika	\\ \hline 
                      prezime & VARCHAR(50) & prezime korisnika	\\ \hline
                      datumRodenja & DATE & datum rođenja korisnika	\\ \hline  
-                     telefon & VARCHAR(50) & broj mobilnog telefona korisnika	\\ \hline 
+                     telefon & VARCHAR(20) & broj mobilnog telefona korisnika	\\ \hline 
 					email & VARCHAR(100) & e-mail adresa korisnika   \\ \hline 
-					lozinka & VARCHAR(100) & hash lozinke za prijavu u aplikaciju	\\ \hline 
+					lozinka & VARCHAR(100) & hash lozinke za prijavu u aplikaciju	\\ \hline
+					potvrden & BOOLEAN & status potvrde e-maila korisnika (e-mail je ili nije potvrđen) 	\\ \hline
+					potvrdenNa & TIMESTAMP & datum i vrijeme potvrde e-maila korisnika	\\ \hline
 					 
 				\end{longtblr}
 
@@ -143,7 +146,7 @@ Entitet Terapija sadrži sve bitne informacije o terapiji na koju je pacijent na
 
 \textbf{VrstaTerapije:}
 
-Entitet VrstaTerapije sadrži sve bitne informacije o vrsti terapije na koju je pacijent naručen. Entitet sadrži atribute: idVrste, imeVrste, opisVrste. Atribut idVrste je primarni ključ. Atribut opisVrste je opcionalan.
+Entitet VrstaTerapije sadrži sve bitne informacije o vrsti terapije na koju je pacijent naručen. Entitet sadrži atribute: idVrste, imeVrste, opisVrste. Atribut idVrste je primarni ključ. Atribut opisVrste je opcionalan. Entitet VrstaTerapije povezan je binarnom N:N vezom s entitetom Soba.
 
 \begin{longtblr}[
 					label=none,
@@ -187,7 +190,7 @@ Entitet Termin sadrži sve bitne informacije o terminu terapije na koji je pacij
 
 \textbf{Soba:}
 
-Entitet Soba sadrži sve bitne informacije o sobi u kojoj se provodi neka terapija. Entitet sadrži atribute: brSobe, kapacitet, uUporabi. Atribut brSobe je primarni ključ.
+Entitet Soba sadrži sve bitne informacije o sobi u kojoj se provodi neka terapija. Entitet sadrži atribute: brSobe, kapacitet, uUporabi. Atribut brSobe je primarni ključ. Entitet Soba povezan je binarnom N:N vezom s entitetom VrstaTerapije.
 
 \begin{longtblr}[
 					label=none,
@@ -201,6 +204,25 @@ Entitet Soba sadrži sve bitne informacije o sobi u kojoj se provodi neka terapi
 					\SetCell{LightGreen}brSobe & VARCHAR(10) & jedinstveni identifikator sobe \\ \hline
                      kapacitet & INT & kapacitet sobe, broj pacijenata koji istovremeno mogu biti na terapiji u nekoj sobi	\\ \hline
                      uUporabi & BOOLEAN & označava je li soba popunjena (true = popunjena, false = nije popunjena)	\\ \hline
+				\end{longtblr}
+				
+\textbf{SobaZa:}
+
+Entitet SobaZa sadrži sve bitne informacije o sobi u kojoj se odvija točno određena vrsta terapije. Entitet SobaZa sadrži atribute brSobe i idVrste. Atributi brSobe i idVrste su strani ključevi. 
+
+				\begin{longtblr}[
+					label=none,
+					entry=none
+					]{
+						width = \textwidth,
+						colspec={|X[6,l]|X[7, l]|X[20, l]|}, 
+						rowhead = 1,
+					} %definicija širine tablice, širine stupaca, poravnanje i broja redaka naslova tablice
+					\hline \SetCell[c=3]{c}{\textbf{SobaZa}}	 \\ \hline[3pt]
+					\SetCell{LightBlue}brSobe & INT & jedinstveni identifikator sobe (soba.brSobe)	\\ \hline
+					\SetCell{LightBlue}idVrste & INT & jedinstveni identifikator vrste terapije (vrstaTerapije.idVrste)	\\ \hline 
+
+					 
 				\end{longtblr}
 
 \textbf{Uredaj:}
@@ -261,19 +283,24 @@ Entitet Status sadrži sve bitne informacije o statusu termina terapije koji je 
 			
 			\subsection{Dijagram baze podataka}
 		\begin{figure}[H]
-			\includegraphics[width=\textwidth]{slike/Relacijska_shema.PNG} %veličina u odnosu na širinu linije
+			\includegraphics[width=\textwidth]{slike/Relacijska_shema_baze_podataka.JPG} %veličina u odnosu na širinu linije
 			\caption{Relacijska shema baze podataka}
 			\label{fig:relacijska_shema1} %label mora biti drugaciji za svaku sliku
+		\end{figure}
+		
+		\begin{figure}[H]
+			\includegraphics[width=\textwidth]{slike/ER_model_baze_podataka.JPG} %veličina u odnosu na širinu linije
+			\caption{ER model baze podataka}
+			\label{fig:er_model} %label mora biti drugaciji za svaku sliku
 		\end{figure}
 			
 		\section{Dijagram razreda}
 		
 			Dijagrami razreda rađeni su po uzoru na MVC obrazac po kojem je naša aplikacija organizirana. Podijeljeni su u 3 dijela: Nadglednik(\textit{Controller}) (\ref{fig:dijagram_razreda_1}), DTO (\ref{fig:dijagram_razreda_2}) i Model (\ref{fig:dijagram_razreda_3}).
 			
-			Nadglednik obrađuje zahtjeve korisnika i preko DTO-a(\textit{Data transfer object}) vrši operacije nad Modelom. Zamišljeno je da funkcije implementirane u Nadgledniku vraćaju html status kod. \textit{KorisnikController} treba imati funkcije dobavljanja podataka i izmjene osobnih podataka. \textit{DjelatnikController} mora imati funkcije dobavljanja pacijenta i termina, evidencije pacijenta i dodavanje zahtjeva. \textit{PacijentController} mora imati funkcije dobavljanja zahtjeva, termina i nalaza, filtraciju termina i postavljanje terapije. \textit{AdminController} treba moći dobavljati djelatnike i termine, mijenjati djelatnike i termine, brisati djelatnike, sobe, uređaje i termine, dohvaćati djelatnike, sobe i uređaje i obavještavati pacijente. \textit{HomeController} treba imati pristup bazi i treba imati funkcije registracije i prijave.
-			
+			Nadglednik (\textit{Controller}) obrađuje zahtjeve korisnika i preko DTO-a(\textit{Data transfer object}) vrši operacije nad Modelom. Zamišljeno je da funkcije implementirane u Nadgledniku vraćaju html status kod. \textit{KorisnikController} ima funkcije za dohvaćanje, stvaranje i izmjenjivanje korisnika(pacijenta i djelatnika). \textit{TerminController} ima funkcije za dohvaćanje, izmjenjivanje i dodavanje termina i statusa koji je povezan za njega. \textit{VerifikacijaController} ima funkcije za verifikaciju i slanje e-maila, promjenu lozinke, prijavu i registraciju korisnika. \textit{InventarController} sadrži funkcije za dodavanje, brisanje i izmjenjivanje inventara/uređaja. \textit{SobaController} ima funkcije za dohvaćanje, uređivanje i stvaranje soba. \textit{TerapijaController} ima funkcije za stvaranje, dohvaćanje i uređivanje prostorija.
 			\begin{figure}[H]
-				\includegraphics[scale=0.4]{slike/Dijagram_razreda_3.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
+				\includegraphics[scale=0.41]{slike/Dijagram_razreda_1.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
 				\centering
 				\caption{Dijagram razreda za dio Controller}
 				\label{fig:dijagram_razreda_1}
@@ -282,7 +309,7 @@ Entitet Status sadrži sve bitne informacije o statusu termina terapije koji je 
 			Dio s DTO-om sadrži jednostavne klase i služi isključivo za prenošenje podataka kako bi Nadglednik mogao vršiti operacije nad Modelom. Sadrži klase slične dijagramu razreda za dio Model uz nekoliko iznimaka. \textit{TerapijaSTerminima} sadrži atribute terapije s listom termina koji su vezanu uz pojedinu terapiju. \textit{ZahtjevPacijentaDTO} sadrži atribute Terapije i Termina koji su potrebni da bi Pacijent mogao napraviti Zahtjev.
 			
 			\begin{figure}[H]
-				\includegraphics[scale=0.4]{slike/Dijagram_razreda_2.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
+				\includegraphics[scale=0.3]{slike/Dijagram_razreda_2.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
 				\centering
 				\caption{Dijagram razreda za dio DTO}
 				\label{fig:dijagram_razreda_2}
@@ -291,17 +318,12 @@ Entitet Status sadrži sve bitne informacije o statusu termina terapije koji je 
 			Model sadrži atribute i metode koje su potrebne radi komunikacije s bazom podataka. Razred \textit{Korisnik} predstavlja korisnika koji, ako je neprijavljen, ima funkciju registracije, a ako je prijavljen, ima funkciju prikaza i promjene osobnih podataka. \textit{Administrator} predstavlja korisnika koji upravlja djelatnicima, sobama i uređajima i obavještava pacijenta ukoliko je potrebno. \textit{Djelatnik} je liječnik koji ima opciju pregleda pacijenta, njegovih termina i evidencije njegovih termina, evidencije pacijenta i prihvaćanje ili odbijanje zahtjeva za terminom. Razred \textit{Pacijent} je pacijent koji može pregledati predane zahtjeve i termine, filtrirati termine, pregledati nalaze terapije i naručiti novu terapiju. Prisutne su i klase Terapija, vrstaTerapije, Termin, Status, Soba, Uredaj i VrstaUredaja koje za sada nemaju predviđene nikakve funkcije. Svaki razred sadrži atribute bitne za taj razred.
 			
 			\begin{figure}[H]
-				\includegraphics[scale=0.3]{slike/Dijagram_razreda_1.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
+				\includegraphics[scale=0.45]{slike/Dijagram_razreda_3.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
 				\centering
 				\caption{Dijagram razreda za dio Model}
 				\label{fig:dijagram_razreda_3}
 			\end{figure}
 			
-			
-			
-			\textbf{\textit{dio 2. revizije}}\\			
-			
-			\textit{Prilikom druge predaje projekta dijagram razreda i opisi moraju odgovarati stvarnom stanju implementacije}
 			
 			
 			
@@ -310,22 +332,52 @@ Entitet Status sadrži sve bitne informacije o statusu termina terapije koji je 
 		\section{Dijagram stanja}
 			
 			
-			\textbf{\textit{dio 2. revizije}}\\
+			Dijagram stanja (\ref{fig:dijagram_stanja1}) prikazuje stanja i prijelaze između stanja u kojima se nalazi korisničko sučelje kada korisnik - pacijent koristi aplikaciju. Stanje u dijagramu predstavlja ekran (\textit{engl. screen}) u aplikaciji, a prijelaz predstavlja radnju korisnika kada koristi aplikaciju (klik na gumb ili ikonu).
+			Kada se korisnik registrira i prijavi u aplikaciju, prvo mu se prikaže početni ekran. Klikom na gumb 'Moje terapije', korisniku se prikazuje ekran s listom terapija. Na ekranu s listom terapija korisnik vidi svoje terapije i pripadajuće informacije te može dodati novu terapiju klikom na gumb 'Dodaj terapiju'. Kada korisnik dodaje novu terapiju, otvara mu se ekran s obrascem u koji mora unijeti informacije o terapiji. Ako su uneseni podaci ispravni, korisnika se vraća na ekran s listom terapija u koju je dodana i nova terapija. Ako uneseni podaci nisu ispravni, korisnika se vraća na ekran s obrascem te on može ponovno unijeti podatke ili odustati od dodavanja nove terapije. Klikom na terapiju s liste terapija, korisniku se prikazuje novi ekran s informacijama o terapiji i listom termina te njihovim informacijama (dalje: ekran s listom termina). Ako terapija još uvijek traje, korisnik može poslati zahtjev za novim terminom klikom na gumb 'Dodaj termin'. Kada korisnik dodaje novi termin, prikaže mu se ekran s obrascem u koji mora unijeti podatke o terminu. Kada korisnik ispuni obrazac i klikne na gumb 'Pošalji', vraća ga se na ekran s listom termina (na listi je prikazan i novi termin). Klikom na termin s liste termina, korisniku se prikazuje ekran s detaljnim informacijama o terminu te mogućnost otkazivanja termina klikom na gumb 'Otkaži', ako je status termina 'zakazan'. U slučaju otkazivanja termina, korisnika se vraća na ekran s listom termina - otkazani termin se i dalje nalazi u listi termina, ali s promijenjenim statusom ('otkazan'). Klikom na gumb 'Korisnički račun', korisniku se prikazuje ekran s korisničkim informacijama i mogućnošću promjene broja telefona ili lozinke. Klikom na gumb 'Promijeni lozinku', korisniku se prikazuje ekran s obrascem za promjenu lozinke. Ako su podaci uneseni u obrazac ispravni, korisnik na ekranu dobiva potvrdu o uspješnoj promjeni lozinke te ga se vraća na ekran s ažuriranim korisničkim informacijama. Ako uneseni podaci nisu ispravni, korisnika se vraća na obrazac te on ima mogućnost ponovnog unosa podataka ili odustajanja od promjene podataka i vraćanja na ekran s korisničkim informacijama. Isti proces se odvija i u slučaju promjene broja telefona - klikom na gumb 'Promijeni broj telefona'. Korisnik se može odjaviti iz aplikacije klikom na gumb 'Odjavi se', bez obzira na kojem se ekranu nalazi. Također, korisnik u svakom trenutku ima mogućnost povratka na početni ekran, ekran s prikazom terapija ili ekran s korisničkim informacija klikom na odgovarajući gumb.
 			
-			\textit{Potrebno je priložiti dijagram stanja i opisati ga. Dovoljan je jedan dijagram stanja koji prikazuje \textbf{značajan dio funkcionalnosti} sustava. Na primjer, stanja korisničkog sučelja i tijek korištenja neke ključne funkcionalnosti jesu značajan dio sustava, a registracija i prijava nisu. }
+			\begin{figure}[H]
+				\includegraphics[scale=0.3]{slike/Dijagram stanja - Pacijent.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
+				\centering
+				\caption{Dijagram stanja}
+				\label{fig:dijagram_stanja1}
+			\end{figure}
 			
 			
 			\eject 
 		
 		\section{Dijagram aktivnosti}
+		
 			
-			\textbf{\textit{dio 2. revizije}}\\
-			
-			 \textit{Potrebno je priložiti dijagram aktivnosti s pripadajućim opisom. Dijagram aktivnosti treba prikazivati značajan dio sustava.}
+
+Dijagram aktivnosti - Kreiranje terapije (\ref{fig:dijagram_aktivnoti_terapija}) prikazuje proces prijave korisnika (pacijenta) na novu terapiju. Kada korisnik zatraži novu terapiju, prikazuje mu se obrazac koji popunjava s podacima o terapiji. Ako su podaci neispravni, sustav mu dojavljuje grešku i vraća ga na obrazac. Ako su podaci ispravni, nova terapija mu se prikaže na listi terapija. 
+
+\begin{figure}[H]
+				\includegraphics[scale=0.3]{slike/Dijagram_aktivnosti _Kreiranje_terapije.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
+				\centering
+				\caption{Dijagram aktivnosti za kreiranje terapije}
+				\label{fig:dijagram_aktivnoti_terapija}
+			\end{figure}
+Dijagram aktivnosti - Dodavanje termina (\ref{fig:dijagram_aktivnosti_termin}) prikazuje proces naručivanja korisnika (pacijenta) na novi termin odabrane terapije. Kada korisnik zatraži novi termin, prikazuje mu se obrazac koji popunjava s podacima o terminu. Ako su podaci neispravni, sustav mu dojavljuje grešku i vraća ga na obrazac. Ako su podaci ispravni, novi termin se prikaže u listi termina.
+
+\begin{figure}[H]
+				\includegraphics[scale=0.3]{slike/Dijagram_aktivnosti_Dodavanje_termina.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
+				\centering
+				\caption{Dijagram stanja}
+				\label{fig:dijagram_aktivnosti_termin}
+			\end{figure}
 			
 			\eject
 		\section{Dijagram komponenti}
 		
-			\textbf{\textit{dio 2. revizije}}\\
-		
-			 \textit{Potrebno je priložiti dijagram komponenti s pripadajućim opisom. Dijagram komponenti treba prikazivati strukturu cijele aplikacije.}
+			 
+			 Dijagram komponenti (\ref{fig:dijagram_stanja1}) služi za vizualizaciju arhitekture sustava - sustav se dijeli na komponente koje međusobno komuniciraju putem sučelja. Ključni dijelovi (komponente) ove web aplikacije su: Web preglednik, React aplikacija, Web poslužitelj statičkih datoteka, Flask aplikacija i SQL baza podataka. Kada web preglednik putem sučelja preuzme statičke datoteke (HTML, CSS, JS datoteke) s web poslužitelja statičkih datoteka, u web pregledniku se izvršava React aplikacija (JavaScript kod). React aplikacija izgrađuje korisničko sučelje te omogućuje interakciju korisnika s aplikacijom. Kada korisnik traži, mijenja ili unosi podatke u aplikaciju, React aplikacija šalje HTTP zahtjeve Flask aplikaciji putem REST sučelja, koje je implementirano unutar Flask aplikacije. Flask aplikacija obrađuje zahtjev te komunicira s bazom podataka s pomoću SQLAlchemy integracije. Kada obradi zahtjeve, Flask aplikacija šalje odgovore React aplikaciji putem REST sučelja.
+			 \begin{figure}[H]
+				\includegraphics[scale=0.3]{slike/Dijagram_komponenti_Aplikacija.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
+				\centering
+				\caption{Dijagram komponenti}
+				\label{fig:dijagram_komponenti1}
+			\end{figure}
+			 
+			 
+			 
+			 

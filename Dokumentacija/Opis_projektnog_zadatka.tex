@@ -1,7 +1,7 @@
 
 \chapter{Opis projektnog zadatka}
 		
-		Cilj ovog projekta je izgradnja web aplikacije koja će omogućiti ljudima/pacijentima lakše prijavljivanje na slobodne termine za medicinsku rehabilitaciju i fizikalnu terapiju te praćenje njihovog zdravstvenog napretka. Također će omogućiti zaposlenicima ustanove da odbijaju ili prihvaćaju termine ovisno o raspoloživosti prostorija, opreme i osoblja pritom imajući mogućnost uvida u pacjentove prošle terapije i napredak. Vrijeme provođenja rehabilitacije je svakim radnim danom od ponedjeljka do petka od 8:00 do 20:00 sati.
+		Cilj ovog projekta je izgradnja web aplikacije koja će omogućiti ljudima/pacijentima lakše prijavljivanje na slobodne termine za medicinsku rehabilitaciju i fizikalnu terapiju te praćenje njihovog zdravstvenog napretka. Također će omogućiti zaposlenicima ustanove da otkazuju ili mijenjaju termine ovisno o raspoloživosti prostorija, opreme i osoblja pritom imajući mogućnost uvida u pacjentove prošle terapije i napredak. Vrijeme provođenja rehabilitacije je svakim radnim danom od ponedjeljka do petka od 8:00 do 20:00 sati.
 		
 		\noindent Aplikacija će razlikovati tri vrste korisnika: 
 		\begin{packed_item}
@@ -11,7 +11,7 @@
 			\item  administratora - djelatnika zdravstvene ustanove
 		\end{packed_item}
 		
-		Prilikom pokretanja web aplikacije svaki korisnik unosi svoju e-mail adresu i lozinku. Ovisno o vrsti korisnika biti će preusmjereni na različite stranice. Svaki korisnik imati će mogućnost mijenjanja nekih osobnih podataka i mijenjanja lozinke.
+		Prilikom pokretanja web aplikacije svaki korisnik unosi svoju e-mail adresu i lozinku. Ovisno o vrsti korisnika biti će preusmjereni na različite stranice. Svaki korisnik imati će mogućnost mijenjanja nekih osobnih podataka i lozinke. Kao i promjene lozinke u slučaju da je zaboravljena.
 		
 		\textit{Pacijent} se samostalno prijavljuje u sustav. U slučaju da još ne postoji imati će opciju registracije. Za registraciju mora unijeti: 
 		\begin{packed_item}
@@ -23,30 +23,30 @@
 			\item lozinku
 		\end{packed_item}
 		Prilikom registracije pomoću MBO-a provjerava se ako korisnik postoji u središnjem informacijskom sustavu zdravstvene zaštite.
-		Nakon prijave korisnik je preusmjeren na stranicu gdje se prikazuju njegovi termini i zahtjevi, ukoliko ih ima. U terminima se prikazuju protekli i budući termini, za protekle termine piše ako je pacijent došao te komentari djelatnika ustanove o napretku. Termin se dobiva nakon što se odobri zahtjev za jednim. No prije nego pacijent može birati termin mora kreirati terapiju, u slučaju da nema ni jednu aktivnu. Terapiju kreira unoseći podatke:
+		Nakon prijave korisnik je preusmjeren na početnu stranicu gdje može prikazati svoje termine, terapije i prijavljivati iste. U terminima se prikazuju protekli i budući termini, za protekle termine piše ako je pacijent došao te komentari djelatnika ustanove o napretku. Termin se dobiva nakon što se odobri zahtjev za jednim. No prije nego pacijent može birati termin mora kreirati terapiju, u slučaju da nema ni jednu aktivnu. Terapiju kreira unoseći podatke:
 		\begin{packed_item}
 			\item ime i prezime liječnika koji ga je uputio na terapiju
 			\item tip rehabilitacije
 			\item opis oboljenja 
 			\item opis postupka liječenja
 		\end{packed_item}
-		Nakon što preda podatke o terapiji, provjerava se status liječnika u imeniku liječnika. U slučaju da uneseni liječnik ne postoji, zbog krivo unesenih podataka sustav će upozoriti pacijenta o tome i imati će priliku ispraviti podatke. Nakon uspješno kreirane terapije pacijent će moći napraviti zahtjev za terminom. 
-		Zahtjev se sastoji od:
+		Nakon što preda podatke o terapiji, provjerava se status liječnika u imeniku liječnika. U slučaju da uneseni liječnik ne postoji, zbog krivo unesenih podataka sustav će upozoriti pacijenta o tome i imati će priliku ispraviti podatke. Nakon uspješno kreirane terapije pacijent može kreirati termin. 
+		Termin se sastoji od:
 		\begin{packed_item}
-			\item željenog termina
+			\item željenog vremena 
 			\item vrste/tipa rehabilitacije
 			\item reference na terapiju
 			\item komentara za liječnika
 		\end{packed_item}
-		Pacijent odabire željeni termin tako što prvo odabire tip rehabilitacije i referencu na neku od njegovih terapija, nakon toga unosi datum u tražilicu, na temelju kojeg će mu se prikazati slobodni termini. Pacijent će odabrati jedan, opcionalno dodati komentar i poslati zahtjev. Pacijent će o odobrenju ili odbijanju zahtjeva, te o svim mogućim promjenama biti obaviješten e-mailom.
+		Pacijent, nakon što je kreirao terapiju, unutar nje kreira termin odabirući pritom prostoriju i željeno vrijeme. Ukoliko se željeni termin nije popunio, termin će automatski biti odobren. Pacijentu će o odobrenom terminu, te o svim mogućim promjenama biti obaviješten e-mailom.
 		
-		\textit{Liječnik} nakon prijavljivanja u sustav ima pregled svih pacijenata i njihovih podataka. Imati će opciju pretraživanja pacijenta. Klikom na prikaz terapije bit će mu prikazani svi termini odabranog pacijenta i detalji o njima, tu će imati opciju evidentirati dolazak pacijenta i zabilježiti komentare vezane uz napredak ili pregledati napredak i komentare iz prošlih termina. Liječnik koji je evidentirao pacijenta dodati će se u sustav kao liječnik koji je vodio taj termin terapije. Također svaki djelatnik ustanove imati će mogućnost prihvaćanja ili odbijanja termina ovisno o raspoloživosti prostorija i opreme. Kod odbijanja zahtijeva liječnik će morati dodijeliti pacijentu novi termin u kojem su oprema i prostorije raspoloživi. 
+		\textit{Liječnik} nakon prijavljivanja u sustav ima pregled svih pacijenata i njihovih podataka. Imati će opciju pretraživanja pacijenta. Klikom na prikaz bit će mu prikazani svi termini odabranog pacijenta i detalji o njima, tu će imati opciju evidentirati dolazak pacijenta i zabilježiti komentare vezane uz napredak. Liječnik koji je evidentirao pacijenta dodati će se u sustav kao liječnik koji je vodio taj termin terapije. Također svaki djelatnik ustanove imati će mogućnost promjene termina, o čemu će pacijent biti obaviješten e-mailom. 
 		
-		\textit{Administrator} ima pregled svih pacijenata i djelatnika. Uz ovlasti koje imaju liječnici administrator pri zaposlenju novog liječnika izrađuje korisnički račun za njega s inicijalnom lozinkom. Također nakon prestanka radnog odnosa administrator može ukloniti tog liječnika. Administrator definira sve što je potrebno za ispravan rad sustava, dakle može mijenjati dostupnost opreme i unositi novu opremu, mijenjati dostupnost prostorija i unositi nove. Također ako dođe do promjena u dostupnosti prostorija ili opreme, liječnik će imati mogućnost obavještavanja pacijenta o otkazanom terminu te mogućnost izdavanja novog termina.
+		\textit{Administrator} ima pregled svih pacijenata i djelatnika. Uz ovlasti koje imaju liječnici, administrator pri zaposlenju novog liječnika izrađuje korisnički račun za njega s inicijalnom lozinkom. Također nakon prestanka radnog odnosa administrator može ukloniti tog liječnika. Administrator definira sve što je potrebno za ispravan rad sustava, dakle može mijenjati dostupnost opreme i unositi novu opremu, mijenjati dostupnost prostorija i unositi nove. Također ako dođe do promjena u dostupnosti prostorija ili opreme.
 		
 		---
 		
-		Ovim projektom smanjio bi se opseg posla djelatnika ustanove i olakšao proces prijave na rehabilitaciju pacijentima, umjesto prijavljivanja u živo i rješavanja papirologije pacijentima će biti omogućeno prijavljivanje, a djelatnicima odbijanje ili prihvaćanje termina rehabilitacije u samo par klikova. 
+		Ovim projektom smanjio bi se opseg posla djelatnika ustanove i olakšao proces prijave na rehabilitaciju pacijentima, umjesto prijavljivanja u živo i rješavanja papirologije pacijentima će biti omogućeno automatsko prijavljivanje na slobodne termine, a liječnicima evidentiranje istih. 
 		
 		---
 		
@@ -61,7 +61,7 @@
 		
 		---
 		
-		Aplikacija će se moći proširiti da djelatnici uopće ne moraju prihvaćati ili odbijati prijave, već će to sustav raditi automatski na temelju raspoloživih podataka o opremi, prostorijama, djelatnicima i već zauzetim terminima. Svi termini, prostorije, oprema i djelatnici vidljivi su administratoru koji im može mijenjati status za određeno vrijeme, na primjer kada liječnik ode na godišnji odmor može promijeniti njegov status u neaktivan za to razdoblje ili kada cijela ustanova ima sastanak onemogućiti sve termine za vrijeme tog sastanka. Ostala bi mogućnost upućivanja maila ili telefonskog poziva pacijentu u slučaju ikakvih promjena.
+		Aplikacija će se moći proširiti na način da su svi termini, prostorije, oprema i djelatnici vidljivi su administratoru koji im može mijenjati status za određeno vrijeme, na primjer kada liječnik ode na godišnji odmor može promijeniti njegov status u neaktivan za to razdoblje ili kada cijela ustanova ima sastanak onemogućiti sve termine za vrijeme tog sastanka. Također može se proširiti uvođenjem statistike koja bi ustanovi omogućila bolje korištenje resursa i nabavku novih. Primjerice ako je veća potražnja za kardiovaskularnim terapijama da povećaju broj opreme i liječnika specijaliziranih za taj tip terapije.
 		
 	
 		\eject
