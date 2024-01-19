@@ -39,9 +39,15 @@
 		
 		\section{Dijagram razmještaja}
 			
-			\textbf{\textit{dio 2. revizije}}
-			
-			 \textit{Potrebno je umetnuti \textbf{specifikacijski} dijagram razmještaja i opisati ga. Moguće je umjesto specifikacijskog dijagrama razmještaja umetnuti dijagram razmještaja instanci, pod uvjetom da taj dijagram bolje opisuje neki važniji dio sustava.}
+			 Specifikacijski dijagram razmještaja (\ref{fig:dijagram_razmjestaja1}) prikazuje kako se ključni dijelovi sustava razmještaju na fizičke i virtualne komponente te kako ti dijelovi međusobno komuniciraju.
+			 Korisnik na svom računalu može s pomoću web preglednika pristupiti web aplikaciji. Oblak pruža poslužitelje za aplikaciju i bazu podataka. Korisničko računalo koje djeluje kao klijent komunicira s oblakom koje djeluje kao poslužitelj putem HTTP protokola. Web aplikacija i baza podataka također komuniciraju putem HTTP protokola.
+			 
+			 \begin{figure}[H]
+				\includegraphics[scale=0.3]{slike/Dijagram_razmještaja_Aplikacija.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
+				\centering
+				\caption{Dijagram razmještaja}
+				\label{fig:dijagram_razmjestaja1}
+			\end{figure}
 			
 			\eject 
 		
