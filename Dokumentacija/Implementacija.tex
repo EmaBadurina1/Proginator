@@ -142,36 +142,44 @@ Testira hoće li funkcija za stvaranje termina (putem HTTP POST zahtjeva) vratit
 			\eject 
 		
 		\section{Upute za puštanje u pogon}
-		
-			\textbf{\textit{dio 2. revizije}}\\
-		
-			 \textit{U ovom poglavlju potrebno je dati upute za puštanje u pogon (engl. deployment) ostvarene aplikacije. Na primjer, za web aplikacije, opisati postupak kojim se od izvornog kôda dolazi do potpuno postavljene baze podataka i poslužitelja koji odgovara na upite korisnika. Za mobilnu aplikaciju, postupak kojim se aplikacija izgradi, te postavi na neku od trgovina. Za stolnu (engl. desktop) aplikaciju, postupak kojim se aplikacija instalira na računalo. Ukoliko mobilne i stolne aplikacije komuniciraju s poslužiteljem i/ili bazom podataka, opisati i postupak njihovog postavljanja. Pri izradi uputa preporučuje se \textbf{naglasiti korake instalacije uporabom natuknica} te koristiti što je više moguće \textbf{slike ekrana} (engl. screenshots) kako bi upute bile jasne i jednostavne za slijediti.}
-
+	
 
 \textbf{Postupak postavljanja baze podataka}
 
     \begin{packed_item}
 		\item Postavljanje i konfiguracija PostgreSQL baze podataka unutar platforme Render \\
 		
-		U polje \textit{Name} potrebno je upisati ime instance PostgreSQL baze podataka. Polje \textit{Database} i \textit{User} Render popunjava s nasumično generiranim vrijednostima. Umjesto tih vrijednosti definirali smo vlastite, proginator za Database i proginator_user za User. Nakon toga je potrebno odabrati regiju. Odabrali smo regiju Frankfurt (EU central) zato što je najbliža klijentu. 
+		U polje \textit{Name} potrebno je upisati ime instance PostgreSQL baze podataka. Polje \textit{Database} i \textit{User} Render popunjava s nasumično generiranim vrijednostima. Umjesto tih vrijednosti definirali smo vlastite, proginator za Database i proginator\_user za User. Nakon toga je potrebno odabrati regiju. Odabrali smo regiju Frankfurt (EU central) zato što je najbliža klijentu. 
 		
-		STAVI SLIKU!
+		\begin{figure}[H]
+			\includegraphics[width=\textwidth]{slike/Baza_podataka1.PNG} %veličina u odnosu na širinu linije
+			\caption{Postavljanje i konfiguracija PostgreSQL baze podataka unutar platforme}
+			\label{fig:bazapodataka1} %label mora biti drugaciji za svaku sliku
+		\end{figure}
 		
 		Nakon toga Render prikazuje informacije o bazi podataka: ime poslužitelja (\textit{Hostname}), vrata (\textit{Port}), ime baze podataka (\textit{Database}), korisničko ime PostgreSQL korisnika (\textit{username}), lozinku korisnika (\textit{password}) i URL za povezivanje na bazu podataka. 
-		
 		
 		\item Konfiguracija pristupa bazi podataka iz aplikacije pgAdmin \\
 		Unutar aplikacije pgAdmin potrebno je u izborniku odabrati Servers -> Register.
 		
-		SLIKA 
+		\begin{figure}[H]
+			\includegraphics[width=\textwidth]{slike/Baza_podataka2.PNG} %veličina u odnosu na širinu linije
+			\caption{Konfiguracija pristupa bazi podataka iz aplikacije pgAdmin}
+			\label{fig:bazapodataka2} %label mora biti drugaciji za svaku sliku
+		\end{figure}
 		
 		Nakon toga, potrebno je ispuniti formu s podacima za povezivanje na bazu podataka koje smo dobili u platformi Render.
-		SLIKA
-		
+		\begin{figure}[H]
+			\includegraphics[width=\textwidth]{slike/Baza_podataka3.PNG} %veličina u odnosu na širinu linije
+			\caption{Ispunjavanje forme}
+			\label{fig:bazapodataka3} %label mora biti drugaciji za svaku sliku
+		\end{figure}
 		
         \item Incijalizacija baze podataka i stvaranje tablica \\
+        
+        Potrebno je pokrenuti inicijalizacijsku skriptu db\_init.sql koja stvara tablice u bazi podataka.
 
-                   				
+    				
 	 \end{packed_item}
 
 
@@ -179,16 +187,39 @@ Testira hoće li funkcija za stvaranje termina (putem HTTP POST zahtjeva) vratit
 
 \begin{packed_item}
         \item Povezivanje Render web servisa s GitHub repozitorijem \\
-  SLIKA 
+        
+      \begin{figure}[H]
+			\includegraphics[width=\textwidth]{slike/Backend1.JPG} %veličina u odnosu na širinu linije
+			\caption{Povezivanje Render web servisa s GitHub repozitorijem}
+			\label{fig:backend1} %label mora biti drugaciji za svaku sliku
+		\end{figure}
+
+\begin{figure}[H]
+			\includegraphics[width=\textwidth]{slike/Backend2.JPG} %veličina u odnosu na širinu linije
+			\caption{Povezivanje Render web servisa s GitHub repozitorijem}
+			\label{fig:backend2} %label mora biti drugaciji za svaku sliku
+		\end{figure}
         
          Render web servis povezujemo s GitHub repozitorijem kako bi Render platforma imala pristup izvornom kodu.
          
         \item Konfiguracija web servisa \\
         
-        SLIKA
-        \item Postavljanje varijabli okruženja
+        \begin{figure}
+        \includegraphics[width=\textwidth]{slike/Backend3.PNG} %veličina u odnosu na širinu linije
+			\caption{Konfiguracija web servisa}
+			\label{fig:backend3} %label mora biti drugaciji za svaku sliku
+		\end{figure}
+      
+		
+        \item Postavljanje varijabli okruženja \\
+        \begin{figure}
+        \includegraphics[width=\textwidth]{slike/Backend4.PNG} %veličina u odnosu na širinu linije
+			\caption{Postavljanje varijabli okruženja}
+			\label{fig:backend4} %label mora biti drugaciji za svaku sliku
+		\end{figure}
         
-        SLIKA	
+        
+
 \end{packed_item}
 
 \textbf{Postupak postavljanja frontend aplikacije}
@@ -196,12 +227,16 @@ Testira hoće li funkcija za stvaranje termina (putem HTTP POST zahtjeva) vratit
 \begin{packed_item}
    \item Konfiguracija web servisa \\
    
-   SLIKA
+\begin{figure}[H]
+			\includegraphics[width=\textwidth]{slike/Frontend1.PNG} %veličina u odnosu na širinu linije
+			\caption{Konfiguracija web servisa}
+			\label{fig:frontend1} %label mora biti drugaciji za svaku sliku
+		\end{figure}
+		
    
    Ostali koraci jednaki su koracima postupka postavljanja backend aplikacije.
 \end{packed_item}
 			
-			 \textit{Dovršenu aplikaciju potrebno je pokrenuti na javno dostupnom poslužitelju. Studentima se preporuča korištenje neke od sljedećih besplatnih usluga: \href{https://aws.amazon.com/}{Amazon AWS}, \href{https://azure.microsoft.com/en-us/}{Microsoft Azure} ili \href{https://www.heroku.com/}{Heroku}. Mobilne aplikacije trebaju biti objavljene na F-Droid, Google Play ili Amazon App trgovini.}
 			
 			
 			\eject 
