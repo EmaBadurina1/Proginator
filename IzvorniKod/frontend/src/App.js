@@ -32,7 +32,6 @@ import CreateTherapy from "./pages/CreateTherapy";
 import MyTherapy from "./pages/MyTherapy";
 import NewAppointment from "./pages/NewAppointment";
 import ChangePassword from "./pages/ChangePassword";
-import DataPreview from "./pages/DataPreview";
 import UserAccounts from "./pages/UserAccounts";
 import Devices from "./pages/Devices";
 import Rooms from "./pages/Rooms";
@@ -470,16 +469,6 @@ function App() {
               <PatientRoute>
                 <NewAppointment />
               </PatientRoute>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/data-display"
-          element={
-            <ProtectedRoute>
-              <AdminRoute>
-                <DataPreview />
-              </AdminRoute>
             </ProtectedRoute>
           }
         />
