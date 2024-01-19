@@ -813,25 +813,30 @@ def update_status(status_id):
 def delete_status(status_id):
     return delete(id=status_id, Model=Status)
 
-@appointments_bp.route('/occupied-appointments/room/<string:room_num>', methods=['GET'])
+@appointments_bp.route('/occupied-appointments/<string:room_num>/<int:user_id>', methods=['GET'])
 @auth_validation
 @require_any_role('admin', 'patient', 'doctor')
-def get_occupied_hours(room_num):
+def get_occupied_hours(room_num, user_id):
     try:
         sql = text('''
-            SELECT appointment.date_from FROM appointment
-            LEFT JOIN room ON room.room_num = appointment.room_num
-            WHERE room.room_num = :room_num
-            AND room.in_use = TRUE
-            AND appointment.date_from >= current_timestamp
-            GROUP BY appointment.date_from, room.capacity
-            HAVING COUNT(appointment.date_from) >= room.capacity;
+            SELECT DISTINCT(appointment.date_from) FROM appointment
+                LEFT JOIN room ON room.room_num = appointment.room_num
+                LEFT JOIN therapy ON therapy.therapy_id = appointment.therapy_id
+            WHERE (((
+                SELECT COUNT(a.date_from) FROM appointment AS a
+                WHERE a.date_from = appointment.date_from
+                ) >= room.capacity
+                AND room.room_num = :room_num)
+                OR therapy.patient_id = :user_id)
+                AND appointment.date_from >= current_timestamp;
         ''')
 
-        result = db.session.execute(sql, {'room_num': room_num})
+        result = db.session.execute(sql, {'room_num': room_num, 'user_id': user_id})
 
         # Fetch the date_times from the result and create a list
         date_times = [row[0].strftime('%Y-%m-%d %H:%M') for row in result.fetchall()]
+
+        print(date_times)
 
         return jsonify({
             "data": {

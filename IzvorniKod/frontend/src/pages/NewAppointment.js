@@ -1,4 +1,4 @@
-import { React, useState, useCallback, useEffect } from "react";
+import { React, useState, useCallback, useEffect, useContext } from "react";
 import { useNavigate, useParams } from 'react-router-dom';
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
@@ -6,10 +6,13 @@ import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { Button, Autocomplete, TextField, CircularProgress } from "@mui/material";
 import { DateTime } from 'luxon';
 import { toast } from "react-toastify";
+import { LoginContext } from "../contexts/LoginContext";
 import axiosInstance from "../axiosInstance";
 import "./NewAppointment.css"
 
 const NewAppointment = () => {
+    const context = useContext(LoginContext);
+
     const { therapy_id } = useParams();
 
     const [rooms, setRooms] = useState(null);
@@ -96,7 +99,7 @@ const NewAppointment = () => {
         setLoadingTimes(true);
         try {
             if(room_num && room_num != form.room_num) { 
-                const res = await axiosInstance.get("/occupied-appointments/room/" + room_num);
+                const res = await axiosInstance.get("/occupied-appointments/" + room_num + "/" + context.userData.user_id);
                 if(res.status === 200) {
                     setTimes(res.data.data.times);
                 }

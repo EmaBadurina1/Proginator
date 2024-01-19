@@ -2,7 +2,10 @@ import { DateTime } from 'luxon';
 
 export function parseDateTime(date) {
    try {
-      const parsedDate = DateTime.fromRFC2822(date);
+      const parsedDate = DateTime
+         .fromRFC2822(date)
+         .setZone('Europe/Paris')
+         .minus({ hours: 1 });
       return parsedDate.toFormat('dd/MM/yyyy HH:mm');
    } catch (error) {
       return "";
