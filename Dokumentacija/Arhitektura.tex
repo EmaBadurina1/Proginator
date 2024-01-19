@@ -352,10 +352,25 @@ Entitet Status sadrži sve bitne informacije o statusu termina terapije koji je 
 			\eject 
 		
 		\section{Dijagram aktivnosti}
+		
 			
-			\textbf{\textit{dio 2. revizije}}\\
-			
-			 \textit{Potrebno je priložiti dijagram aktivnosti s pripadajućim opisom. Dijagram aktivnosti treba prikazivati značajan dio sustava.}
+
+Dijagram aktivnosti - Kreiranje terapije (\ref{fig:dijagram_aktivnoti_terapija}) prikazuje proces prijave korisnika (pacijenta) na novu terapiju. Kada korisnik zatraži novu terapiju, prikazuje mu se obrazac koji popunjava s podacima o terapiji. Ako su podaci neispravni, sustav mu dojavljuje grešku i vraća ga na obrazac. Ako su podaci ispravni, nova terapija mu se prikaže na listi terapija. 
+
+\begin{figure}[H]
+				\includegraphics[scale=0.3]{slike/Dijagram_aktivnosti _Kreiranje_terapije.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
+				\centering
+				\caption{Dijagram aktivnosti za kreiranje terapije}
+				\label{fig:dijagram_aktivnoti_terapija}
+			\end{figure}
+Dijagram aktivnosti - Dodavanje termina (\ref{fig:dijagram_aktivnosti_termin}) prikazuje proces naručivanja korisnika (pacijenta) na novi termin odabrane terapije. Kada korisnik zatraži novi termin, prikazuje mu se obrazac koji popunjava s podacima o terminu. Ako su podaci neispravni, sustav mu dojavljuje grešku i vraća ga na obrazac. Ako su podaci ispravni, novi termin se prikaže u listi termina.
+
+\begin{figure}[H]
+				\includegraphics[scale=0.3]{slike/Dijagram_aktivnosti_Dodavanje_termina.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
+				\centering
+				\caption{Dijagram stanja}
+				\label{fig:dijagram_aktivnosti_termin}
+			\end{figure}
 			
 			\eject
 		\section{Dijagram komponenti}
