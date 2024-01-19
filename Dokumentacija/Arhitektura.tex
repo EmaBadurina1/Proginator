@@ -360,6 +360,15 @@ Entitet Status sadrži sve bitne informacije o statusu termina terapije koji je 
 			\eject
 		\section{Dijagram komponenti}
 		
-			\textbf{\textit{dio 2. revizije}}\\
-		
-			 \textit{Potrebno je priložiti dijagram komponenti s pripadajućim opisom. Dijagram komponenti treba prikazivati strukturu cijele aplikacije.}
+			 
+			 Dijagram komponenti (\ref{fig:dijagram_stanja1}) služi za vizualizaciju arhitekture sustava - sustav se dijeli na komponente koje međusobno komuniciraju putem sučelja. Ključni dijelovi (komponente) ove web aplikacije su: Web preglednik, React aplikacija, Web poslužitelj statičkih datoteka, Flask aplikacija i SQL baza podataka. Kada web preglednik putem sučelja preuzme statičke datoteke (HTML, CSS, JS datoteke) s web poslužitelja statičkih datoteka, u web pregledniku se izvršava React aplikacija (JavaScript kod). React aplikacija izgrađuje korisničko sučelje te omogućuje interakciju korisnika s aplikacijom. Kada korisnik traži, mijenja ili unosi podatke u aplikaciju, React aplikacija šalje HTTP zahtjeve Flask aplikaciji putem REST sučelja, koje je implementirano unutar Flask aplikacije. Flask aplikacija obrađuje zahtjev te komunicira s bazom podataka s pomoću SQLAlchemy integracije. Kada obradi zahtjeve, Flask aplikacija šalje odgovore React aplikaciji putem REST sučelja.
+			 \begin{figure}[H]
+				\includegraphics[scale=0.3]{slike/Dijagram_komponenti_Aplikacija.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
+				\centering
+				\caption{Dijagram komponenti}
+				\label{fig:dijagram_komponenti1}
+			\end{figure}
+			 
+			 
+			 
+			 
