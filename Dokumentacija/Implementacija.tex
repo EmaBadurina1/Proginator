@@ -13,15 +13,97 @@
 	
 		\section{Ispitivanje programskog rješenja}
 			
-			\textbf{\textit{dio 2. revizije}}\\
-			
-			 \textit{U ovom poglavlju je potrebno opisati provedbu ispitivanja implementiranih funkcionalnosti na razini komponenti i na razini cijelog sustava s prikazom odabranih ispitnih slučajeva. Studenti trebaju ispitati temeljnu funkcionalnost i rubne uvjete.}
-	
-			
 			\subsection{Ispitivanje komponenti}
-			\textit{Potrebno je provesti ispitivanje jedinica (engl. unit testing) nad razredima koji implementiraju temeljne funkcionalnosti. Razraditi \textbf{minimalno 6 ispitnih slučajeva} u kojima će se ispitati redovni slučajevi, rubni uvjeti te izazivanje pogreške (engl. exception throwing). Poželjno je stvoriti i ispitni slučaj koji koristi funkcionalnosti koje nisu implementirane. Potrebno je priložiti izvorni kôd svih ispitnih slučajeva te prikaz rezultata izvođenja ispita u razvojnom okruženju (prolaz/pad ispita). }
+			
+			U ovom odjeljku je opisano izvršavanje testova za testiranje ispravnosti sučelja poslužitelja. 
 			
 			
+			\textbf{Incijalizacija}
+			
+			
+			Kako bi postavili testno okruženje i pokrenuli tesnog poslužitelja vršimo kod:
+			
+			\begin{figure}[H]
+				\includegraphics[scale=0.3]{slike/testno_okruzenje.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
+				\centering
+				\caption{Inicijalizacija testnog okruženja}
+				\label{fig:testno_okruzenje}
+			\end{figure}
+			
+			U prvom dijelu se definiraju korišteni moduli, a drugom dijelu se definira funkcija \textit{client} koja vraća instancu poslužitelja koju je onda moguće koristiti za testiranje. U funkciji se stvara prazna privremena baza podataka na istoj memorijskoj lokaciji. \\
+S naredbama \texttt{db.init\_app(app)} će se inicijalizirati baza podataka po uzoru na db objekt koji sadrži sve entitete u poslužitelju. \texttt{mail.init\_app(app)} služi kako bi se omogućilo slanje obavijesti na e-poštu. Iako se ono ne provjerava tijekom testiranja, potrebno je za ispravan rad aplikacije. \\
+Ova funkcija će se pokrenuti prije svakog testa kako bi se baza podataka očistila i time testovi ne bi utjecali jedni na druge.
+
+
+\textbf{Testovi}
+
+
+U testovima će se uglavnom testirati manipulacija terminima jer je to najsloženija procedura.
+
+            \begin{figure}[H]
+				\includegraphics[scale=0.3]{slike/testovi_1_2_3_4.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
+				\centering
+				\caption{Testovi 1, 2, 3 i 4}
+				\label{fig:testovi1234}
+			\end{figure}
+			
+			\begin{figure}[H]
+				\includegraphics[scale=0.3]{slike/testovi_5_6dio.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
+				\centering
+				\caption{Testovi 5 i 6a}
+				\label{fig:testovi56a}
+			\end{figure}
+			
+			\begin{figure}[H]
+				\includegraphics[scale=0.3]{slike/testovi_6dio_7_8dio.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
+				\centering
+				\caption{Testovi 6b, 7 i 8a}
+				\label{fig:testovi6b78a}
+			\end{figure}
+			
+			\begin{figure}[H]
+				\includegraphics[scale=0.3]{slike/testovi_8dio.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
+				\centering
+				\caption{Test 8b}
+				\label{fig:testovi8b}
+			\end{figure}
+			
+			
+	\begin{packed_item}
+		\item \texttt{test\_create\_appointment\_missing\_fields(client)} \\
+Testira hoće li funkcija za stvaranje termina (putem HTTP POST zahtjeva) vratiti status 400 i odgovarajuću poruku ako nedostaju polja \texttt{date\_from} i \texttt{therapy\_id}.
+		\item \texttt{test\_create\_appointment\_therapy\_not\_found(client)} \\
+		Provjerava hoće li funkcija vratiti status 404 i odgovarajuću poruku ako terapija s navedenim ID-jem ne postoji.
+        \item \texttt{test\_create\_appointment\_forbidden(client)} \\
+        Testira hoće li funkcija vratiti status 401 i odgovarajuću poruku ako korisnik koji pokušava stvoriti termin nema ulogu pacijenta ili administratora.
+        \item \texttt{test\_create\_appointment\_invalid\_date\_format(client)} \\
+        Provjerava hoće li funkcija vratiti status 400 i odgovarajuću poruku ako je format datuma neispravan prilikom stvaranja termina.
+        \item \texttt{test\_create\_appointment\_valid(client)} \\
+        Testira uspješno stvaranje termina (status 201) kada su svi uvjeti zadovoljeni, uključujući postojanje terapije, tipa terapije, sobe i slobodnih termina.	
+        \item \texttt{test\_create\_appointment\_no\_room(client)}	\\
+        	Provjerava hoće li funkcija vratiti status 400 i odgovarajuću poruku ako nema slobodnih soba za navedeni termin.
+        \item \texttt{test\_get\_available\_hours\_by\_day\_therapy\_not\_found(client)} \\
+        Testira hoće li funkcija za dobivanje slobodnih termina po danu vratiti status 404 i odgovarajuću poruku ako terapija s navedenim ID-jem ne postoji.
+        \item texttt{test\_get\_available\_hours\_by\_day(client)} \\
+        Provjerava ispravno dobivanje slobodnih termina (status 200) za određeni dan, uz pretpostavku da postoji terapija, tip terapije, soba i već stvoren termin na taj dan.
+                   				
+	 \end{packed_item}
+	 
+	 \textbf{Rezultati}
+	 
+	 
+	 Svi testovi su usješno riješeni.
+	 
+	 \begin{figure}[H]
+				\includegraphics[scale=0.3]{slike/rezultati_testova.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
+				\centering
+				\caption{Rezultati testova}
+				\label{fig:rezultati_testova}
+			\end{figure}
+	 
+	 
+			
+
 			
 			\subsection{Ispitivanje sustava}
 			
