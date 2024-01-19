@@ -146,7 +146,60 @@ Testira hoće li funkcija za stvaranje termina (putem HTTP POST zahtjeva) vratit
 			\textbf{\textit{dio 2. revizije}}\\
 		
 			 \textit{U ovom poglavlju potrebno je dati upute za puštanje u pogon (engl. deployment) ostvarene aplikacije. Na primjer, za web aplikacije, opisati postupak kojim se od izvornog kôda dolazi do potpuno postavljene baze podataka i poslužitelja koji odgovara na upite korisnika. Za mobilnu aplikaciju, postupak kojim se aplikacija izgradi, te postavi na neku od trgovina. Za stolnu (engl. desktop) aplikaciju, postupak kojim se aplikacija instalira na računalo. Ukoliko mobilne i stolne aplikacije komuniciraju s poslužiteljem i/ili bazom podataka, opisati i postupak njihovog postavljanja. Pri izradi uputa preporučuje se \textbf{naglasiti korake instalacije uporabom natuknica} te koristiti što je više moguće \textbf{slike ekrana} (engl. screenshots) kako bi upute bile jasne i jednostavne za slijediti.}
-			
+
+
+\textbf{Postupak postavljanja baze podataka}
+
+    \begin{packed_item}
+		\item Postavljanje i konfiguracija PostgreSQL baze podataka unutar platforme Render \\
+		
+		U polje \textit{Name} potrebno je upisati ime instance PostgreSQL baze podataka. Polje \textit{Database} i \textit{User} Render popunjava s nasumično generiranim vrijednostima. Umjesto tih vrijednosti definirali smo vlastite, proginator za Database i proginator_user za User. Nakon toga je potrebno odabrati regiju. Odabrali smo regiju Frankfurt (EU central) zato što je najbliža klijentu. 
+		
+		STAVI SLIKU!
+		
+		Nakon toga Render prikazuje informacije o bazi podataka: ime poslužitelja (\textit{Hostname}), vrata (\textit{Port}), ime baze podataka (\textit{Database}), korisničko ime PostgreSQL korisnika (\textit{username}), lozinku korisnika (\textit{password}) i URL za povezivanje na bazu podataka. 
+		
+		
+		\item Konfiguracija pristupa bazi podataka iz aplikacije pgAdmin \\
+		Unutar aplikacije pgAdmin potrebno je u izborniku odabrati Servers -> Register.
+		
+		SLIKA 
+		
+		Nakon toga, potrebno je ispuniti formu s podacima za povezivanje na bazu podataka koje smo dobili u platformi Render.
+		SLIKA
+		
+		
+        \item Incijalizacija baze podataka i stvaranje tablica \\
+
+                   				
+	 \end{packed_item}
+
+
+\textbf{Postupak postavljanja backend aplikacije}
+
+\begin{packed_item}
+        \item Povezivanje Render web servisa s GitHub repozitorijem \\
+  SLIKA 
+        
+         Render web servis povezujemo s GitHub repozitorijem kako bi Render platforma imala pristup izvornom kodu.
+         
+        \item Konfiguracija web servisa \\
+        
+        SLIKA
+        \item Postavljanje varijabli okruženja
+        
+        SLIKA	
+\end{packed_item}
+
+\textbf{Postupak postavljanja frontend aplikacije}
+
+\begin{packed_item}
+   \item Konfiguracija web servisa \\
+   
+   SLIKA
+   
+   Ostali koraci jednaki su koracima postupka postavljanja backend aplikacije.
+\end{packed_item}
 			
 			 \textit{Dovršenu aplikaciju potrebno je pokrenuti na javno dostupnom poslužitelju. Studentima se preporuča korištenje neke od sljedećih besplatnih usluga: \href{https://aws.amazon.com/}{Amazon AWS}, \href{https://azure.microsoft.com/en-us/}{Microsoft Azure} ili \href{https://www.heroku.com/}{Heroku}. Mobilne aplikacije trebaju biti objavljene na F-Droid, Google Play ili Amazon App trgovini.}
 			
