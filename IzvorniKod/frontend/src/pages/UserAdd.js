@@ -245,9 +245,9 @@ const UserAdd = () => {
 
          const response = await axiosInstance.post(api, data);
          
-         if(response.ok) {
+         if(response.ok || response.status === 201) {
             toast.success(
-               response.message,
+               "Djelatnik uspješno dodan!",
                { position: toast.POSITION.BOTTOM_RIGHT }
             );
             navigate("/user-accounts");

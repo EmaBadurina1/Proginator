@@ -103,6 +103,18 @@ class EmployeeService {
       return { success: false, message: "Error" };
     }
   }
+  async updateTherapy(therapyId, updatedData) {
+    try {
+      const res9 = await axiosInstance.patch(`/therapies/${therapyId}`, updatedData);
+      return { 
+        success: true, 
+        message: "Success!",
+        data: res9.data.data.therapy,
+      };
+    } catch (error) {
+      return { success: false, message: "Error" };
+    }
+  }
 }
 
 export default new EmployeeService();

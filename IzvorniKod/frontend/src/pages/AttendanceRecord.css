@@ -39,10 +39,20 @@
     grid-template-areas: 
     "div1 div2";
 }
+.button-div-container3_1 {
+    margin-top: 2em;
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
 .button-div3_1 {
-    margin-right: 1em;
+    width: 20%;
+    margin-right: 5em;
+    margin-right: auto;
+}
+.button-div3_2 {
+    width: 15em;
+    margin-right: 5em;
     margin-left: auto;
-    width: 30em;
     display: grid;
     grid-template-columns: 50% 50%;
 }
@@ -68,7 +78,7 @@
     margin-left: 1em;
 }
 
-.gumb3_1, .gumb3_2 {
+.gumb3_1, .gumb3_2, .gumb3_3 {
     height: 2.5em;
     border-radius: 0.5em;
     width: 13em;
@@ -103,5 +113,15 @@
         width: 100%;
         display: grid;
         grid-template-columns: 100%;
+    }
+    .button-div-container3_1 {
+        display: grid;
+        grid-template-columns: 100%;
+    }
+    .button-div3_2 {
+        display: grid;
+        grid-template-columns: 100%;
+        margin-left: 1.7em;
+        margin-bottom: 2em;
     }
 }

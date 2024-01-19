@@ -59,7 +59,7 @@ const AppointmentOptions = () => {
           setLoading(false);
         }
       } catch (err) {
-        toast.error(`API Error:${err.response.data}`, {
+        toast.error("Greska!", {
           position: toast.POSITION.TOP_RIGHT,
         });
       }
@@ -137,8 +137,7 @@ const AppointmentOptions = () => {
                 )}
                 {appointment &&
                   (appointment.status.status_id === 1 ||
-                    appointment.status.status_id === 2 ||
-                    appointment.status.status_id === 4) && (
+                    appointment.status.status_id === 2) && (
                     <div className="button-div8_3">
                       <Button
                         variant="contained"

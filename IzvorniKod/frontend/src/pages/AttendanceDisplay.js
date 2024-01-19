@@ -65,7 +65,7 @@ const AttendanceDisplay = () => {
           });
         }
       } catch (err) {
-        toast.error(`API Error:${err.response.data}`, {
+        toast.error("Greska!", {
           position: toast.POSITION.TOP_RIGHT,
         });
       }
