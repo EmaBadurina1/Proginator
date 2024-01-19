@@ -28,6 +28,8 @@ const AttendanceRecord = () => {
   const nav = useNavigate();
   const toastShownRef = useRef(false);
   const [loading, setLoading] = useState(true);
+  const [terapijaButtonDisabled, setTerapijaButtonDisabled] = useState(false);
+  const [predajButtonDisabled, setPredajButtonDisabled] = useState(false);
 
   //stilovi
   const buttonStyle = {
@@ -170,18 +172,24 @@ const AttendanceRecord = () => {
 
   //funkcija koja provjerava je li evidencija uspjela
   const provjeraUspjehaUpdatea = async () => {
+    setPredajButtonDisabled(true);
     const updBool = await updateAppointment();
     if (updBool) {
       nav(-1);
+    } else {
+      setPredajButtonDisabled(false);
     }
   };
 
   const provjeraUspjehaUpdateaTerapije = async () => {
+    setTerapijaButtonDisabled(true);
     const updBool2 = await updateTherapy();
     if (updBool2) {
       toast.success("Terapija završena!", {
         position: toast.POSITION.TOP_RIGHT,
       });
+    } else {
+      setTerapijaButtonDisabled(false);
     }
   };
 
@@ -300,6 +308,7 @@ const AttendanceRecord = () => {
                     onClick={() => {
                       provjeraUspjehaUpdateaTerapije();
                     }}
+                    disabled={terapijaButtonDisabled}
                   >
                     Završi terapiju
                   </Button>
@@ -328,6 +337,7 @@ const AttendanceRecord = () => {
                     onClick={() => {
                       provjeraUspjehaUpdatea();
                     }}
+                    disabled={predajButtonDisabled}
                   >
                     Predaj evidenciju
                   </Button>

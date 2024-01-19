@@ -52,6 +52,7 @@ const ChangeAppointment = () => {
   const toastShownRef = useRef(false);
   const [loading, setLoading] = useState(true);
   const [timePickerKey, setTimePickerKey] = useState(0);
+  const [potvrdiButtonDisabled, setPotvrdiButtonDisabled] = useState(false);
 
   //stilovi
   const iconButtonStyle = {
@@ -218,9 +219,12 @@ const ChangeAppointment = () => {
 
   //funkcija koja provjerava je li ažuriranje termina uspjelo
   const provjeraUspjehaUpdatea = async () => {
+    setPotvrdiButtonDisabled(true);
     const updBool = await updateAppointment();
     if (updBool) {
       nav(-1);
+    } else {
+      setPotvrdiButtonDisabled(false);
     }
   };
 
@@ -392,6 +396,7 @@ const ChangeAppointment = () => {
                         onClick={() => {
                           provjeraUspjehaUpdatea();
                         }}
+                        disabled={potvrdiButtonDisabled}
                       >
                         Potvrdi
                       </Button>

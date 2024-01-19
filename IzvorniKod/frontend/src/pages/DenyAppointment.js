@@ -20,6 +20,7 @@ const DenyAppointment = () => {
   const nav = useNavigate();
   const toastShownRef = useRef(false);
   const [loading, setLoading] = useState(true);
+  const [potvrdiButtonDisabled, setPotvrdiButtonDisabled] = useState(false);
 
   //stilovi
   const komentarStyle = {
@@ -151,9 +152,12 @@ const DenyAppointment = () => {
 
   //funkcija koja provjerava je li otkazivanje termina uspjelo
   const provjeraUspjehaUpdatea = async () => {
+    setPotvrdiButtonDisabled(true);
     const updBool = await updateAppointment();
     if (updBool) {
       nav(-1);
+    } else {
+      setPotvrdiButtonDisabled(false);
     }
   };
 
@@ -257,6 +261,7 @@ const DenyAppointment = () => {
                         onClick={() => {
                           provjeraUspjehaUpdatea();
                         }}
+                        disabled={potvrdiButtonDisabled}
                       >
                         Potvrdi
                       </Button>
