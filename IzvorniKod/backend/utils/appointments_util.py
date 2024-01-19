@@ -1,9 +1,9 @@
 from sqlalchemy import or_, not_
-from models import Appointment, Therapy, TherapyType
+from models import Appointment, Therapy, TherapyType, Room
 from datetime import datetime, timedelta
 from flask import abort, request
 from sqlalchemy import and_
-from errors import *
+from utils.errors import *
 
 
 def appointment_overlapping(patient_id, new_date_from, new_date_to):
@@ -18,17 +18,10 @@ def appointment_overlapping(patient_id, new_date_from, new_date_to):
     overlapping_appointments = (
         Appointment
         .query
-        .filter(
-            not_(
-                or_(
-                    Appointment.date_to <= new_date_from,
-                    Appointment.date_from >= new_date_to
-                )
-            )
-        )
-        .filter(Appointment.therapy_id.in_(therapy_ids))
+        .filter(Appointment.therapy_id.in_(therapy_ids), Appointment.date_from == new_date_from)
         .all()
     )
+    print(overlapping_appointments)
     if overlapping_appointments:
         return True
     else:
@@ -44,7 +37,7 @@ def get_room_for_therapy_type(therapy_type_id, date_from, date_to):
     therapy_type = TherapyType.query.filter_by(therapy_type_id=therapy_type_id).first()
     if not therapy_type:
         abort(NotFoundError("Tip terapije ne postoji"))
-        
+
     rooms = therapy_type.rooms
     # remove room if id not active
     rooms = [room for room in rooms if room.in_use]
@@ -65,7 +58,7 @@ def check_room_capacity(room_num, date_from):
     Returns True if room has enough capacity for new appointment, False otherwise
     '''
     # get room capacity
-    room_capacity = TherapyType.query.filter_by(therapy_type_id=Appointment.query.filter_by(room_num=room_num, date_from=date_from).first().therapy.therapy_type_id).first().rooms.filter_by(room_num=room_num).first().capacity
+    room_capacity = Room.query.filter_by(room_num=room_num).first().capacity
     # get number of appointments in room
     num_appointments = len(Appointment.query.filter_by(room_num=room_num, date_from=date_from).all())
     if num_appointments < room_capacity:

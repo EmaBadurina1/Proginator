@@ -32,11 +32,11 @@ def get_appointments():
 def get_appointment(appointment_id):
     return get_one(id=appointment_id, Model=Appointment)
 
-# get list of free appointments for therapy with id=therapy_id
+# get list of available hours for specified therapy type for day
 @appointments_bp.route('/free-appointments/therapy/<int:therapy_id>/date/<string:day>', methods=['GET'])
 @auth_validation
 @require_any_role('admin', 'doctor', 'patient')
-def get_free_appointments_by_day(therapy_id, day):
+def get_available_hours_by_day(therapy_id, day):
     # check if therapy exists
     therapy = Therapy.query.filter_by(therapy_id=therapy_id).first()
     if not therapy:
@@ -55,27 +55,23 @@ def get_free_appointments_by_day(therapy_id, day):
     # generate a list of hours in a day
     hours = [f'{hour}:00' for hour in range(8, 20)]
 
-    # remove hours that overlap with other appointments, use date_from looks like day
-    date_from = datetime.strptime(day, '%Y-%m-%d')
-    date_from_next_day = date_from + timedelta(days=1)
-    therapy_ids = Therapy.query.filter(Therapy.patient_id==therapy.patient_id).with_entities(Therapy.therapy_id).all()
-    
-    therapy_ids = [x[0] for x in therapy_ids]
-    appointments = Appointment.query.filter(and_(
-        Appointment.therapy_id.in_(therapy_ids), 
-        Appointment.date_from.between(date_from, date_from_next_day)
-        )).all()
-    appointments = [appointment.date_from.strftime('%H:%M') for appointment in appointments]
+    # get all appointments in the same day
+    sql = text('''
+        SELECT appointment.date_from FROM appointment
+        LEFT JOIN therapy ON therapy.therapy_id = appointment.therapy_id
+        where patient_id = :patient_id
+        and DATE(appointment.date_from) = :day
+    ''')
+
+    result = db.session.execute(sql, {'day': day, 'patient_id': therapy.patient_id})
+
+    # Fetch the date_times from the result and create a list
+    appointments = [row[0].strftime('%H:%M') for row in result.fetchall()]
 
     for appointment in appointments:
         for hour in hours:
-            if appointment.split(":")[0] == hour.split(":")[0]:
+            if int(appointment.split(":")[0]) == int(hour.split(":")[0]):
                 hours.remove(hour)
-
-                # if appointment does not start at the beginning of the hour, remove the next hour too, 
-                # because every appointment lasts 60 minutes
-                if appointment.split(":")[1] != "00":
-                    hours.remove(f'{int(hour.split(":")[0])+1}:00')
 
     # find rooms for specified therapy type
     rooms = TherapyType.query.filter_by(therapy_type_id=therapy.therapy_type_id).first().rooms
@@ -83,18 +79,16 @@ def get_free_appointments_by_day(therapy_id, day):
     # remove hours for which there are no rooms available
     for hour in hours:
         new_date_from = datetime.strptime(f'{day} {hour}', '%Y-%m-%d %H:%M')
-        new_date_to = new_date_from + timedelta(minutes=60)
 
         check = False # check if there is a room with enough capacity
         for room in rooms:
             appointments = Appointment.query.filter(and_(
                 Appointment.room_num==room.room_num, 
-                Appointment.date_from>=new_date_from,
-                Appointment.date_from<new_date_to
+                Appointment.date_from==new_date_from
                 )).all()
             
             if len(appointments) < room.capacity:
-                check = True # there is a room with enough capacity
+                check = True
                 break
 
         if not check:
@@ -230,10 +224,7 @@ def update_appointment(appointment_id):
         # check if appointment overlaps with any other appointment
         overlapping = appointment_overlapping(patient_id, new_date_from, new_date_to)
         if overlapping:
-            return jsonify({
-                "error": "Termin se preklapa s drugim terminom",
-                "status": 400
-            }), 400
+            return BadRequestError(message="Termin se preklapa s drugim terminom")
 
         # check for room capacity
         room_num = get_room_for_therapy_type(therapy.therapy_type_id, new_date_from, new_date_to)
@@ -721,6 +712,8 @@ def get_occupied_hours(room_num):
 
         # Fetch the date_times from the result and create a list
         date_times = [row[0].strftime('%Y-%m-%d %H:%M') for row in result.fetchall()]
+
+        print(date_times)
 
         return jsonify({
             "data": {
