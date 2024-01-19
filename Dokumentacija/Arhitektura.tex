@@ -298,8 +298,7 @@ Entitet Status sadrži sve bitne informacije o statusu termina terapije koji je 
 		
 			Dijagrami razreda rađeni su po uzoru na MVC obrazac po kojem je naša aplikacija organizirana. Podijeljeni su u 3 dijela: Nadglednik(\textit{Controller}) (\ref{fig:dijagram_razreda_1}), DTO (\ref{fig:dijagram_razreda_2}) i Model (\ref{fig:dijagram_razreda_3}).
 			
-			Nadglednik obrađuje zahtjeve korisnika i preko DTO-a(\textit{Data transfer object}) vrši operacije nad Modelom. Zamišljeno je da funkcije implementirane u Nadgledniku vraćaju html status kod. \textit{KorisnikController} treba imati funkcije dobavljanja podataka i izmjene osobnih podataka. \textit{DjelatnikController} mora imati funkcije dobavljanja pacijenta i termina, evidencije pacijenta i dodavanje zahtjeva. \textit{PacijentController} mora imati funkcije dobavljanja zahtjeva, termina i nalaza, filtraciju termina i postavljanje terapije. \textit{AdminController} treba moći dobavljati djelatnike i termine, mijenjati djelatnike i termine, brisati djelatnike, sobe, uređaje i termine, dohvaćati djelatnike, sobe i uređaje i obavještavati pacijente. \textit{HomeController} treba imati pristup bazi i treba imati funkcije registracije i prijave.
-			
+			Nadglednik (\textit{Controller}) obrađuje zahtjeve korisnika i preko DTO-a(\textit{Data transfer object}) vrši operacije nad Modelom. Zamišljeno je da funkcije implementirane u Nadgledniku vraćaju html status kod. \textit{KorisnikController} ima funkcije za dohvaćanje, stvaranje i izmjenjivanje korisnika(pacijenta i djelatnika). \textit{TerminController} ima funkcije za dohvaćanje, izmjenjivanje i dodavanje termina i statusa koji je povezan za njega. \textit{VerifikacijaController} ima funkcije za verifikaciju i slanje e-maila, promjenu lozinke, prijavu i registraciju korisnika. \textit{InventarController} sadrži funkcije za dodavanje, brisanje i izmjenjivanje inventara/uređaja. \textit{SobaController} ima funkcije za dohvaćanje, uređivanje i stvaranje soba. \textit{TerapijaController} ima funkcije za stvaranje, dohvaćanje i uređivanje prostorija.
 			\begin{figure}[H]
 				\includegraphics[scale=0.41]{slike/Dijagram_razreda_1.PNG} %veličina slike u odnosu na originalnu datoteku i pozicija slike
 				\centering
@@ -325,11 +324,6 @@ Entitet Status sadrži sve bitne informacije o statusu termina terapije koji je 
 				\label{fig:dijagram_razreda_3}
 			\end{figure}
 			
-			
-			
-			\textbf{\textit{dio 2. revizije}}\\			
-			
-			\textit{Prilikom druge predaje projekta dijagram razreda i opisi moraju odgovarati stvarnom stanju implementacije}
 			
 			
 			
