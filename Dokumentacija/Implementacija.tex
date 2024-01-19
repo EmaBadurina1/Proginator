@@ -2,10 +2,6 @@
 		
 		
 		\section{Korištene tehnologije i alati}
-		
-			\textbf{\textit{dio 2. revizije}}
-			
-			 \textit{Detaljno navesti sve tehnologije i alate koji su primijenjeni pri izradi dokumentacije i aplikacije. Ukratko ih opisati, te navesti njihovo značenje i mjesto primjene. Za svaki navedeni alat i tehnologiju je potrebno \textbf{navesti internet poveznicu} gdje se mogu preuzeti ili više saznati o njima}.
 			 
 			 Komunikacija u timu realizirana je korištenjem aplikacija \underbar{WhatsApp}\footnote{\url{https://www.whatsapp.com/}} i \underbar{Discord}\footnote{\url{https://discord.com/}}. Za izradu dijagrama korištena je aplikacija \underbar{Astah Proffesional}\footnote{\url{https://astah.net/products/astah-professional/}}, a za pisanje dokumenatcije korišten je opisni jezik \underbar{LaTeX}\footnote{\url{https://www.latex-project.org/}} u aplikaciji \underbar{TeXstudio}\footnote{\url{https://www.texstudio.org/}}. kao sustav za upravljanje izvornim kodom koristo se sustav \underbar{Git}\footnote{\url{https://git-scm.com/}}. Udaljeni repozitorij projekta je dostupan na web platformi \underbar{GitHub}\footnote{\url{https://github.com/}}.
 			 
@@ -115,16 +111,120 @@ Testira hoće li funkcija za stvaranje termina (putem HTTP POST zahtjeva) vratit
 			
 			\subsection{Ispitivanje sustava}
 			
-			 \textit{Potrebno je provesti i opisati ispitivanje sustava koristeći radni okvir Selenium\footnote{\url{https://www.seleniumhq.org/}}. Razraditi \textbf{minimalno 4 ispitna slučaja} u kojima će se ispitati redovni slučajevi, rubni uvjeti te poziv funkcionalnosti koja nije implementirana/izaziva pogrešku kako bi se vidjelo na koji način sustav reagira kada nešto nije u potpunosti ostvareno. Ispitni slučaj se treba sastojati od ulaza (npr. korisničko ime i lozinka), očekivanog izlaza ili rezultata, koraka ispitivanja i dobivenog izlaza ili rezultata.\\ }
+
+\textbf{} slučaj 1: Prijava u aplikaciju kao admin, pregled svih kartica aplikacije i odjava iz aplikacije}
+\textbf{Ulaz:}
+\begin{enumerate}
+    \item Otvaranje početne stranice u web pregledniku.
+    \item Upisivanje adrese e-pošte i lozinke admina te stisak na gumb prijava.
+    \item[3.a] Stisak na stranicu 'Pacijenti'
+    \item[3.b] Stisak na stranicu 'Evidentiraj'
+    \item[3.c] Stisak na stranicu 'Inventar'
+    \item[3.d] Stisak na stranicu 'Prostorije'
+    \item[3.e] Stisak na stranicu 'Korisnički račun'
+    \item Stisak na opcije
+    \item Stisak na gumb 'Odjavi se'
+\end{enumerate}
+\textbf{Očekivani rezultat:}
+\begin{enumerate}
+    \item Početna stranica se otvara u web pregledniku.
+    \item Otvara se početna stranica aplikacije.
+    \item Redom se otvaraju stranice 'Pacijenti', 'Evidentiraj', 'Inventar', 'Prostorije', 'Korisnički račun'.
+    \item Otvara se padajući izbornik s opcijama.
+    \item Otvara se stranica za prijavu.
+\end{enumerate}
+\textbf{Rezultat:} Aplikacija je prošla test.
+
+\section*{Ispitni slučaj 2: Prijava u aplikaciju kao pacijent, kreiranje nove terapije}
+\textbf{Ulaz:}
+\begin{enumerate}[label=\arabic*.]
+    \item Otvaranje početne stranice u web pregledniku.
+    \item Upisivanje adrese e-pošte i lozinke pacijenta te stisak na gumb prijava.
+    \item Stisak na stranicu 'Moje terapije'
+    \item Stisak na gumb 'Dodaj terapiju'
+    \item[5.a] Odabiranje vrste terapije
+    \item[5.b] Odabir liječnika
+    \item[5.c] Odabir datuma početka terapije
+    \item[5.d] Upis opisa oboljenja
+    \item[5.e] Upis zahtjeva postupka liječenja
+    \item Stisak na gumb 'Dodaj terapiju'
+\end{enumerate}
+\textbf{Očekivani rezultat:}
+\begin{enumerate}[label=\arabic*.]
+    \item Početna stranica se otvara u web pregledniku.
+    \item Otvara se početna stranica aplikacije.
+    \item Otvara se stranica 'Moje terapije'.
+    \item Otvara se stranica za kreiranje nove terapije.
+    \item Povratna informacija o uspješnom kreiranju terapije.
+    \item Na stranici 'Moje terapije' se pojavljuje nova terapija.
+\end{enumerate}
+\textbf{Rezultat:} Aplikacija je prošla test.
+
+\section*{Ispitni slučaj 3: Prijava u aplikaciju kao pacijent i dodavanje novog termina}
+\textbf{Ulaz:}
+\begin{enumerate}[label=\arabic*.]
+    \item Otvaranje početne stranice u web pregledniku.
+    \item Upisivanje adrese e-pošte i lozinke pacijenta te stisak na gumb prijava.
+    \item Stisak na stranicu 'Moje terapije'
+    \item Stisak na jednu od aktivnih terapija
+    \item Stisak na gumb 'Dodaj termin'
+    \item[6.a] Odabir sobe i datuma termina
+    \item[6.b] Stisak na gumb 'Dodaj'
+\end{enumerate}
+\textbf{Očekivani rezultat:}
+\begin{enumerate}[label=\arabic*.]
+    \item Početna stranica se otvara u web pregledniku.
+    \item Nakon prijavljivanja, otvara se početna stranica aplikacije.
+    \item Otvara se stranica 'Moje terapije'.
+    \item Otvara se stranica za detalje o terapiji.
+    \item Otvara se stranica za dodavanje novog termina.
+    \item Povratna informacija o uspješnom dodavanju termina.
+\end{enumerate}
+\textbf{Rezultat:} Aplikacija je prošla test.
+
+\section*{Ispitni slučaj 4: Prijava u aplikaciju kao doktor i izmjena termina pacijenta}
+\textbf{Ulaz:}
+\begin{enumerate}[label=\arabic*.]
+    \item Otvaranje početne stranice u web pregledniku.
+    \item Upisivanje adrese e-pošte i lozinke doktora te stisak na gumb prijava.
+    \item Stisak na stranicu 'Evidentiraj'
+    \item Stisak na neki od termina
+    \item Stisak na gumb 'Premjesti termin'
+    \item[6.a] Odabir novog datuma i mogućeg vremena
+    \item[6.b] Stisak na gumb 'Potvrdi'
+\end{enumerate}
+\textbf{Očekivani rezultat:}
+\begin{enumerate}[label=\arabic*.]
+    \item Početna stranica se otvara u web pregledniku.
+    \item Nakon prijavljivanja, otvara se početna stranica aplikacije.
+    \item Otvara se stranica 'Evidentiraj'.
+    \item Otvara se stranica za izmjenu termina.
+    \item Povratna informacija o uspješnoj izmjeni termina.
+    \item Na stranici 'Evidentiraj' se pojavljuje izmijenjeni termin.
+\end{enumerate}
+\textbf{Rezultat:} Aplikacija je prošla test.
+
+
+\section*{Ispitni slučaj 5: Prijava u aplikaciju kao pacijent i kreiranje novog termina, ali u sustavu ne postoji soba namijenjena za tu vrstu terapije}
+\textbf{Ulaz:}
+\begin{enumerate}[label=\arabic*.]
+    \item Otvaranje početne stranice u web pregledniku.
+    \item Upisivanje adrese e-pošte i lozinke pacijenta te stisak na gumb prijava.
+    \item Stisak na stranicu 'Moje terapije'
+    \item Stisak na jednu od aktivnih terapija
+    \item Stisak na gumb 'Dodaj termin'
+\end{enumerate}
+\textbf{Očekivani rezultat:}
+\begin{enumerate}[label=\arabic*.]
+    \item Početna stranica se otvara u web pregledniku.   
+    \item Nakon prijavljivanja, otvara se početna stranica aplikacije.
+    \item Otvara se stranica 'Moje terapije'.
+    \item Otvara se stranica za detalje o terapiji.
+    \item Prikazuje se informacija da je trenutno nemoguće dodati termin.
+\end{enumerate}
+\textbf{Rezultat:} Aplikacija otvara stranicu 'Dodaj termin', no termin nije moguće dodati jer ne postoji soba namijenjena za tu vrstu terapije. Aplikacija nije prošla test.
 			 
-			 \textit{Izradu ispitnih slučajeva pomoću radnog okvira Selenium moguće je provesti pomoću jednog od sljedeća dva alata:}
-			 \begin{itemize}
-			 	\item \textit{dodatak za preglednik \textbf{Selenium IDE} - snimanje korisnikovih akcija radi automatskog ponavljanja ispita	}
-			 	\item \textit{\textbf{Selenium WebDriver} - podrška za pisanje ispita u jezicima Java, C\#, PHP koristeći posebno programsko sučelje.}
-			 \end{itemize}
-		 	\textit{Detalji o korištenju alata Selenium bit će prikazani na posebnom predavanju tijekom semestra.}
-			
-			\eject 
+
 		
 		
 		\section{Dijagram razmještaja}
@@ -175,7 +275,7 @@ Testira hoće li funkcija za stvaranje termina (putem HTTP POST zahtjeva) vratit
 			\label{fig:bazapodataka3} %label mora biti drugaciji za svaku sliku
 		\end{figure}
 		
-        \item Incijalizacija baze podataka i stvaranje tablica \\
+        \item Incijalizacija baze podataka i stvaranje tablica \\doc
         
         Potrebno je pokrenuti inicijalizacijsku skriptu db\_init.sql koja stvara tablice u bazi podataka.
 
